@@ -25,7 +25,7 @@ if ($db->getUserByEmail($email)) {
 $hash = password_hash($password, PASSWORD_DEFAULT);
 // Insert user with password hash
 $stmt = $db->getPdo()->prepare("INSERT INTO users (id, email, display_name, role, created_at, last_seen, password) VALUES (UUID(), :email, :display, 'student', NOW(), NOW(), :password)");
-$stmt->execute([':email'=>$email, ':display'=>$display, ':password'=>$hash]);
+$stmt->execute([':email' => $email, ':display' => $display, ':password' => $hash]);
 
 // Auto-login after registration
 $_SESSION['user_email'] = $email;
