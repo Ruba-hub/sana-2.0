@@ -120,105 +120,202 @@
       });
     </script>
     <div class="flex h-screen w-full text-text-primary-light">
-      <aside
-        class="flex flex-col w-72 bg-surface-light p-4 shrink-0 border-r border-border-light"
-      >
-        <div class="flex items-center gap-3 mb-8 px-2">
-          <a href="stdntdashb.html">
-            <svg
-              class="size-6 text-primary-green"
-              fill="none"
-              viewBox="0 0 48 48"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                clip-rule="evenodd"
-                d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
-                fill="currentColor"
-                fill-rule="evenodd"
-              ></path>
-            </svg>
-          </a>
-          <h1 class="text-text-primary-light text-xl font-bold">Sana</h1>
-        </div>
-        <div class="flex flex-col gap-4 flex-grow">
-          <button
-            id="new-chat-btn"
-            class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary-green text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:bg-primary-green/90 transition-colors"
-          >
-            <span class="material-symbols-outlined text-lg">add_circle</span>
-            <span class="truncate">New Chat</span>
-          </button>
-          <div class="flex flex-col gap-1">
-            <p
-              class="text-text-secondary-light text-xs font-semibold uppercase px-3 pt-2"
-            >
-              Recent Chats
-            </p>
-            <div id="recent-chats-list" class="flex flex-col gap-2 px-0 py-0">
-              <!-- Recent chats will be populated here by JS -->
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-col gap-1">
-          <div class="flex items-center gap-3 py-2 px-3">
-            <div
-              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-              data-alt="User avatar with a gradient background"
-              style="
-                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJxjNCWaageqt_bEEUTRF0VGBI1KmgSLlmwa6Q2cKZR1lzUho54st-7808DMj8X86n8Z3ZsBRN6HxwABReYhuOT5xBDn3gUHJH-Md1zuVHW4T5gELw2rHpEicEkVTvvAnfRsXXaSwLqeYGaYLmJcdz1K2T7x-6AZjhu7urs8S9F5JdyIH4-4gUkybu5VvJMuWfiy76UT9i6Zfd-UsDjoeokPyeRinejXqTZDZ7MOA9YPlpz7t8aKOkbGMbWKw14JFFFtESz6hohA');
-              "
-            ></div>
-            <div class="flex flex-col">
-              <h2
-                id="sidebar-username"
-                class="text-text-primary-light text-base font-medium leading-normal"
-              >
-                &nbsp;
-              </h2>
-              <p
-                id="sidebar-role"
-                class="text-text-secondary-light text-sm font-normal leading-normal"
-              >
-                &nbsp;
-              </p>
-            </div>
-          </div>
-          <a
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors"
-            href="settings.html"
-          >
-            <span
-              class="material-symbols-outlined text-lg text-text-secondary-light"
-              >settings</span
-            >
-            <p
-              class="text-text-primary-light text-sm font-medium leading-normal"
-            >
-              Settings
-            </p>
-          </a>
-          <a
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors"
-            href="#"
-          >
-            <span
-              class="material-symbols-outlined text-lg text-text-secondary-light"
-              >shield</span
-            >
-            <p
-              class="text-text-primary-light text-sm font-medium leading-normal"
-            >
-              Privacy Policy
-            </p>
-          </a>
-        </div>
-      </aside>
+<aside
+  class="hidden md:flex flex-col w-72 bg-surface-light p-4 shrink-0 border-r border-border-light"
+>
+  <!-- TOP BRAND -->
+  <div class="flex items-center gap-3 mb-8 px-2">
+    <svg class="size-6 text-primary-green" fill="none" viewBox="0 0 48 48"
+      xmlns="http://www.w3.org/2000/svg">
+      <path clip-rule="evenodd"
+        d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+        fill="currentColor" fill-rule="evenodd"></path>
+    </svg>
+    <h1 class="text-text-primary-light text-xl font-bold">Sana</h1>
+  </div>
+
+  <!-- NEW CHAT BUTTON -->
+  <button
+    class="flex w-full cursor-pointer items-center overflow-hidden h-10 px-2 text-slate-700 text-sm font-bold leading-normal tracking-[0.015em] gap-2">
+    <span class="material-symbols-outlined text-lg">add_circle</span>
+    <span class="truncate">New Chat</span>
+  </button>
+
+  <!-- CHAT LIST -->
+  <div class="flex flex-col gap-1 mt-4 flex-grow">
+    <p class="text-text-secondary-light text-xs font-semibold px-3">Chats</p>
+
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-button-peach" href="#">
+      <span class="material-symbols-outlined text-lg text-primary-green">chat</span>
+      <p class="text-text-primary-light text-sm font-medium leading-normal">Today's Check-in</p>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors" href="#">
+      <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
+      <p class="text-text-primary-light text-sm font-medium leading-normal">Talking about exams</p>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors" href="#">
+      <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
+      <p class="text-text-primary-light text-sm font-medium leading-normal">Feeling overwhelmed</p>
+    </a>
+  </div>
+
+  <!-- PROFILE SECTION -->
+  <div class="flex flex-col gap-1 mt-4">
+    <div class="flex items-center gap-1 py-2 px-3 relative bg-white">
+
+      <!-- DROPDOWN MENU (hidden by default) -->
+      <div
+        class="absolute left-0 -top-[300%] w-full flex flex-col gap-1 bg-surface-light border border-border-light rounded-lg p-3 shadow-lg z-50 hidden">
+        <a class="flex items-center gap-3 px-3 py-1" href="settings.html">
+          <span class="material-symbols-outlined text-lg text-text-secondary-light">star</span>
+          <p class="text-text-primary-light text-sm font-medium leading-normal">Upgrade plan</p>
+        </a>
+
+        <a class="flex items-center gap-3 px-3 py-1" href="settings.html">
+          <span class="material-symbols-outlined text-lg text-text-secondary-light">settings</span>
+          <p class="text-text-primary-light text-sm font-medium leading-normal">Settings</p>
+        </a>
+
+        <hr />
+
+        <a class="flex items-center gap-3 px-3 py-1" href="#">
+          <span class="material-symbols-outlined text-lg text-text-secondary-light">help</span>
+          <p class="text-text-primary-light text-sm font-medium leading-normal">Help</p>
+        </a>
+
+        <a class="flex items-center gap-3 px-3 py-1" href="#">
+          <span class="material-symbols-outlined text-lg text-text-secondary-light">logout</span>
+          <p class="text-text-primary-light text-sm font-medium leading-normal">Logout</p>
+        </a>
+      </div>
+
+      <!-- PROFILE DISPLAY -->
+      <div
+        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJxjNCWaageqt_bEEUTRF0VGBI1KmgSLlmwa6Q2cKZR1lzUho54st-7808DMj8X86n8Z3ZsBRN6HxwABReYhuOT5xBDn3gUHJH-Md1zuVHW4T5gELw2rHpEicEkVTvvAnfRsXXaSwLqeYGaYLmJcdz1K2T7x-6AZjhu7urs8S9F5JdyIH4-4gUkybu5VvJMuWfiy76UT9i6Zfd-UsDjoeokPyeRinejXqTZDZ7MOA9YPlpz7t8aKOkbGMbWKw14JFFFtESz6hohA');">
+      </div>
+
+      <div class="flex flex-col relative ml-2">
+        <h2 class="text-text-primary-light text-base font-medium">Alex Johnson</h2>
+        <p class="text-text-secondary-light text-sm">Free</p>
+      </div>
+
+    </div>
+  </div>
+</aside>
+
+
+
+      <!-- MOBILE SLIDING SIDEBAR -->
+<aside
+  id="mobile-sidebar"
+  class="fixed top-0 left-0 h-full w-72 bg-surface-light p-4 z-50 transform -translate-x-full transition-transform duration-300 md:hidden border-r border-border-light"
+>
+  <!-- Close button -->
+  <button
+    id="close-mobile-sidebar"
+    class="absolute top-4 right-4 text-text-primary-light">
+    <span class="material-symbols-outlined text-3xl">close</span>
+  </button>
+
+  <!-- TOP BRAND -->
+  <div class="flex items-center gap-3 mb-8 px-2">
+    <svg class="size-6 text-primary-green" fill="none" viewBox="0 0 48 48"
+      xmlns="http://www.w3.org/2000/svg">
+      <path clip-rule="evenodd"
+        d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+        fill="currentColor" fill-rule="evenodd"></path>
+    </svg>
+    <h1 class="text-text-primary-light text-xl font-bold">Sana</h1>
+  </div>
+
+  <!-- NEW CHAT BUTTON -->
+  <button
+    class="flex w-full cursor-pointer items-center overflow-hidden h-10 px-2 text-slate-700 text-sm font-bold leading-normal tracking-[0.015em] gap-2">
+    <span class="material-symbols-outlined text-lg">add_circle</span>
+    <span class="truncate">New Chat</span>
+  </button>
+
+  <div 
+  class="w-full h-[80%] flex flex-col justify-between">
+    <!-- CHAT LIST -->
+  <div class="flex flex-col gap-1 mt-4 flex-grow">
+    <p class="text-text-secondary-light text-xs font-semibold px-3">Chats</p>
+
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-button-peach" href="#">
+      <span class="material-symbols-outlined text-lg text-primary-green">chat</span>
+      <p class="text-text-primary-light text-sm font-medium leading-normal">Today's Check-in</p>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors" href="#">
+      <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
+      <p class="text-text-primary-light text-sm font-medium leading-normal">Talking about exams</p>
+    </a>
+
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors" href="#">
+      <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
+      <p class="text-text-primary-light text-sm font-medium leading-normal">Feeling overwhelmed</p>
+    </a>
+  </div>
+
+  <!-- PROFILE SECTION -->
+  <div class="flex flex-col gap-1 mt-4">
+    <div class="flex items-center gap-1 py-2 px-3 relative bg-white">
+
+      <!-- DROPDOWN MENU (hidden by default) -->
+      <div
+        class="absolute left-0 -top-[300%] w-full flex flex-col gap-1 bg-surface-light border border-border-light rounded-lg p-3 shadow-lg z-50 hidden">
+        <a class="flex items-center gap-3 px-3 py-1" href="settings.html">
+          <span class="material-symbols-outlined text-lg text-text-secondary-light">star</span>
+          <p class="text-text-primary-light text-sm font-medium leading-normal">Upgrade plan</p>
+        </a>
+
+        <a class="flex items-center gap-3 px-3 py-1" href="settings.html">
+          <span class="material-symbols-outlined text-lg text-text-secondary-light">settings</span>
+          <p class="text-text-primary-light text-sm font-medium leading-normal">Settings</p>
+        </a>
+
+        <hr />
+
+        <a class="flex items-center gap-3 px-3 py-1" href="#">
+          <span class="material-symbols-outlined text-lg text-text-secondary-light">help</span>
+          <p class="text-text-primary-light text-sm font-medium leading-normal">Help</p>
+        </a>
+
+        <a class="flex items-center gap-3 px-3 py-1" href="#">
+          <span class="material-symbols-outlined text-lg text-text-secondary-light">logout</span>
+          <p class="text-text-primary-light text-sm font-medium leading-normal">Logout</p>
+        </a>
+      </div>
+
+      <!-- PROFILE DISPLAY -->
+      <div
+        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJxjNCWaageqt_bEEUTRF0VGBI1KmgSLlmwa6Q2cKZR1lzUho54st-7808DMj8X86n8Z3ZsBRN6HxwABReYhuOT5xBDn3gUHJH-Md1zuVHW4T5gELw2rHpEicEkVTvvAnfRsXXaSwLqeYGaYLmJcdz1K2T7x-6AZjhu7urs8S9F5JdyIH4-4gUkybu5VvJMuWfiy76UT9i6Zfd-UsDjoeokPyeRinejXqTZDZ7MOA9YPlpz7t8aKOkbGMbWKw14JFFFtESz6hohA');">
+      </div>
+
+      <div class="flex flex-col relative ml-2">
+        <h2 class="text-text-primary-light text-base font-medium">Alex Johnson</h2>
+        <p class="text-text-secondary-light text-sm">Free</p>
+      </div>
+
+    </div>
+  </div>
+  </div>
+
+</aside>
+
       <main class="flex-1 flex flex-col bg-background-light">
         <header
           class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border-light px-8 py-4 shrink-0 bg-surface-light"
         >
           <div class="flex items-center gap-4 text-text-primary-light">
+            <button id="open-mobile-sidebar" class="md:hidden">
+        <span class="material-symbols-outlined text-3xl">menu</span>
+      </button>
+
             <div
               class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
               data-alt="Sana AI avatar with a soft, glowing background"
@@ -227,6 +324,7 @@
               "
             ></div>
             <div class="flex items-center gap-2">
+              
               <h2
                 class="text-text-primary-light text-lg font-bold leading-tight tracking-[-0.015em]"
               >
@@ -1107,5 +1205,22 @@
         }
       })();
     </script>
+
+    <!-- JS TOGGLE SCRIPT -->
+<script>
+  const mobileSidebar = document.getElementById("mobile-sidebar");
+  const openBtn = document.getElementById("open-mobile-sidebar");
+  const closeBtn = document.getElementById("close-mobile-sidebar");
+
+  openBtn.addEventListener("click", () => {
+    mobileSidebar.classList.remove("-translate-x-full");
+    mobileSidebar.classList.add("translate-x-0");
+  });
+
+  closeBtn.addEventListener("click", () => {
+    mobileSidebar.classList.add("-translate-x-full");
+    mobileSidebar.classList.remove("translate-x-0");
+  });
+</script>
   </body>
 </html>
