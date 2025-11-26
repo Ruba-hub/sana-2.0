@@ -57,91 +57,384 @@
         transform: translateY(0);
       }
     }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f7f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    #chat-container {
+      height: 80vh;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .msg {
+      max-width: 75%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      margin-bottom: 12px;
+      animation: fadeIn 0.25s ease-in;
+    }
+
+    .msg.user {
+      background: #0084ff;
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg.sana {
+      background: white;
+      color: #333;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+
+    /* Shimmer Loader */
+    .shimmer {
+      width: 140px;
+      height: 20px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #e3e3e3 0%, #f5f5f5 50%, #e3e3e3 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.25s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+
+    /* Record Button */
+    #record-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #ff3b30;
+      margin: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    #record-btn:active {
+      transform: scale(0.85);
+    }
+
+    #record-btn.recording {
+      background: #b70000;
+      box-shadow: 0 0 18px rgba(255, 0, 0, 0.6);
+    }
   </style>
 </head>
 
 <body class="bg-background-light font-display">
   <div class="flex h-screen w-full text-text-primary-light">
-    <aside class="flex flex-col w-72 bg-surface-light p-4 shrink-0 border-r border-border-light">
-      <div class="flex items-center gap-3 mb-8 px-2">
-        <svg class="size-6 text-primary-green" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <path clip-rule="evenodd"
-            d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
-            fill="currentColor" fill-rule="evenodd"></path>
-        </svg>
-        <h1 class="text-text-primary-light text-xl font-bold">Sana</h1>
-      </div>
-      <div class="flex flex-col gap-4 flex-grow">
-        <button
-          class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary-green text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:bg-primary-green/90 transition-colors">
-          <span class="material-symbols-outlined text-lg">add_circle</span>
-          <span class="truncate">New Chat</span>
-        </button>
-        <div class="flex flex-col gap-1">
-          <p class="text-text-secondary-light text-xs font-semibold uppercase px-3 pt-2">
-            Recent Chats
-          </p>
-          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-button-peach" href="#">
-            <span class="material-symbols-outlined text-lg text-primary-green">chat</span>
-            <p class="text-text-primary-light text-sm font-medium leading-normal">
-              Today's Check-in
-            </p>
-          </a>
-          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors"
-            href="#">
-            <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
-            <p class="text-text-primary-light text-sm font-medium leading-normal">
-              Talking about exams
-            </p>
-          </a>
-          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors"
-            href="#">
-            <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
-            <p class="text-text-primary-light text-sm font-medium leading-normal">
-              Feeling overwhelmed
-            </p>
-          </a>
+    <aside
+      class="flex flex-col justify-between w-72 bg-surface-light p-4 shrink-0 border-r border-border-light hidden md:flex md:flex-col justify-between">
+      <div>
+        <div class="flex items-center gap-3 mb-8 px-2">
+          <svg class="size-6 text-primary-green" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path clip-rule="evenodd"
+              d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+              fill="currentColor" fill-rule="evenodd"></path>
+          </svg>
+          <h1 class="text-text-primary-light text-xl font-bold">Sana</h1>
         </div>
-      </div>
-      <div class="flex flex-col gap-1">
-        <div class="flex items-center gap-3 py-2 px-3">
-          <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-            data-alt="User avatar with a gradient background" style="
-                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJxjNCWaageqt_bEEUTRF0VGBI1KmgSLlmwa6Q2cKZR1lzUho54st-7808DMj8X86n8Z3ZsBRN6HxwABReYhuOT5xBDn3gUHJH-Md1zuVHW4T5gELw2rHpEicEkVTvvAnfRsXXaSwLqeYGaYLmJcdz1K2T7x-6AZjhu7urs8S9F5JdyIH4-4gUkybu5VvJMuWfiy76UT9i6Zfd-UsDjoeokPyeRinejXqTZDZ7MOA9YPlpz7t8aKOkbGMbWKw14JFFFtESz6hohA');
-              "></div>
-          <div class="flex flex-col">
-            <h2 class="text-text-primary-light text-base font-medium leading-normal">
-              Alex Johnson
-            </h2>
-            <p class="text-text-secondary-light text-sm font-normal leading-normal">
-              University Student
-            </p>
+
+        <div class="flex flex-col gap-4 flex-grow">
+          <div>
+            <button
+              class="flex w-full cursor-pointer items-center overflow-hidden h-10 px-2 text-slate-700 text-sm font-bold leading-normal tracking-[0.015em] gap-2">
+              <span class="material-symbols-outlined text-lg">add_circle</span>
+              <span class="truncate">New Chat</span>
+            </button>
+            <!-- <button
+                        class="flex w-full cursor-pointer items-center overflow-hidden h-10 px-2 text-slate-700 text-sm font-bold leading-normal tracking-[0.015em] gap-2">
+                        <span class="material-symbols-outlined text-lg">add_circle</span>
+                        <span class="truncate">New Chat</span>
+                    </button> -->
+            <!-- <button
+                        class="flex w-full cursor-pointer items-center overflow-hidden h-10 px-2 text-slate-700 text-sm font-bold leading-normal tracking-[0.015em] gap-2">
+                        <span class="material-symbols-outlined text-lg">add_circle</span>
+                        <span class="truncate">New Chat</span>
+                    </button> -->
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <p class="text-text-secondary-light text-xs font-semibold px-3 pt-2">Chats</p>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-button-peach" href="#">
+              <span class="material-symbols-outlined text-lg text-primary-green">chat</span>
+              <p class="text-text-primary-light text-sm font-medium leading-normal">Today's Check-in</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors"
+              href="#">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
+              <p class="text-text-primary-light text-sm font-medium leading-normal">Talking about exams</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors"
+              href="#">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
+              <p class="text-text-primary-light text-sm font-medium leading-normal">Feeling overwhelmed</p>
+            </a>
           </div>
         </div>
-        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors"
-          href="settings.html">
-          <span class="material-symbols-outlined text-lg text-text-secondary-light">settings</span>
-          <p class="text-text-primary-light text-sm font-medium leading-normal">
-            Settings
-          </p>
-        </a>
-        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors" href="#">
-          <span class="material-symbols-outlined text-lg text-text-secondary-light">shield</span>
-          <p class="text-text-primary-light text-sm font-medium leading-normal">
-            Privacy Policy
-          </p>
-        </a>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-1 py-2 px-3 relative z-50 bg-white">
+          <div
+            class="absolute left-0 -top-[300%] w-full flex flex-col gap-1 bg-surface-light border border-border-light rounded-lg p-3 shadow-lg z-50 hidden">
+            <a class="flex items-center gap-3 px-3 py-1" href="settings.html">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">star</span>
+              <p class="text-text-primary-light text-sm font-medium leading-normal">Upgrade plan</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-1 " href="settings.html">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">settings</span>
+              <p class="text-text-primary-light text-sm font-medium leading-normal">Settings</p>
+
+            </a>
+            <hr />
+
+            <a class="flex items-center gap-3 px-3 py-1 " href="#">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">help</span>
+              <p class="text-text-primary-light text-sm font-medium leading-normal">Help</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-1 " href="#">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">logout</span>
+              <p class="text-text-primary-light text-sm font-medium leading-normal">Logout</p>
+            </a>
+          </div>
+
+
+          <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJxjNCWaageqt_bEEUTRF0VGBI1KmgSLlmwa6Q2cKZR1lzUho54st-7808DMj8X86n8Z3ZsBRN6HxwABReYhuOT5xBDn3gUHJH-Md1zuVHW4T5gELw2rHpEicEkVTvvAnfRsXXaSwLqeYGaYLmJcdz1K2T7x-6AZjhu7urs8S9F5JdyIH4-4gUkybu5VvJMuWfiy76UT9i6Zfd-UsDjoeokPyeRinejXqTZDZ7MOA9YPlpz7t8aKOkbGMbWKw14JFFFtESz6hohA');">
+          </div>
+          <div class="flex flex-col relative">
+            <h2 class="text-text-primary-light text-base font-medium leading-normal">Alex Johnson</h2>
+            <p class="text-text-secondary-light text-sm font-normal leading-normal">Free</p>
+          </div>
+        </div>
+
       </div>
     </aside>
+
+    <!-- Mobile version -->
+
+    <aside id="mobile-sidebar"
+      class="fixed top-0 left-0 h-screen w-72 bg-surface-light p-4 z-40 flex flex-col justify-between border-r border-border-light md:hidden transform -translate-x-full transition-transform duration-300">
+      <!-- Close button -->
+      <button class="absolute top-4 right-4 p-2 hover:bg-background-light rounded-lg transition-colors md:hidden"
+        id="close-sidebar">
+        <span class="material-symbols-outlined text-2xl text-text-primary-light">close</span>
+      </button>
+
+      <div>
+        <div class="flex items-center gap-3 mb-8 px-2">
+          <svg class="size-6 text-primary-green" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path clip-rule="evenodd"
+              d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+              fill="currentColor" fill-rule="evenodd"></path>
+          </svg>
+          <h1 class="text-text-primary-light text-xl font-bold">Sana</h1>
+        </div>
+
+        <div class="flex flex-col gap-4 flex-grow">
+          <div>
+            <button
+              class="flex w-full cursor-pointer items-center overflow-hidden h-10 px-2 text-slate-700 text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:bg-button-peach rounded-lg transition-colors"
+              id="new-chat-mobile">
+              <span class="material-symbols-outlined text-lg">add_circle</span>
+              <span class="truncate">New Chat</span>
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <p class="text-text-secondary-light text-xs font-semibold px-3 pt-2">Chats</p>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-button-peach cursor-pointer chat-link" href="#"
+              data-chat="today">
+              <span class="material-symbols-outlined text-lg text-primary-green">chat</span>
+              <p class="text-text-primary-light text-sm font-medium leading-normal">Today's Check-in</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors cursor-pointer chat-link"
+              data-chat="exams" href="#">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
+              <p class="text-text-primary-light text-sm font-medium leading-normal">Talking about exams</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors cursor-pointer chat-link"
+              data-chat="overwhelmed" href="#">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
+              <p class="text-text-primary-light text-sm font-medium leading-normal">Feeling overwhelmed</p>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <div
+          class="flex items-center gap-3 py-2 px-3 relative hover:bg-background-light rounded-lg transition-colors cursor-pointer"
+          id="user-menu-toggle">
+          <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJxjNCWaageqt_bEEUTRF0VGBI1KmgSLlmwa6Q2cKZR1lzUho54st-7808DMj8X86n8Z3ZsBRN6HxwABReYhuOT5xBDn3gUHJH-Md1zuVHW4T5gELw2rHpEicEkVTvvAnfRsXXaSwLqeYGaYLmJcdz1K2T7x-6AZjhu7urs8S9F5JdyIH4-4gUkybu5VvJMuWfiy76UT9i6Zfd-UsDjoeokPyeRinejXqTZDZ7MOA9YPlpz7t8aKOkbGMbWKw14JFFFtESz6hohA');">
+          </div>
+          <div class="flex flex-col relative flex-1">
+            <h2 class="text-text-primary-light text-base font-medium leading-normal">Alex Johnson</h2>
+            <p class="text-text-secondary-light text-sm font-normal leading-normal">Free</p>
+          </div>
+          <span class="material-symbols-outlined text-text-secondary-light">expand_more</span>
+
+          <!-- Dropdown menu -->
+          <div
+            class="absolute bottom-full mb-2 w-full bg-surface-light border border-border-light rounded-lg p-2 shadow-lg hidden"
+            id="user-menu-dropdown">
+            <a class="flex items-center gap-3 px-3 py-2 rounded hover:bg-background-light transition-colors"
+              href="settings.html">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">star</span>
+              <p class="text-text-primary-light text-sm font-medium">Upgrade plan</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded hover:bg-background-light transition-colors"
+              href="settings.html">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">settings</span>
+              <p class="text-text-primary-light text-sm font-medium">Settings</p>
+            </a>
+            <hr class="my-2 border-border-light" />
+            <a class="flex items-center gap-3 px-3 py-2 rounded hover:bg-background-light transition-colors" href="#">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">help</span>
+              <p class="text-text-primary-light text-sm font-medium">Help</p>
+            </a>
+            <a class="flex items-center gap-3 px-3 py-2 rounded hover:bg-background-light transition-colors" href="#">
+              <span class="material-symbols-outlined text-lg text-text-secondary-light">logout</span>
+              <p class="text-text-primary-light text-sm font-medium">Logout</p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden hidden"></div>
+
+    <script>
+      const sidebar = document.getElementById("mobile-sidebar");
+      const overlay = document.getElementById("sidebar-overlay");
+      const closeBtn = document.getElementById("close-sidebar");
+      const userMenuToggle = document.getElementById("user-menu-toggle");
+      const userMenuDropdown = document.getElementById("user-menu-dropdown");
+      const chatLinks = document.querySelectorAll(".chat-link");
+      const newChatBtn = document.getElementById("new-chat-mobile");
+
+      // Open sidebar on menu button click
+      document.addEventListener("DOMContentLoaded", () => {
+        const headerMenuBtn = document.querySelector("header button.md\\:hidden");
+        if (headerMenuBtn) {
+          headerMenuBtn.addEventListener("click", () => {
+            sidebar.classList.remove("-translate-x-full");
+            overlay.classList.remove("hidden");
+          });
+        }
+      });
+
+      // Close sidebar
+      closeBtn.addEventListener("click", () => {
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("hidden");
+      });
+
+      overlay.addEventListener("click", () => {
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("hidden");
+      });
+
+      // User menu dropdown toggle
+      userMenuToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        userMenuDropdown.classList.toggle("hidden");
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!userMenuToggle.contains(e.target) && !userMenuDropdown.contains(e.target)) {
+          userMenuDropdown.classList.add("hidden");
+        }
+      });
+
+      // Chat link functionality
+      chatLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const chatType = link.getAttribute("data-chat");
+          console.log("Opening chat:", chatType);
+
+          // Update active state
+          chatLinks.forEach(l => {
+            l.classList.remove("bg-button-peach");
+            l.classList.add("hover:bg-background-light");
+          });
+          link.classList.add("bg-button-peach");
+          link.classList.remove("hover:bg-background-light");
+
+          // Close sidebar on mobile
+          sidebar.classList.add("-translate-x-full");
+          overlay.classList.add("hidden");
+        });
+      });
+
+      // New chat button
+      newChatBtn.addEventListener("click", () => {
+        console.log("New chat created");
+        // Clear chat content and reset
+        chatLinks.forEach(l => {
+          l.classList.remove("bg-button-peach");
+          l.classList.add("hover:bg-background-light");
+        });
+
+        // Close sidebar
+        sidebar.classList.add("-translate-x-full");
+        overlay.classList.add("hidden");
+      });
+    </script>
+
     <main class="flex-1 flex flex-col bg-background-light">
       <header
         class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border-light px-8 py-4 shrink-0 bg-surface-light">
         <div class="flex items-center gap-4 text-text-primary-light">
+          <button
+            class="flex w-full cursor-pointer items-center justify-center overflow-hidden  h-10 px-4 text-black font-bold leading-normal tracking-[0.015em] hover:bg-transparent transition-colors md:hidden">
+            <span class="material-symbols-outlined text-2xl">menu</span>
+          </button>
+
+
           <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-            data-alt="Sana AI avatar with a soft, glowing background" style="
-                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBlDKJBDNAK7FhWCn-5GPUKdf-6E8R3BIlHJav62e8K4O1c1JUk8TVM4IyA_GMVr57gmRbTruR03d862dAmsg722vzRTdkj0twP8HyDqKrahH4dfb5ZSbaWdPg4L9xMNm0KS_-1AxwbBwx6dfLv-dnhJLFHv6qZswrtqgS4rg8TNDjSKKPGc1konFvwKA_TXmk7wqeVr5ehf1QWO0FurQA3akgD99tHlQLa0-HqiC4Z4MwXp9F2LrLHlDY7z-fuKgGyooWgS7Tdmw');
-              "></div>
-          <div class="flex items-center gap-2">
+            data-alt="Sana AI avatar with a soft, glowing background"
+            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBlDKJBDNAK7FhWCn-5GPUKdf-6E8R3BIlHJav62e8K4O1c1JUk8TVM4IyA_GMVr57gmRbTruR03d862dAmsg722vzRTdkj0twP8HyDqKrahH4dfb5ZSbaWdPg4L9xMNm0KS_-1AxwbBwx6dfLv-dnhJLFHv6qZswrtqgS4rg8TNDjSKKPGc1konFvwKA_TXmk7wqeVr5ehf1QWO0FurQA3akgD99tHlQLa0-HqiC4Z4MwXp9F2LrLHlDY7z-fuKgGyooWgS7Tdmw');">
+          </div>
+          <div class="flex items-center gap-2 ">
             <h2 class="text-text-primary-light text-lg font-bold leading-tight tracking-[-0.015em]">
               Sana
             </h2>
@@ -151,19 +444,16 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-1 justify-end gap-2">
+
+        <div class="hidden md:flex flex-1 justify-end gap-2">
           <button
             class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-button-peach text-primary-orange hover:bg-button-peach/80 transition-colors gap-2 text-sm font-bold leading-normal tracking-[0.015em] px-3.5"
-            title="Start Video Call">
-            <span class="material-symbols-outlined text-xl">videocam</span>
-          </button>
-          <button
-            class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-button-peach text-primary-orange hover:bg-button-peach/80 transition-colors gap-2 text-sm font-bold leading-normal tracking-[0.015em] px-3.5"
-            title="Start Voice Call">
-            <span class="material-symbols-outlined text-xl">call</span>
+            title="Chat Options">
+            <span class="material-symbols-outlined text-xl">menu</span>
           </button>
         </div>
       </header>
+      <!-- Chat area -->
       <div class="flex-1 overflow-y-auto p-8 space-y-6">
         <div class="flex gap-4">
           <div class="flex flex-1 flex-col items-start gap-2">
@@ -246,6 +536,9 @@
           </div>
         </div>
       </div>
+
+      <!--- input area -->
+
       <div class="px-8 pb-8 pt-4 bg-surface-light border-t border-border-light">
         <div class="relative">
           <textarea
@@ -265,59 +558,65 @@
           </div>
         </div>
       </div>
+
     </main>
   </div>
-  <script>
-    (function () {
-      // Configuration
-      const WEBHOOK_URL =
-        "https://waraba-hub.app.n8n.cloud/webhook/381e6825-9795-417c-b7d9-7e60b2f435ec";
-      const REQUEST_TIMEOUT_MS = 15000;
 
-      // Elements
-      const textarea = document.querySelector("textarea");
-      const sendBtn = document.querySelector("button[title='Send Message']");
-      const chatContainer = document.querySelector(".flex-1.overflow-y-auto");
+</body>
 
-      function getCurrentTime() {
-        const now = new Date();
-        return now.toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-        });
-      }
 
-      function escapeHtml(text) {
-        if (text === null || text === undefined) return "";
-        const s = String(text);
-        const map = {
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#039;",
-        };
-        return s.replace(/[&<>"']/g, (m) => map[m]);
-      }
 
-      // Convert base64 string to Blob
-      function base64ToBlob(base64, mime = "audio/webm") {
-        try {
-          const byteChars = atob(base64);
-          const byteNumbers = new Array(byteChars.length);
-          for (let i = 0; i < byteChars.length; i++) {
-            byteNumbers[i] = byteChars.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-          return new Blob([byteArray], { type: mime });
-        } catch (e) {
-          return null;
+<script>
+  (function () {
+    // Configuration
+    const WEBHOOK_URL =
+      "https://waraba-hub.app.n8n.cloud/webhook/381e6825-9795-417c-b7d9-7e60b2f435ec";
+    const REQUEST_TIMEOUT_MS = 15000;
+
+    // Elements
+    const textarea = document.querySelector("textarea");
+    const sendBtn = document.querySelector("button[title='Send Message']");
+    const chatContainer = document.querySelector(".flex-1.overflow-y-auto");
+
+    function getCurrentTime() {
+      const now = new Date();
+      return now.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+    }
+
+    function escapeHtml(text) {
+      if (text === null || text === undefined) return "";
+      const s = String(text);
+      const map = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
+      };
+      return s.replace(/[&<>"']/g, (m) => map[m]);
+    }
+
+    // Convert base64 string to Blob
+    function base64ToBlob(base64, mime = "audio/webm") {
+      try {
+        const byteChars = atob(base64);
+        const byteNumbers = new Array(byteChars.length);
+        for (let i = 0; i < byteChars.length; i++) {
+          byteNumbers[i] = byteChars.charCodeAt(i);
         }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: mime });
+      } catch (e) {
+        return null;
       }
+    }
 
-      function addUserMessage(message) {
-        const messageHTML = `
+    function addUserMessage(message) {
+      const messageHTML = `
             <div class="flex items-start gap-4 justify-end message-anim">
               <div class="flex flex-1 flex-col gap-2 items-end">
                 <div class="flex flex-wrap items-center gap-3 flex-row-reverse">
@@ -325,27 +624,27 @@
                   <p class="text-text-secondary-light text-sm font-normal leading-normal">${getCurrentTime()}</p>
                 </div>
                 <p class="text-base font-normal leading-relaxed flex max-w-xl rounded-lg rounded-tr-none px-4 py-3 bg-user-message-bg text-white">${escapeHtml(
-          message
-        )}</p>
+        message
+      )}</p>
               </div>
               <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="User avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAOQCyegq35VfIL5s5DDM_XAUQ-XDh_MSoH8kt-oXB766TX_Ga-hgCbvpaftPUYf9zCLyuuIPaQ_R5STad1jLYbRL5uDUfFra_3dOTZnP3zl1C-ndGW3mv6FmPnKNEtlRRZA_KKFEm5JO3hG8TukLDNTbweRzFM4YecCZC9seWqgR_QNtswF7NvS2PloHCvgvC729KLt9HxpY88Jf7VHmR_Mbvoxpp0UjEoQ2FOeKB7lWB4Z6Xo_41JEb0nQniNyaqcYFyQjYT30A');"></div>
             </div>
           `;
-        chatContainer.insertAdjacentHTML("beforeend", messageHTML);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
+      chatContainer.insertAdjacentHTML("beforeend", messageHTML);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 
-      function addSanaMessage(message) {
-        // Convert text to speech and display with styled audio player
-        const utterance = new SpeechSynthesisUtterance(message);
-        utterance.rate = 1;
-        utterance.pitch = 1;
-        utterance.volume = 1;
+    function addSanaMessage(message) {
+      // Convert text to speech and display with styled audio player
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.volume = 1;
 
-        // Generate unique ID for this audio
-        const audioId = "sana-audio-" + Date.now();
+      // Generate unique ID for this audio
+      const audioId = "sana-audio-" + Date.now();
 
-        const messageHTML = `
+      const messageHTML = `
             <div class="flex gap-4 message-anim">
               <div class="flex flex-1 flex-col items-start gap-2">
                 <div class="flex flex-col gap-3">
@@ -375,47 +674,47 @@
               </div>
             </div>
           `;
-        chatContainer.insertAdjacentHTML("beforeend", messageHTML);
+      chatContainer.insertAdjacentHTML("beforeend", messageHTML);
 
-        // Store utterance for playback
-        const btn = chatContainer.querySelector(
-          `[data-audio-id="${audioId}"]`
+      // Store utterance for playback
+      const btn = chatContainer.querySelector(
+        `[data-audio-id="${audioId}"]`
+      );
+      btn.addEventListener("click", () => {
+        // Cancel any current speech
+        window.speechSynthesis.cancel();
+        // Speak the message
+        window.speechSynthesis.speak(utterance);
+        btn.innerHTML =
+          '<span class="material-symbols-outlined text-lg animate-pulse">stop_circle</span>';
+        btn.classList.add(
+          "bg-primary-orange",
+          "hover:bg-primary-orange/90"
         );
-        btn.addEventListener("click", () => {
-          // Cancel any current speech
-          window.speechSynthesis.cancel();
-          // Speak the message
-          window.speechSynthesis.speak(utterance);
+        btn.classList.remove(
+          "bg-primary-green",
+          "hover:bg-primary-green/90"
+        );
+
+        utterance.onend = () => {
           btn.innerHTML =
-            '<span class="material-symbols-outlined text-lg animate-pulse">stop_circle</span>';
-          btn.classList.add(
+            '<span class="material-symbols-outlined text-lg">play_arrow</span>';
+          btn.classList.remove(
             "bg-primary-orange",
             "hover:bg-primary-orange/90"
           );
-          btn.classList.remove(
+          btn.classList.add(
             "bg-primary-green",
             "hover:bg-primary-green/90"
           );
+        };
+      });
 
-          utterance.onend = () => {
-            btn.innerHTML =
-              '<span class="material-symbols-outlined text-lg">play_arrow</span>';
-            btn.classList.remove(
-              "bg-primary-orange",
-              "hover:bg-primary-orange/90"
-            );
-            btn.classList.add(
-              "bg-primary-green",
-              "hover:bg-primary-green/90"
-            );
-          };
-        });
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
-
-      function addSanaTyping() {
-        const typingHTML = `
+    function addSanaTyping() {
+      const typingHTML = `
             <div class="flex gap-4 sana-typing message-anim">
               <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
               <div class="flex flex-1 flex-col items-start gap-2">
@@ -429,173 +728,173 @@
               </div>
             </div>
           `;
-        chatContainer.insertAdjacentHTML("beforeend", typingHTML);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
+      chatContainer.insertAdjacentHTML("beforeend", typingHTML);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 
-      function removeLastTyping() {
-        const last = chatContainer.querySelectorAll(".sana-typing");
-        if (last.length) last[last.length - 1].remove();
-      }
+    function removeLastTyping() {
+      const last = chatContainer.querySelectorAll(".sana-typing");
+      if (last.length) last[last.length - 1].remove();
+    }
 
-      // Small helper to run fetch with timeout
-      function fetchWithTimeout(
-        resource,
-        options = {},
-        timeout = REQUEST_TIMEOUT_MS
-      ) {
-        const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), timeout);
-        const merged = { ...options, signal: controller.signal };
-        return fetch(resource, merged).finally(() => clearTimeout(id));
-      }
+    // Small helper to run fetch with timeout
+    function fetchWithTimeout(
+      resource,
+      options = {},
+      timeout = REQUEST_TIMEOUT_MS
+    ) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      const merged = { ...options, signal: controller.signal };
+      return fetch(resource, merged).finally(() => clearTimeout(id));
+    }
 
-      // n8n often returns arrays/objects. Try to extract a sensible text reply.
-      function extractReply(data) {
-        if (data == null) return null;
-        // If it's a string, return it
-        if (typeof data === "string") return data;
+    // n8n often returns arrays/objects. Try to extract a sensible text reply.
+    function extractReply(data) {
+      if (data == null) return null;
+      // If it's a string, return it
+      if (typeof data === "string") return data;
 
-        // If it's an array, try to find a reply inside
-        if (Array.isArray(data)) {
-          // If array of strings, join them
-          if (data.every((d) => typeof d === "string"))
-            return data.join("\n");
+      // If it's an array, try to find a reply inside
+      if (Array.isArray(data)) {
+        // If array of strings, join them
+        if (data.every((d) => typeof d === "string"))
+          return data.join("\n");
 
-          // Common n8n shape: [ { output: '...' } ] or [ { json: { reply: '...' } } ]
-          for (const item of data) {
-            if (!item) continue;
+        // Common n8n shape: [ { output: '...' } ] or [ { json: { reply: '...' } } ]
+        for (const item of data) {
+          if (!item) continue;
 
-            // If item is an object with a single useful key like 'output', return it
-            if (typeof item === "object" && !Array.isArray(item)) {
-              const keys = Object.keys(item);
-              // If item has .output directly
-              if ("output" in item && item.output) return item.output;
-              // If item has .reply or .message directly
-              if ("reply" in item && item.reply) return item.reply;
-              if ("message" in item && item.message) return item.message;
-              // n8n may wrap JSON under .json
-              if (item.json) {
-                const r = extractReply(item.json);
-                if (r) return r;
-              }
-              // n8n sometimes wraps under .data
-              if (item.data) {
-                const r2 = extractReply(item.data);
-                if (r2) return r2;
-              }
+          // If item is an object with a single useful key like 'output', return it
+          if (typeof item === "object" && !Array.isArray(item)) {
+            const keys = Object.keys(item);
+            // If item has .output directly
+            if ("output" in item && item.output) return item.output;
+            // If item has .reply or .message directly
+            if ("reply" in item && item.reply) return item.reply;
+            if ("message" in item && item.message) return item.message;
+            // n8n may wrap JSON under .json
+            if (item.json) {
+              const r = extractReply(item.json);
+              if (r) return r;
             }
-
-            // Fallback: recursively inspect the item
-            const r3 = extractReply(item);
-            if (r3) return r3;
+            // n8n sometimes wraps under .data
+            if (item.data) {
+              const r2 = extractReply(item.data);
+              if (r2) return r2;
+            }
           }
 
-          return null;
+          // Fallback: recursively inspect the item
+          const r3 = extractReply(item);
+          if (r3) return r3;
         }
 
-        // If object, check common keys
-        const keysToCheck = [
-          "reply",
-          "message",
-          "output",
-          "result",
-          "text",
-          "response",
-          "body",
-        ];
-        for (const k of keysToCheck) {
-          if (k in data && data[k]) return data[k];
-        }
+        return null;
+      }
 
-        // Handle numeric-keyed objects that are actually arrays like {"0": {...}, "1": {...}}
+      // If object, check common keys
+      const keysToCheck = [
+        "reply",
+        "message",
+        "output",
+        "result",
+        "text",
+        "response",
+        "body",
+      ];
+      for (const k of keysToCheck) {
+        if (k in data && data[k]) return data[k];
+      }
+
+      // Handle numeric-keyed objects that are actually arrays like {"0": {...}, "1": {...}}
+      try {
+        const objKeys = Object.keys(data || {});
+        if (objKeys.length && objKeys.every((k) => /^\d+$/.test(k))) {
+          const arr = objKeys
+            .map((k) => ({ k: Number(k), v: data[k] }))
+            .sort((a, b) => a.k - b.k)
+            .map((x) => x.v);
+          return extractReply(arr);
+        }
+      } catch (e) {
+        // ignore and continue
+      }
+
+      // If object has nested "data" or "json"
+      if (data.data) return extractReply(data.data);
+      if (data.json) return extractReply(data.json);
+
+      // If object has one string value, return that
+      try {
+        const keys = Object.keys(data || {});
+        if (keys.length === 1 && typeof data[keys[0]] === "string")
+          return data[keys[0]];
+      } catch (e) {
+        // ignore
+      }
+
+      // Fallback: stringify
+      try {
+        const s = JSON.stringify(data);
+        return s === "{}" ? null : s;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function postToWorkflow(message) {
+      const payload =
+        typeof message === "object" ? message : { user_message: message };
+      const res = await fetchWithTimeout(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        mode: "cors",
+      });
+
+      if (!res) throw new Error("No response received");
+      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+
+      const contentType = (
+        res.headers.get("content-type") || ""
+      ).toLowerCase();
+
+      // If the workflow returned audio (binary), return the blob so UI can play it directly
+      if (
+        contentType.startsWith("audio/") ||
+        contentType.includes("audio")
+      ) {
+        const blob = await res.blob();
+        return { __audio: true, blob, mime: contentType };
+      }
+
+      const text = await res.text();
+      if (!text || text.trim() === "")
+        throw new Error("Empty response from workflow");
+
+      // If content type says json or the body looks like json, parse
+      if (
+        contentType.includes("application/json") ||
+        text.trim().startsWith("{") ||
+        text.trim().startsWith("[")
+      ) {
         try {
-          const objKeys = Object.keys(data || {});
-          if (objKeys.length && objKeys.every((k) => /^\d+$/.test(k))) {
-            const arr = objKeys
-              .map((k) => ({ k: Number(k), v: data[k] }))
-              .sort((a, b) => a.k - b.k)
-              .map((x) => x.v);
-            return extractReply(arr);
-          }
-        } catch (e) {
-          // ignore and continue
-        }
-
-        // If object has nested "data" or "json"
-        if (data.data) return extractReply(data.data);
-        if (data.json) return extractReply(data.json);
-
-        // If object has one string value, return that
-        try {
-          const keys = Object.keys(data || {});
-          if (keys.length === 1 && typeof data[keys[0]] === "string")
-            return data[keys[0]];
-        } catch (e) {
-          // ignore
-        }
-
-        // Fallback: stringify
-        try {
-          const s = JSON.stringify(data);
-          return s === "{}" ? null : s;
-        } catch (e) {
-          return null;
+          const parsed = JSON.parse(text);
+          return parsed;
+        } catch (err) {
+          throw new Error("Invalid JSON response from workflow");
         }
       }
 
-      async function postToWorkflow(message) {
-        const payload =
-          typeof message === "object" ? message : { user_message: message };
-        const res = await fetchWithTimeout(WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-          mode: "cors",
-        });
+      // Otherwise return raw text
+      return text;
+    }
 
-        if (!res) throw new Error("No response received");
-        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-
-        const contentType = (
-          res.headers.get("content-type") || ""
-        ).toLowerCase();
-
-        // If the workflow returned audio (binary), return the blob so UI can play it directly
-        if (
-          contentType.startsWith("audio/") ||
-          contentType.includes("audio")
-        ) {
-          const blob = await res.blob();
-          return { __audio: true, blob, mime: contentType };
-        }
-
-        const text = await res.text();
-        if (!text || text.trim() === "")
-          throw new Error("Empty response from workflow");
-
-        // If content type says json or the body looks like json, parse
-        if (
-          contentType.includes("application/json") ||
-          text.trim().startsWith("{") ||
-          text.trim().startsWith("[")
-        ) {
-          try {
-            const parsed = JSON.parse(text);
-            return parsed;
-          } catch (err) {
-            throw new Error("Invalid JSON response from workflow");
-          }
-        }
-
-        // Otherwise return raw text
-        return text;
-      }
-
-      // Display a Sana audio response from a Blob
-      function addSanaAudio(blob, mime) {
-        const audioUrl = URL.createObjectURL(blob);
-        const messageHTML = `
+    // Display a Sana audio response from a Blob
+    function addSanaAudio(blob, mime) {
+      const audioUrl = URL.createObjectURL(blob);
+      const messageHTML = `
             <div class="flex gap-4">
               <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
               <div class="flex flex-1 flex-col items-start gap-2">
@@ -612,13 +911,13 @@
               </div>
             </div>
           `;
-        chatContainer.insertAdjacentHTML("beforeend", messageHTML);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
+      chatContainer.insertAdjacentHTML("beforeend", messageHTML);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
 
-      // Display a Sana audio response from a URL
-      function addSanaAudioUrl(url, mime = "audio/opus") {
-        const messageHTML = `
+    // Display a Sana audio response from a URL
+    function addSanaAudioUrl(url, mime = "audio/opus") {
+      const messageHTML = `
             <div class="flex gap-4">
               <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
               <div class="flex flex-1 flex-col items-start gap-2">
@@ -638,88 +937,88 @@
               </div>
             </div>
           `;
-        chatContainer.insertAdjacentHTML("beforeend", messageHTML);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+      chatContainer.insertAdjacentHTML("beforeend", messageHTML);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const message = textarea.value.trim();
+      if (!message) return;
+
+      addUserMessage(message);
+      textarea.value = "";
+
+      // show typing indicator
+      addSanaTyping();
+
+      try {
+        console.debug("Sending to webhook:", message);
+        const result = await postToWorkflow(message);
+        console.debug("Workflow raw result:", result);
+
+        // Extract reply and reply with text only (all messages converted to TTS)
+        let reply = null;
+        if (result && result.__audio) {
+          // Workflow returned binary audio — show a text fallback instead of playing audio
+          reply = "Sana sent an audio response. (No text available)";
+        } else {
+          reply =
+            extractReply(result) || "Sana did not provide a text reply.";
+        }
+        removeLastTyping();
+        addSanaMessage(reply);
+      } catch (err) {
+        removeLastTyping();
+        console.error("Error communicating with workflow:", err);
+        addSanaMessage(
+          "Sorry, I could not reach the workflow: " + err.message
+        );
       }
+    }
 
-      async function sendMessage() {
-        const message = textarea.value.trim();
-        if (!message) return;
-
-        addUserMessage(message);
-        textarea.value = "";
-
-        // show typing indicator
-        addSanaTyping();
-
-        try {
-          console.debug("Sending to webhook:", message);
-          const result = await postToWorkflow(message);
-          console.debug("Workflow raw result:", result);
-
-          // Extract reply and reply with text only (all messages converted to TTS)
-          let reply = null;
-          if (result && result.__audio) {
-            // Workflow returned binary audio — show a text fallback instead of playing audio
-            reply = "Sana sent an audio response. (No text available)";
-          } else {
-            reply =
-              extractReply(result) || "Sana did not provide a text reply.";
-          }
-          removeLastTyping();
-          addSanaMessage(reply);
-        } catch (err) {
-          removeLastTyping();
-          console.error("Error communicating with workflow:", err);
-          addSanaMessage(
-            "Sorry, I could not reach the workflow: " + err.message
-          );
-        }
+    sendBtn.addEventListener("click", sendMessage);
+    textarea.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
       }
+    });
 
-      sendBtn.addEventListener("click", sendMessage);
-      textarea.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          sendMessage();
-        }
-      });
+    // --- Voice Recording Logic ---
+    const recordBtn = document.getElementById("record-voice-btn");
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
 
-      // --- Voice Recording Logic ---
-      const recordBtn = document.getElementById("record-voice-btn");
-      let mediaRecorder = null;
-      let audioChunks = [];
-      let isRecording = false;
-
-      recordBtn.addEventListener("click", async () => {
-        if (isRecording) {
-          // Stop recording
-          mediaRecorder.stop();
-          recordBtn.classList.remove("bg-red-600");
-          recordBtn.title = "Record Voice";
-          isRecording = false;
-          return;
-        }
-        // Start recording
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-          });
-          mediaRecorder = new window.MediaRecorder(stream);
-          audioChunks = [];
-          mediaRecorder.ondataavailable = (e) => {
-            if (e.data.size > 0) audioChunks.push(e.data);
-          };
-          mediaRecorder.onstop = async () => {
-            const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-            const audioUrl = URL.createObjectURL(audioBlob);
-            // Show playback UI as user message
-            const audioElem = document.createElement("audio");
-            audioElem.controls = true;
-            audioElem.src = audioUrl;
-            audioElem.className = "mt-2";
-            // Add as a user message in chat with styled audio player
-            const messageHTML = `
+    recordBtn.addEventListener("click", async () => {
+      if (isRecording) {
+        // Stop recording
+        mediaRecorder.stop();
+        recordBtn.classList.remove("bg-red-600");
+        recordBtn.title = "Record Voice";
+        isRecording = false;
+        return;
+      }
+      // Start recording
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        mediaRecorder = new window.MediaRecorder(stream);
+        audioChunks = [];
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) audioChunks.push(e.data);
+        };
+        mediaRecorder.onstop = async () => {
+          const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          // Show playback UI as user message
+          const audioElem = document.createElement("audio");
+          audioElem.controls = true;
+          audioElem.src = audioUrl;
+          audioElem.className = "mt-2";
+          // Add as a user message in chat with styled audio player
+          const messageHTML = `
                 <div class="flex items-start gap-4 justify-end">
                   <div class="flex flex-1 flex-col gap-2 items-end">
                     <div class="flex flex-wrap items-center gap-3 flex-row-reverse">
@@ -748,106 +1047,105 @@
                   <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="User avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAOQCyegq35VfIL5s5DDM_XAUQ-XDh_MSoH8kt-oXB766TX_Ga-hgCbvpaftPUYf9zCLyuuIPaQ_R5STad1jLYbRL5uDUfFra_3dOTZnP3zl1C-ndGW3mv6FmPnKNEtlRRZA_KKFEm5JO3hG8TukLDNTbweRzFM4YecCZC9seWqgR_QNtswF7NvS2PloHCvgvC729KLt9HxpY88Jf7VHmR_Mbvoxpp0UjEoQ2FOeKB7lWB4Z6Xo_41JEb0nQniNyaqcYFyQjYT30A');"></div>
                 </div>
               `;
-            chatContainer.insertAdjacentHTML("beforeend", messageHTML);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+          chatContainer.insertAdjacentHTML("beforeend", messageHTML);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            // Add play button functionality to the audio player
-            const playBtn = chatContainer.querySelector(
-              ".audio-play-btn:last-of-type"
+          // Add play button functionality to the audio player
+          const playBtn = chatContainer.querySelector(
+            ".audio-play-btn:last-of-type"
+          );
+          if (playBtn) {
+            const audio = playBtn.parentElement.querySelector("audio");
+            if (!audio) {
+              const audioElem = document.createElement("audio");
+              audioElem.src = audioUrl;
+              audioElem.className = "hidden";
+              playBtn.parentElement.appendChild(audioElem);
+              playBtn.addEventListener("click", () => {
+                if (audioElem.paused) {
+                  audioElem.play();
+                  playBtn.innerHTML =
+                    '<span class="material-symbols-outlined text-lg animate-pulse">stop_circle</span>';
+                  playBtn.classList.add("bg-slate-200");
+                } else {
+                  audioElem.pause();
+                  playBtn.innerHTML =
+                    '<span class="material-symbols-outlined text-lg">play_arrow</span>';
+                  playBtn.classList.remove("bg-slate-200");
+                }
+                audioElem.onended = () => {
+                  playBtn.innerHTML =
+                    '<span class="material-symbols-outlined text-lg">play_arrow</span>';
+                  playBtn.classList.remove("bg-slate-200");
+                };
+              });
+            }
+          }
+
+          // Show Sana typing indicator
+          addSanaTyping();
+
+          // Convert audioBlob to base64
+          const toBase64 = (blob) =>
+            new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result.split(",")[1]);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+            });
+          let audioBase64 = null;
+          try {
+            audioBase64 = await toBase64(audioBlob);
+          } catch (e) {
+            removeLastTyping();
+            addSanaMessage("Sorry, failed to process audio.");
+            return;
+          }
+
+          // Send audio to workflow using postToWorkflow (handles audio responses)
+          try {
+            const payload = {
+              audio_base64: audioBase64,
+              audio_mime: audioBlob.type,
+              is_audio: true,
+            };
+            console.debug("Sending audio payload:", {
+              audio_length: audioBase64.length,
+              audio_mime: audioBlob.type,
+              is_audio: true,
+            });
+
+            const result = await postToWorkflow(payload);
+            console.debug("Workflow raw result for audio:", result);
+
+            // Extract reply and reply with text only (all messages converted to TTS)
+            let reply = null;
+            if (result && result.__audio) {
+              reply = "Sana sent an audio response. (No text available)";
+            } else {
+              reply =
+                extractReply(result) ||
+                "Sana did not provide a text reply.";
+            }
+            removeLastTyping();
+            addSanaMessage(reply);
+          } catch (err) {
+            removeLastTyping();
+            console.error("Error sending audio:", err);
+            addSanaMessage(
+              "Sorry, I could not reach the workflow: " + err.message
             );
-            if (playBtn) {
-              const audio = playBtn.parentElement.querySelector("audio");
-              if (!audio) {
-                const audioElem = document.createElement("audio");
-                audioElem.src = audioUrl;
-                audioElem.className = "hidden";
-                playBtn.parentElement.appendChild(audioElem);
-                playBtn.addEventListener("click", () => {
-                  if (audioElem.paused) {
-                    audioElem.play();
-                    playBtn.innerHTML =
-                      '<span class="material-symbols-outlined text-lg animate-pulse">stop_circle</span>';
-                    playBtn.classList.add("bg-slate-200");
-                  } else {
-                    audioElem.pause();
-                    playBtn.innerHTML =
-                      '<span class="material-symbols-outlined text-lg">play_arrow</span>';
-                    playBtn.classList.remove("bg-slate-200");
-                  }
-                  audioElem.onended = () => {
-                    playBtn.innerHTML =
-                      '<span class="material-symbols-outlined text-lg">play_arrow</span>';
-                    playBtn.classList.remove("bg-slate-200");
-                  };
-                });
-              }
-            }
-
-            // Show Sana typing indicator
-            addSanaTyping();
-
-            // Convert audioBlob to base64
-            const toBase64 = (blob) =>
-              new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result.split(",")[1]);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-              });
-            let audioBase64 = null;
-            try {
-              audioBase64 = await toBase64(audioBlob);
-            } catch (e) {
-              removeLastTyping();
-              addSanaMessage("Sorry, failed to process audio.");
-              return;
-            }
-
-            // Send audio to workflow using postToWorkflow (handles audio responses)
-            try {
-              const payload = {
-                audio_base64: audioBase64,
-                audio_mime: audioBlob.type,
-                is_audio: true,
-              };
-              console.debug("Sending audio payload:", {
-                audio_length: audioBase64.length,
-                audio_mime: audioBlob.type,
-                is_audio: true,
-              });
-
-              const result = await postToWorkflow(payload);
-              console.debug("Workflow raw result for audio:", result);
-
-              // Extract reply and reply with text only (all messages converted to TTS)
-              let reply = null;
-              if (result && result.__audio) {
-                reply = "Sana sent an audio response. (No text available)";
-              } else {
-                reply =
-                  extractReply(result) ||
-                  "Sana did not provide a text reply.";
-              }
-              removeLastTyping();
-              addSanaMessage(reply);
-            } catch (err) {
-              removeLastTyping();
-              console.error("Error sending audio:", err);
-              addSanaMessage(
-                "Sorry, I could not reach the workflow: " + err.message
-              );
-            }
-          };
-          mediaRecorder.start();
-          recordBtn.classList.add("bg-red-600");
-          recordBtn.title = "Stop Recording";
-          isRecording = true;
-        } catch (err) {
-          alert("Microphone access denied or not available.");
-        }
-      });
-    })();
-  </script>
-</body>
+          }
+        };
+        mediaRecorder.start();
+        recordBtn.classList.add("bg-red-600");
+        recordBtn.title = "Stop Recording";
+        isRecording = true;
+      } catch (err) {
+        alert("Microphone access denied or not available.");
+      }
+    });
+  })();
+</script>
 
 </html>

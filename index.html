@@ -2,567 +2,541 @@
 <html class="light" lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Sana - AI Mental Health Companion</title>
+  <!-- Head: meta, title and asset includes (Tailwind, Fonts) -->
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Sana - AI Mental Health Companion</title>
 
-    <!-- TailwindCSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;900&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
-    <!-- Tailwind Config -->
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "rgb(255, 174, 137)",
-                        "primary-dark": "rgb(255, 149, 100)",
-                        "background-light": "#f5f8f7",
-                        "background-dark": "#0f231c",
-                        "text-light-primary": "#111816",
-                        "text-light-secondary": "#5f8c7c",
-                        "border-light": "#dbe6e2",
-                    },
-                    fontFamily: {
-                        display: ["Lexend", "sans-serif"],
-                    },
-                    keyframes: {
-                        fadeInUp: {
-                            "0%": { opacity: 0, transform: "translateY(25px)" },
-                            "100%": { opacity: 1, transform: "translateY(0)" },
-                        },
-                        float: {
-                            "0%,100%": { transform: "translateY(0)" },
-                            "50%": { transform: "translateY(-8px)" },
-                        },
-                        gradient: {
-                            "0%, 100%": { backgroundPosition: "0% 50%" },
-                            "50%": { backgroundPosition: "100% 50%" },
-                        },
-                    },
-                    animation: {
-                        fadeInUp: "fadeInUp 0.8s ease-out forwards",
-                        float: "float 6s ease-in-out infinite",
-                        gradient: "gradient 15s ease infinite",
-                    },
-                    backgroundSize: {
-                        "gradient-size": "400% 400%",
-                    },
-                },
+  <!-- Tailwind Config: custom colors, fonts, animations -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "rgb(255, 174, 137)",
+            "primary-dark": "rgb(255, 149, 100)",
+            "background-light": "#f5f8f7",
+            "background-dark": "#0f231c",
+            "text-light-primary": "#111816",
+            "text-light-secondary": "#5f8c7c",
+            "border-light": "#dbe6e2",
+          },
+          fontFamily: {
+            display: ["Lexend", "sans-serif"],
+          },
+          keyframes: {
+            fadeInUp: {
+              "0%": { opacity: 0, transform: "translateY(25px)" },
+              "100%": { opacity: 1, transform: "translateY(0)" },
             },
-        };
-    </script>
+            float: {
+              "0%,100%": { transform: "translateY(0)" },
+              "50%": { transform: "translateY(-8px)" },
+            },
+            gradient: {
+              "0%, 100%": { backgroundPosition: "0% 50%" },
+              "50%": { backgroundPosition: "100% 50%" },
+            },
+          },
+          animation: {
+            fadeInUp: "fadeInUp 0.8s ease-out forwards",
+            float: "float 6s ease-in-out infinite",
+            gradient: "gradient 15s ease infinite",
+          },
+          backgroundSize: {
+            "gradient-size": "400% 400%",
+          },
+        },
+      },
+    };
+  </script>
 </head>
 
 <body
-    class="font-display bg-gradient-to-br from-[#fef6f3] to-[#f5f8f7] dark:from-[#07110d] dark:to-[#0f231c] transition-colors duration-700 ease-in-out">
-    <div class="min-h-screen flex flex-col">
-        <!-- Navbar -->
-        <header
-            class="flex items-center justify-between border-b border-border-light dark:border-primary/20 px-4 sm:px-6 lg:px-10 py-4 backdrop-blur-sm bg-white/70 dark:bg-white/5 sticky top-0 z-50 animate-fadeInUp">
-            <div class="flex items-center gap-4">
-                <a href="index.html" class="flex justify-center items-center">
-                    <div class="size-6 text-primary">
-                        <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <path clip-rule="evenodd"
-                                d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
-                                fill="currentColor" fill-rule="evenodd"></path>
-                        </svg>
-                    </div>
+  class="font-display bg-gradient-to-br from-[#fef6f3] to-[#f5f8f7] dark:from-[#07110d] dark:to-[#0f231c] transition-colors duration-700 ease-in-out">
+  <div class="min-h-screen flex flex-col">
+    <!-- Header / Navbar: branding, navigation, toggles (desktop + mobile) -->
+    <header
+      class="flex items-center justify-between border-b border-border-light dark:border-primary/20 px-4 sm:px-6 lg:px-10 py-4 backdrop-blur-sm bg-white/70 dark:bg-white/5 sticky top-0 z-50 animate-fadeInUp">
+      <div class="flex items-center gap-4">
+        <!-- Brand: logo + title -->
+        <a href="index.html" class="flex justify-center items-center">
+          <div class="size-6 text-primary">
+            <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <path clip-rule="evenodd"
+                d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+                fill="currentColor" fill-rule="evenodd"></path>
+            </svg>
+          </div>
 
-                    <h1 class="text-2xl font-bold text-text-primary-light dark:text-white ml-2">
-                        Sana
-                    </h1>
-                </a>
-            </div>
+          <h1 class="text-2xl font-bold text-text-primary-light dark:text-white ml-2">
+            Sana
+          </h1>
+        </a>
+      </div>
 
-           <div class="flex justify-center items-center gap-4">
-             
-            <!-- Dark Mode Toggle -->
-                <button id="dark-mode-toggle"
-                    class="h-10 w-10 rounded-lg bg-[#f0f5f3] dark:bg-white/10 flex items-center justify-center text-text-light-primary dark:text-white transition-all duration-300 hover:bg-primary hover:text-white">
-                    <span class="material-symbols-outlined text-sm">dark_mode</span>
-                </button>
-            <!-- Mobile Menu Button -->
-            <button id="mobile-menu-button" class="md:hidden text-text-light-primary dark:text-white">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
-           </div>
+      <div class="flex justify-center items-center gap-4 md:hidden">
+        <!-- Mobile controls: dark mode toggle (mobile) and menu button -->
+        <button id="dark-mode-toggle"
+          class="md:hidden w-10 rounded-lg bg-[#f0f5f3] dark:bg-white/10 flex items-center justify-center text-text-light-primary dark:text-white transition-all duration-300 hover:bg-primary hover:text-white">
+          <span class="material-symbols-outlined text-sm">dark_mode</span>
+        </button>
 
-            <nav id="nav-menu" class="hidden md:flex gap-8">
-                <a href="#features"
-                    class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors">Features</a>
-                <a href="#"
-                    class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors">About</a>
-                <a href="#faq"
-                    class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors">FAQ</a>
-            </nav>
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="md:hidden text-text-light-primary dark:text-white">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
 
-            <div class="hidden md:flex gap-3">
-                <!-- Dark Mode Toggle -->
-                <button id="dark-mode-toggle"
-                    class="h-10 w-10 rounded-lg bg-[#f0f5f3] dark:bg-white/10 flex items-center justify-center text-text-light-primary dark:text-white transition-all duration-300 hover:bg-primary hover:text-white">
-                    <span class="material-symbols-outlined text-sm">dark_mode</span>
-                </button>
+      <!-- Desktop navigation links (hidden on mobile) -->
+      <nav id="nav-menu" class="hidden md:flex gap-8">
+        <a href="#features"
+          class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors">Features</a>
+        <a href="#"
+          class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors">About</a>
+        <a href="#faq"
+          class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors">FAQ</a>
+      </nav>
 
-                <a href="form.html">
-                    <button
-                        class="h-10 px-4 rounded-lg bg-[#f0f5f3] dark:bg-white/10 text-text-light-primary dark:text-white text-sm font-semibold transition-all duration-300 hover:bg-primary hover:text-white">
-                        Log In
-                    </button>
-                </a>
-                <!-- <a href="form.html">
-                    <button
-                        class="h-10 px-4 rounded-lg bg-primary text-text-light-primary text-sm font-semibold transition-transform duration-300 hover:scale-110 hover:shadow-lg hover:shadow-primary/40">
-                        Get Started
-                    </button>
-                </a> -->
-            </div>
+      <!-- Desktop actions (Log In / Get Started) -->
+      <div class="hidden md:flex gap-3">
+        <a href="public/form.html">
+          <button
+            class="h-10 px-4 rounded-lg bg-[#f0f5f3] dark:bg-white/10 text-text-light-primary dark:text-white text-sm font-semibold transition-all duration-300 hover:bg-primary hover:text-white">
+            Log In
+          </button>
+        </a>
+      </div>
 
-
-
-
-            <!-- Mobile Menu -->
-        <div id="mobile-menu"
-            class="hidden md:hidden bg-white dark:bg-background-dark p-4 border-b border-border-light dark:border-primary/20 absolute fixed w-full top-14 left-0 z-50 shadow-md">
-            <div class="flex flex-col gap-4 pl-8">
-                <a href="features.html"
-                    class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors py-2">Features</a>
-                <a href="#"
-                    class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors py-2">About</a>
-                <a href="#"
-                    class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors py-2">FAQ</a>
-                <div class="flex flex-col gap-3 pt-2">
-                    <a href="form.html" class="flex-1">
-                        <button
-                            class="h-10 w-full rounded-lg bg-[#f0f5f3] dark:bg-white/10 text-text-light-primary dark:text-white text-sm font-semibold transition-all duration-300 hover:bg-primary hover:text-white">
-                            Log In
-                        </button>
-                    </a>
-                    <a href="form.html" class="flex-1">
-                        <button
-                            class="h-10 w-full rounded-lg bg-primary text-text-light-primary text-sm font-semibold transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/40">
-                            Get Started
-                        </button>
-                    </a>
-                </div>
-            </div>
-        </div>
-        </header>
-
-        
-
-        <!-- Hero Section -->
-        <section
-            class="flex flex-col md:flex-row items-center justify-between px-4 sm:px-6 lg:px-10 py-16 md:py-20 gap-10 animate-fadeInUp">
-            <div class="flex flex-col gap-6 md:w-1/2">
-                <h1 class="text-4xl sm:text-5xl font-black text-text-light-primary dark:text-white leading-tight">
-                    A supportive space, just for you.
-                </h1>
-                <p class="text-text-light-secondary dark:text-white/70 text-lg leading-relaxed">
-                    Sana is your AI mental health companion, offering confidential
-                    support for the ups and downs of university life.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="public/chat.html">
-                        <button
-                            class="h-12 px-6 rounded-lg bg-primary text-text-light-primary font-bold text-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-primary/40 w-full sm:w-auto">
-                            Try Sana for Free
-                        </button>
-                    </a>
-                    <!-- <a href="form.html">
-                        <button
-                            class="h-12 px-6 rounded-lg border border-primary text-primary bg-transparent font-bold text-lg transition-all duration-300 hover:bg-primary/10 w-full sm:w-auto">
-                             Get Started
-                        </button>
-                    </a> -->
-                </div>
-            </div>
-
-            <div class="md:w-1/2 rounded-2xl aspect-square bg-cover bg-center animate-float hover:scale-105 transition-transform duration-700 ease-in-out shadow-xl"
-                style="
-            background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBgOWvfgqfw_v-G2mzSOa683sZ9b2-Fy4P8BjemC2H20ZZlHWiLx3217YvZy-SRteG3d41FoXdd3_SxOx1YoiFDll_zK5b8Gdcj_M8cemTf3Gq9z7nwd5m96NhzN9kIng3JqnwUDxf7F9ROnwGuVj97khehTpGCcGATXGZHlWgX5NROYASqbuyT4LF4vRUaaZX8G5cV9pITc12Ab07FQZbjj56iL9Y5SkaFZJEkun4zatoSisJ7ZYBpkqjhWM79UtNvecEsrc_mOA');
-          "></div>
-        </section>
-
-        <!-- Stats Section -->
-        <section
-            class="px-4 sm:px-6 lg:px-10 py-10 bg-gradient-to-r from-primary/10 to-primary/5 dark:from-primary/5 dark:to-primary/10 rounded-2xl mx-4 sm:mx-10 my-10">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                <div class="flex flex-col gap-2">
-                    <span class="text-3xl font-bold text-text-light-primary dark:text-white">10k+</span>
-                    <span class="text-text-light-secondary dark:text-white/70 text-sm">Students Helped</span>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <span class="text-3xl font-bold text-text-light-primary dark:text-white">24/7</span>
-                    <span class="text-text-light-secondary dark:text-white/70 text-sm">Availability</span>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <span class="text-3xl font-bold text-text-light-primary dark:text-white">98%</span>
-                    <span class="text-text-light-secondary dark:text-white/70 text-sm">Satisfaction Rate</span>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <span class="text-3xl font-bold text-text-light-primary dark:text-white">50+</span>
-                    <span class="text-text-light-secondary dark:text-white/70 text-sm">Universities</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Features -->
-
-        <section id="features" class="px-4 sm:px-6 lg:px-10 py-10">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-text-light-primary dark:text-white mb-4 animate-fadeInUp mt-20">
-                    How Sana Can Help
-                </h2>
-                <p class="text-text-light-secondary dark:text-white/70 max-w-2xl mx-auto">
-                    Sana provides multiple ways to connect and get the support you need, whenever you need it.
-                </p>
-            </div>
-
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeInUp" style="animation-delay: 0.2s">
-                <!-- Chat -->
-                <div
-                    class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
-                    <div
-                        class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl text-primary">chat_bubble</span>
-                    </div>
-                    <h3 class="text-xl font-bold dark:text-white">Chat</h3>
-                    <p class="text-text-light-secondary dark:text-white/70">
-                        Message anytime, anywhere for immediate support. Our AI companion is always available to listen
-                        and help.
-                    </p>
-                </div>
-
-                <!-- Video -->
-                <div
-                    class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
-                    <div
-                        class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl text-primary">videocam</span>
-                    </div>
-                    <h3 class="text-xl font-bold dark:text-white">Video</h3>
-                    <p class="text-text-light-secondary dark:text-white/70">
-                        Engage in face-to-face AI conversations for a more personal connection when you need visual
-                        support.
-                    </p>
-                </div>
-
-                <!-- Audio -->
-                <div
-                    class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
-                    <div
-                        class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl text-primary">mic</span>
-                    </div>
-                    <h3 class="text-xl font-bold dark:text-white">Audio</h3>
-                    <p class="text-text-light-secondary dark:text-white/70">
-                        Talk it out, hands-free, whenever you need to. Perfect for when you're on the go or just prefer
-                        speaking.
-                    </p>
-                </div>
-
-                <!-- NEW FEATURES FROM FEATURES.HTML -->
-
-                <!-- Emotional Check-ins -->
-                <div
-                    class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
-                    <div
-                        class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl text-primary">psychology</span>
-                    </div>
-                    <h3 class="text-xl font-bold dark:text-white">Emotional Check-ins</h3>
-                    <p class="text-text-light-secondary dark:text-white/70">
-                        Sana regularly checks your mood and offers personalized support.
-                    </p>
-                </div>
-
-                <!-- Instant Responses -->
-                <div
-                    class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
-                    <div
-                        class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl text-primary">bolt</span>
-                    </div>
-                    <h3 class="text-xl font-bold dark:text-white">Instant Responses</h3>
-                    <p class="text-text-light-secondary dark:text-white/70">
-                        Get immediate, empathetic AI support anytime you reach out.
-                    </p>
-                </div>
-
-                <!-- Name Recognition -->
-                <div
-                    class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
-                    <div
-                        class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl text-primary">group</span>
-                    </div>
-                    <h3 class="text-xl font-bold dark:text-white">Name Recognition</h3>
-                    <p class="text-text-light-secondary dark:text-white/70">
-                        Sana remembers the names you mention and interacts naturally.
-                    </p>
-                </div>
-
-                <!-- Mood Boost Prompts -->
-                <div
-                    class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
-                    <div
-                        class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl text-primary">sentiment_satisfied</span>
-                    </div>
-                    <h3 class="text-xl font-bold dark:text-white">Mood Boost Prompts</h3>
-                    <p class="text-text-light-secondary dark:text-white/70">
-                        Friendly questions that help lift your mood when you feel low.
-                    </p>
-                </div>
-
-                <!-- Deep Conversations -->
-                <div
-                    class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
-                    <div
-                        class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl text-primary">psychology_alt</span>
-                    </div>
-                    <h3 class="text-xl font-bold dark:text-white">Deep Conversations</h3>
-                    <p class="text-text-light-secondary dark:text-white/70">
-                        Sana gently explores deeper emotional issues when needed.
-                    </p>
-                </div>
-
-                <!-- Light Humor -->
-                <div
-                    class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
-                    <div
-                        class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <span class="material-symbols-outlined text-2xl text-primary">mood</span>
-                    </div>
-                    <h3 class="text-xl font-bold dark:text-white">Light Humor</h3>
-                    <p class="text-text-light-secondary dark:text-white/70">
-                        Sana adds small bits of humor when appropriate to brighten your day.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonial -->
-        <section class="px-4 sm:px-6 lg:px-10 py-16 text-center animate-fadeInUp">
-            <h2 class="text-3xl font-bold text-text-light-primary dark:text-white mb-12">
-                What Students Are Saying
-            </h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                <div
-                    class="bg-white dark:bg-white/5 p-6 rounded-2xl border border-border-light dark:border-white/10 shadow-md hover:shadow-xl hover:shadow-primary/20 transition-all duration-500 flex flex-col">
-                    <div class="flex-1">
-                        <p class="italic text-text-light-secondary dark:text-white/80 mb-4 text-left">
-                            “Sana has been a lifesaver during finals week. Just having a space
-                            to vent without judgment made a huge difference.”
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-3 mt-4">
-                        <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
-                            <span class="text-primary font-bold">A</span>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-bold text-text-light-primary dark:text-white">Alex</p>
-                            <p class="text-sm text-text-light-secondary dark:text-white/70">2nd Year Student</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="bg-white dark:bg-white/5 p-6 rounded-2xl border border-border-light dark:border-white/10 shadow-md hover:shadow-xl hover:shadow-primary/20 transition-all duration-500 flex flex-col">
-                    <div class="flex-1">
-                        <p class="italic text-text-light-secondary dark:text-white/80 mb-4 text-left">
-                            “The guided meditation exercises helped me manage my anxiety before presentations. I feel
-                            more confident now.”
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-3 mt-4">
-                        <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
-                            <span class="text-primary font-bold">J</span>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-bold text-text-light-primary dark:text-white">Jamie</p>
-                            <p class="text-sm text-text-light-secondary dark:text-white/70">3rd Year Student</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="bg-white dark:bg-white/5 p-6 rounded-2xl border border-border-light dark:border-white/10 shadow-md hover:shadow-xl hover:shadow-primary/20 transition-all duration-500 flex flex-col md:col-span-2 lg:col-span-1">
-                    <div class="flex-1">
-                        <p class="italic text-text-light-secondary dark:text-white/80 mb-4 text-left">
-                            “As an international student, it's been amazing to have support that understands the unique
-                            challenges I face.”
-                        </p>
-                    </div>
-                    <div class="flex items-center gap-3 mt-4">
-                        <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
-                            <span class="text-primary font-bold">M</span>
-                        </div>
-                        <div class="text-left">
-                            <p class="font-bold text-text-light-primary dark:text-white">Maria</p>
-                            <p class="text-sm text-text-light-secondary dark:text-white/70">Graduate Student</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-
-        <!-- FAQ Section -->
-        <section id="faq" class="px-4 sm:px-6 lg:px-10 py-16 bg-white dark:bg-white/5 rounded-2xl mx-4 sm:mx-10 my-10">
-            <div class="max-w-3xl mx-auto">
-                <h2 class="text-3xl font-bold text-text-light-primary dark:text-white mb-12 text-center mt-16">
-                    Frequently Asked Questions
-                </h2>
-                <div class="space-y-4">
-                    <div class="border-b border-border-light dark:border-white/10 pb-4">
-                        <button
-                            class="flex justify-between items-center w-full text-left font-medium text-text-light-primary dark:text-white py-2">
-                            <span>Is Sana really confidential?</span>
-                            <span class="material-symbols-outlined text-primary">expand_more</span>
-                        </button>
-                        <div class="mt-2 text-text-light-secondary dark:text-white/70">
-                            <p>Yes, all conversations with Sana are completely confidential. We use end-to-end
-                                encryption and don't store personally identifiable information.</p>
-                        </div>
-                    </div>
-                    <div class="border-b border-border-light dark:border-white/10 pb-4">
-                        <button
-                            class="flex justify-between items-center w-full text-left font-medium text-text-light-primary dark:text-white py-2">
-                            <span>How does Sana differ from traditional therapy?</span>
-                            <span class="material-symbols-outlined text-primary">expand_more</span>
-                        </button>
-                        <div class="mt-2 text-text-light-secondary dark:text-white/70">
-                            <p>Sana is designed as a complementary tool, not a replacement for professional therapy. It
-                                provides immediate support, coping strategies, and resources, but doesn't diagnose
-                                conditions.</p>
-                        </div>
-                    </div>
-                    <div class="border-b border-border-light dark:border-white/10 pb-4">
-                        <button
-                            class="flex justify-between items-center w-full text-left font-medium text-text-light-primary dark:text-white py-2">
-                            <span>Is there a cost to use Sana?</span>
-                            <span class="material-symbols-outlined text-primary">expand_more</span>
-                        </button>
-                        <div class="mt-2 text-text-light-secondary dark:text-white/70">
-                            <p>Sana is completely free for students at participating universities. Check with your
-                                student services to see if your institution offers Sana.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA -->
-        <section
-            class="px-4 sm:px-6 lg:px-10 py-16 bg-gradient-to-r from-primary to-primary-dark text-white mx-4 sm:mx-10 rounded-2xl text-center animate-fadeInUp mb-10">
-            <h2 class="text-3xl font-bold mb-6">
-                Ready to feel more supported?
-            </h2>
-            <p class="text-white/90 max-w-2xl mx-auto mb-8 text-lg">
-                Start your first conversation today and discover how Sana can help you navigate university life with
-                more confidence and less stress.
-            </p>
-            <a href="form.html">
-                <button
-                    class="h-12 px-8 rounded-lg bg-white text-text-light-primary font-bold text-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-xl">
-                    Get Started for Free
-                </button>
+      <!-- Mobile Menu Panel: hidden by default; opened by menu button -->
+      <div id="mobile-menu"
+        class="hidden md:hidden bg-white dark:bg-background-dark p-4 border-b border-border-light dark:border-primary/20 absolute fixed w-full top-14 left-0 z-50 shadow-md">
+        <!-- Mobile menu links + actions -->
+        <div class="flex flex-col gap-4 pl-8">
+          <a href="features.html"
+            class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors py-2">Features</a>
+          <a href="#"
+            class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors py-2">About</a>
+          <a href="#"
+            class="text-sm font-medium text-text-light-primary dark:text-white/80 hover:text-primary transition-colors py-2">FAQ</a>
+          <div class="flex flex-col gap-3 pt-2">
+            <a href="form.html" class="flex-1">
+              <button
+                class="h-10 w-full rounded-lg bg-[#f0f5f3] dark:bg-white/10 text-text-light-primary dark:text-white text-sm font-semibold transition-all duration-300 hover:bg-primary hover:text-white">
+                Log In
+              </button>
             </a>
-        </section>
+            <a href="form.html" class="flex-1">
+              <button
+                class="h-10 w-full rounded-lg bg-primary text-text-light-primary text-sm font-semibold transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/40">
+                Get Started
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
 
-        <!-- Footer -->
-        <footer
-            class="border-t border-border-light dark:border-primary/20 py-8 px-4 sm:px-6 lg:px-10 text-center md:text-left">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="flex flex-col md:flex-row items-center gap-4">
-                    <div class="flex items-center gap-2">
-                        <div class="size-6 text-primary">
-                            <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                                <path clip-rule="evenodd"
-                                    d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
-                                    fill="currentColor" fill-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <h1 class="text-xl font-bold text-text-primary-light dark:text-white">Sana</h1>
-                    </div>
-                    <span class="text-sm font-medium text-text-light-secondary dark:text-white/70">© 2025 Sana. All
-                        rights reserved.</span>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-6">
-                    <div class="flex gap-6">
-                        <a href="#"
-                            class="text-sm text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">Privacy
-                            Policy</a>
-                        <a href="#"
-                            class="text-sm text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">Terms
-                            of Service</a>
-                        <a href="#"
-                            class="text-sm text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">Contact</a>
-                    </div>
-                    <div class="flex gap-4 justify-center">
-                        <a href="#"
-                            class="text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">
-                            <span class="material-symbols-outlined">facebook</span>
-                        </a>
-                        <a href="#"
-                            class="text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">
-                            <span class="material-symbols-outlined">chat</span>
-                        </a>
-                        <a href="#"
-                            class="text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">
-                            <span class="material-symbols-outlined">alternate_email</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </footer>
+    <!-- Hero Section: main headline, description and CTA -->
+    <section
+      class="flex flex-col md:flex-row items-center justify-between px-4 sm:px-6 lg:px-10 py-16 md:py-20 gap-10 animate-fadeInUp">
+      <div class="flex flex-col gap-6 md:w-1/2">
+        <h1 class="text-4xl sm:text-5xl font-black text-text-light-primary dark:text-white leading-tight">
+          A supportive space, just for you.
+        </h1>
+        <p class="text-text-light-secondary dark:text-white/70 text-lg leading-relaxed">
+          Sana is your AI mental health companion, offering confidential
+          support for the ups and downs of university life.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="public/chat.html">
+            <button
+              class="h-12 px-6 rounded-lg bg-primary text-text-light-primary font-bold text-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-primary/40 w-full sm:w-auto">
+              Try Sana for Free
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero image: decorative visual -->
+      <div
+        class="md:w-1/2 rounded-2xl aspect-square bg-cover bg-center animate-float hover:scale-105 transition-transform duration-700 ease-in-out shadow-xl"
+        style="
+      background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBgOWvfgqfw_v-G2mzSOa683sZ9b2-Fy4P8BjemC2H20ZZlHWiLx3217YvZy-SRteG3d41FoXdd3_SxOx1YoiFDll_zK5b8Gdcj_M8cemTf3Gq9z7nwd5m96NhzN9kIng3JqnwUDxf7F9ROnwGuVj97khehTpGCcGATXGZHlWgX5NROYASqbuyT4LF4vRUaaZX8G5cV9pITc12Ab07FQZbjj56iL9Y5SkaFZJEkun4zatoSisJ7ZYBpkqjhWM79UtNvecEsrc_mOA');
+      "></div>
+    </section>
+
+    <!-- Stats Section: quick metrics -->
+    <section
+      class="px-4 sm:px-6 lg:px-10 py-10 bg-gradient-to-r from-primary/10 to-primary/5 dark:from-primary/5 dark:to-primary/10 rounded-2xl mx-4 sm:mx-10 my-10">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div class="flex flex-col gap-2">
+          <span class="text-3xl font-bold text-text-light-primary dark:text-white">10k+</span>
+          <span class="text-text-light-secondary dark:text-white/70 text-sm">Students Helped</span>
+        </div>
+        <div class="flex flex-col gap-2">
+          <span class="text-3xl font-bold text-text-light-primary dark:text-white">24/7</span>
+          <span class="text-text-light-secondary dark:text-white/70 text-sm">Availability</span>
+        </div>
+        <div class="flex flex-col gap-2">
+          <span class="text-3xl font-bold text-text-light-primary dark:text-white">98%</span>
+          <span class="text-text-light-secondary dark:text-white/70 text-sm">Satisfaction Rate</span>
+        </div>
+        <div class="flex flex-col gap-2">
+          <span class="text-3xl font-bold text-text-light-primary dark:text-white">50+</span>
+          <span class="text-text-light-secondary dark:text-white/70 text-sm">Universities</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section: feature cards explaining capabilities -->
+    <section id="features" class="px-4 sm:px-6 lg:px-10 py-10">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-text-light-primary dark:text-white mb-4 animate-fadeInUp mt-20">
+          How Sana Can Help
+        </h2>
+        <p class="text-text-light-secondary dark:text-white/70 max-w-2xl mx-auto">
+          Sana provides multiple ways to connect and get the support you need, whenever you need it.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeInUp" style="animation-delay: 0.2s">
+        <!-- Feature card: Chat -->
+        <div
+          class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
+          <div
+            class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+            <span class="material-symbols-outlined text-2xl text-primary">chat_bubble</span>
+          </div>
+          <h3 class="text-xl font-bold dark:text-white">Chat</h3>
+          <p class="text-text-light-secondary dark:text-white/70">
+            Message anytime, anywhere for immediate support. Our AI companion is always available to listen
+            and help.
+          </p>
+        </div>
+
+        <!-- Feature card: Video -->
+        <div
+          class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
+          <div
+            class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+            <span class="material-symbols-outlined text-2xl text-primary">videocam</span>
+          </div>
+          <h3 class="text-xl font-bold dark:text-white">Video</h3>
+          <p class="text-text-light-secondary dark:text-white/70">
+            Engage in face-to-face AI conversations for a more personal connection when you need visual
+            support.
+          </p>
+        </div>
+
+        <!-- Feature card: Audio -->
+        <div
+          class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
+          <div
+            class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+            <span class="material-symbols-outlined text-2xl text-primary">mic</span>
+          </div>
+          <h3 class="text-xl font-bold dark:text-white">Audio</h3>
+          <p class="text-text-light-secondary dark:text-white/70">
+            Talk it out, hands-free, whenever you need to. Perfect for when you're on the go or just prefer
+            speaking.
+          </p>
+        </div>
+
+        <!-- Additional feature cards (emotional check-ins, instant responses, etc.) -->
+        <div
+          class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
+          <div
+            class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+            <span class="material-symbols-outlined text-2xl text-primary">psychology</span>
+          </div>
+          <h3 class="text-xl font-bold dark:text-white">Emotional Check-ins</h3>
+          <p class="text-text-light-secondary dark:text-white/70">
+            Sana regularly checks your mood and offers personalized support.
+          </p>
+        </div>
+
+        <div
+          class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
+          <div
+            class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+            <span class="material-symbols-outlined text-2xl text-primary">bolt</span>
+          </div>
+          <h3 class="text-xl font-bold dark:text-white">Instant Responses</h3>
+          <p class="text-text-light-secondary dark:text-white/70">
+            Get immediate, empathetic AI support anytime you reach out.
+          </p>
+        </div>
+
+        <div
+          class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
+          <div
+            class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+            <span class="material-symbols-outlined text-2xl text-primary">group</span>
+          </div>
+          <h3 class="text-xl font-bold dark:text-white">Name Recognition</h3>
+          <p class="text-text-light-secondary dark:text-white/70">
+            Sana remembers the names you mention and interacts naturally.
+          </p>
+        </div>
+
+        <div
+          class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
+          <div
+            class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+            <span class="material-symbols-outlined text-2xl text-primary">sentiment_satisfied</span>
+          </div>
+          <h3 class="text-xl font-bold dark:text-white">Mood Boost Prompts</h3>
+          <p class="text-text-light-secondary dark:text-white/70">
+            Friendly questions that help lift your mood when you feel low.
+          </p>
+        </div>
+
+        <div
+          class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
+        </div>
+        <div
+          class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+        </div>
+        <span class="material-symbols-outlined text-2xl text-primary">psychology_alt</span>
+      </div>
+      <h3 class="text-xl font-bold dark:text-white">Deep Conversations</h3>
+      <p class="text-text-light-secondary dark:text-white/70">
+        Sana gently explores deeper emotional issues when needed.
+      </p>
+  </div>
+
+  <div
+    class="flex flex-col gap-4 p-6 rounded-2xl border border-border-light dark:border-white/10 bg-white dark:bg-white/5 transform transition-all duration-500 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 group">
+    <div
+      class="size-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+      <span class="material-symbols-outlined text-2xl text-primary">mood</span>
     </div>
+    <h3 class="text-xl font-bold dark:text-white">Light Humor</h3>
+    <p class="text-text-light-secondary dark:text-white/70">
+      Sana adds small bits of humor when appropriate to brighten your day.
+    </p>
+  </div>
+  </div>
+  </section>
 
-    <!-- Add this at the very end of your body, before </body> -->
+  <!-- Testimonial Section: user quotes -->
+  <section class="px-4 sm:px-6 lg:px-10 py-16 text-center animate-fadeInUp">
+    <h2 class="text-3xl font-bold text-text-light-primary dark:text-white mb-12">
+      What Students Are Saying
+    </h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div
+        class="bg-white dark:bg-white/5 p-6 rounded-2xl border border-border-light dark:border-white/10 shadow-md hover:shadow-xl hover:shadow-primary/20 transition-all duration-500 flex flex-col">
+        <div class="flex-1">
+          <p class="italic text-text-light-secondary dark:text-white/80 mb-4 text-left">
+            “Sana has been a lifesaver during finals week. Just having a space
+            to vent without judgment made a huge difference.”
+          </p>
+        </div>
+        <div class="flex items-center gap-3 mt-4">
+          <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+            <span class="text-primary font-bold">A</span>
+          </div>
+          <div class="text-left">
+            <p class="font-bold text-text-light-primary dark:text-white">Alex</p>
+            <p class="text-sm text-text-light-secondary dark:text-white/70">2nd Year Student</p>
+          </div>
+        </div>
+      </div>
 
-<script>
-  // Select mobile menu button and menu
-  const mobileMenuButton = document.getElementById("mobile-menu-button");
-  const mobileMenu = document.getElementById("mobile-menu");
+      <div
+        class="bg-white dark:bg-white/5 p-6 rounded-2xl border border-border-light dark:border-white/10 shadow-md hover:shadow-xl hover:shadow-primary/20 transition-all duration-500 flex flex-col">
+        <div class="flex-1">
+          <p class="italic text-text-light-secondary dark:text-white/80 mb-4 text-left">
+            “The guided meditation exercises helped me manage my anxiety before presentations. I feel
+            more confident now.”
+          </p>
+        </div>
+        <div class="flex items-center gap-3 mt-4">
+          <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+            <span class="text-primary font-bold">J</span>
+          </div>
+          <div class="text-left">
+            <p class="font-bold text-text-light-primary dark:text-white">Jamie</p>
+            <p class="text-sm text-text-light-secondary dark:text-white/70">3rd Year Student</p>
+          </div>
+        </div>
+      </div>
 
-  // Toggle mobile menu visibility on click
-  mobileMenuButton.addEventListener("click", () => {
-    mobileMenu.classList.toggle("hidden"); // show/hide menu
-    mobileMenuButton.classList.toggle("open"); // optional: for animation
-  });
+      <div
+        class="bg-white dark:bg-white/5 p-6 rounded-2xl border border-border-light dark:border-white/10 shadow-md hover:shadow-xl hover:shadow-primary/20 transition-all duration-500 flex flex-col md:col-span-2 lg:col-span-1">
+        <div class="flex-1">
+          <p class="italic text-text-light-secondary dark:text-white/80 mb-4 text-left">
+            “As an international student, it's been amazing to have support that understands the unique
+            challenges I face.”
+          </p>
+        </div>
+        <div class="flex items-center gap-3 mt-4">
+          <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center">
+            <span class="text-primary font-bold">M</span>
+          </div>
+          <div class="text-left">
+            <p class="font-bold text-text-light-primary dark:text-white">Maria</p>
+            <p class="text-sm text-text-light-secondary dark:text-white/70">Graduate Student</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  // Optional: close mobile menu when a link is clicked
-  const mobileMenuLinks = mobileMenu.querySelectorAll("a");
-  mobileMenuLinks.forEach(link => {
-    link.addEventListener("click", () => {
-      mobileMenu.classList.add("hidden");
-    });
-  });
+  <!-- FAQ Section: common questions and answers -->
+  <section id="faq" class="px-4 sm:px-6 lg:px-10 py-16 bg-white dark:bg-white/5 rounded-2xl mx-4 sm:mx-10 my-10">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold text-text-light-primary dark:text-white mb-12 text-center mt-16">
+        Frequently Asked Questions
+      </h2>
+      <div class="space-y-4">
+        <div class="border-b border-border-light dark:border-white/10 pb-4">
+          <button
+            class="flex justify-between items-center w-full text-left font-medium text-text-light-primary dark:text-white py-2">
+            <span>Is Sana really confidential?</span>
+            <span class="material-symbols-outlined text-primary">expand_more</span>
+          </button>
+          <div class="mt-2 text-text-light-secondary dark:text-white/70">
+            <p>Yes, all conversations with Sana are completely confidential. We use end-to-end
+              encryption and don't store personally identifiable information.</p>
+          </div>
+        </div>
+        <div class="border-b border-border-light dark:border-white/10 pb-4">
+          <button
+            class="flex justify-between items-center w-full text-left font-medium text-text-light-primary dark:text-white py-2">
+            <span>How does Sana differ from traditional therapy?</span>
+            <span class="material-symbols-outlined text-primary">expand_more</span>
+          </button>
+          <div class="mt-2 text-text-light-secondary dark:text-white/70">
+            <p>Sana is designed as a complementary tool, not a replacement for professional therapy. It
+              provides immediate support, coping strategies, and resources, but doesn't diagnose
+              conditions.</p>
+          </div>
+        </div>
+        <div class="border-b border-border-light dark:border-white/10 pb-4">
+          <button
+            class="flex justify-between items-center w-full text-left font-medium text-text-light-primary dark:text-white py-2">
+            <span>Is there a cost to use Sana?</span>
+            <span class="material-symbols-outlined text-primary">expand_more</span>
+          </button>
+          <div class="mt-2 text-text-light-secondary dark:text-white/70">
+            <p>Sana is completely free for students at participating universities. Check with your
+              student services to see if your institution offers Sana.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  // Dark mode toggle
-  const darkModeToggle = document.getElementById("dark-mode-toggle");
-  const mobileDarkModeToggle = document.getElementById("mobile-dark-mode-toggle");
+  <!-- CTA Section: final prompt and button -->
+  <section
+    class="px-4 sm:px-6 lg:px-10 py-16 bg-gradient-to-r from-primary to-primary-dark text-white mx-4 sm:mx-10 rounded-2xl text-center animate-fadeInUp mb-10">
+    <h2 class="text-3xl font-bold mb-6">
+      Ready to feel more supported?
+    </h2>
+    <p class="text-white/90 max-w-2xl mx-auto mb-8 text-lg">
+      Start your first conversation today and discover how Sana can help you navigate university life with
+      more confidence and less stress.
+    </p>
+    <a href="form.html">
+      <button
+        class="h-12 px-8 rounded-lg bg-white text-text-light-primary font-bold text-lg transition-transform duration-500 ease-in-out hover:scale-110 hover:shadow-xl">
+        Get Started for Free
+      </button>
+    </a>
+  </section>
 
-  function toggleDarkMode() {
-    document.documentElement.classList.toggle("dark");
-  }
+  <!-- Footer: brand + links + social icons -->
+  <footer
+    class="border-t border-border-light dark:border-primary/20 py-8 px-4 sm:px-6 lg:px-10 text-center md:text-left">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="flex flex-col md:flex-row items-center gap-4">
+        <div class="flex items-center gap-2">
+          <div class="size-6 text-primary">
+            <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <path clip-rule="evenodd"
+                d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+                fill="currentColor" fill-rule="evenodd"></path>
+            </svg>
+          </div>
+          <h1 class="text-xl font-bold text-text-primary-light dark:text-white">Sana</h1>
+        </div>
+        <span class="text-sm font-medium text-text-light-secondary dark:text-white/70">© 2025 Sana. All
+          rights reserved.</span>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-6">
+        <div class="flex gap-6">
+          <a href="#"
+            class="text-sm text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">Privacy
+            Policy</a>
+          <a href="#"
+            class="text-sm text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">Terms
+            of Service</a>
+          <a href="#"
+            class="text-sm text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">Contact</a>
+        </div>
+        <div class="flex gap-4 justify-center">
+          <a href="#" class="text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">
+            <span class="material-symbols-outlined">facebook</span>
+          </a>
+          <a href="#" class="text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">
+            <span class="material-symbols-outlined">chat</span>
+          </a>
+          <a href="#" class="text-text-light-secondary dark:text-white/70 hover:text-primary transition-colors">
+            <span class="material-symbols-outlined">alternate_email</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  </div>
 
-  darkModeToggle.addEventListener("click", toggleDarkMode);
-  mobileDarkModeToggle.addEventListener("click", toggleDarkMode);
-</script>
+  <!-- Scripts: mobile menu toggle and dark mode toggle -->
+  <script>
+    // Script: manage mobile menu open/close and dark mode
+    const mobileMenuButton = document.getElementById("mobile-menu-button");
+    const mobileMenu = document.getElementById("mobile-menu");
 
+    // Guard checks to avoid runtime errors if elements are missing
+    if (mobileMenuButton && mobileMenu) {
+      // Toggle mobile menu visibility on click
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden"); // show/hide menu
+        mobileMenuButton.classList.toggle("open"); // optional: for animation
+      });
 
+      // Optional: close mobile menu when a link is clicked
+      const mobileMenuLinks = mobileMenu.querySelectorAll("a");
+      mobileMenuLinks.forEach(link => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.add("hidden");
+        });
+      });
 
+      // Dark mode toggle
+      const darkModeToggle = document.getElementById("dark-mode-toggle");
+      const mobileDarkModeToggle = document.getElementById("mobile-dark-mode-toggle");
 
+      function toggleDarkMode() {
+        document.documentElement.classList.toggle("dark");
+      }
+
+      darkModeToggle.addEventListener("click", toggleDarkMode);
+      mobileDarkModeToggle.addEventListener("click", toggleDarkMode);
+  </script>
+
+</body>
+
+</html>
