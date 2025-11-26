@@ -17,12 +17,18 @@ if (!$email || !$password) {
 
 $db = new Database();
 $user = $db->getUserByEmail($email);
+
 if (!$user || empty($user['password']) || !password_verify($password, $user['password'])) {
     header('Location: ../form.html?error=invalid');
     exit;
 }
 
 // Login success
+// Save both email AND user ID in session
 $_SESSION['user_email'] = $email;
-header('Location: ../chat.html?login=1');
+$_SESSION['user_id'] = $user['id'];   // <-- THIS is required for dashboard
+
+
+header('Location: ../stdntdashb.html?login=1');
 exit;
+?>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sana - History &amp; Reflections</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <style type="text/tailwindcss">
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#A8D5BA", // Green
+              secondary: "#FFB385", // Orange
+              accent: "#FFDAB9", // Peach
+              "background-light": "#FFF9F5",
+              "background-dark": "#1f1a17",
+              "text-light": "#333333",
+              "text-dark": "#e0e0e0",
+              "text-muted-light": "#6b7280",
+              "text-muted-dark": "#9ca3af",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "0.75rem",
+              xl: "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div
+      class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden"
+    >
+      <div class="flex min-h-screen">
+        <!-- SideNavBar -->
+        <div
+          class="flex flex-col gap-4 border-r border-gray-200/50 dark:border-gray-700/50 bg-white/50 dark:bg-black/10 w-64 p-4 shrink-0"
+        >
+          <div class="flex items-center gap-3 px-2 py-2">
+            <div
+              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+              data-alt="User profile picture for Alex Johnson"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZBjrpggVRkMlV9uOJ6iap1WSK9oLCsV7U0wq_iyUxTvtqsasv1j-Syy5jL4KKbqnDjIIYnA91bQWPZo6AURwVGSZ5YYWt2Gvu2DO-WVJOsCIsxUgksUf4V9zjVhC1UcZSqY-3rFlRCOgauwTkeIwomDHK7EodkNQuFaw9J532lVS7-cQHfg7IHqTbqccs0W_bfDlLS3kVYRvMhziI9JgpdN_oFjK4WAxe9IrVkDEFv3fIZLxKGVrNtEupyRbsjTyPeZmie1oSlw');
+              "
+            ></div>
+            <div class="flex flex-col">
+              <h1
+                class="text-text-light dark:text-text-dark text-base font-medium leading-normal"
+              >
+                Alex Johnson
+              </h1>
+              <p
+                class="text-text-muted-light dark:text-text-muted-dark text-sm font-normal leading-normal"
+              >
+                alex.j@university.edu
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2 mt-4 grow">
+            <a
+              class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+              href="index.html"
+            >
+              <span
+                class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+                >home</span
+              >
+              <p class="text-sm font-medium leading-normal">Home</p>
+            </a>
+            <a
+              class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+              href="chat.html"
+            >
+              <span
+                class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+                >chat_bubble</span
+              >
+              <p class="text-sm font-medium leading-normal">Chat</p>
+            </a>
+            <a
+              class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+              href="journal.html"
+            >
+              <span
+                class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+                >book</span
+              >
+              <p class="text-sm font-medium leading-normal">Journal</p>
+            </a>
+            <a
+              class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 dark:bg-primary/30 text-text-light dark:text-text-dark transition-colors"
+              href="history.html"
+            >
+              <span
+                class="material-symbols-outlined text-text-light dark:text-text-dark"
+                style="font-variation-settings: 'FILL' 1"
+                >history</span
+              >
+              <p class="text-sm font-bold leading-normal">History</p>
+            </a>
+            <a
+              class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+              href="logmood.html"
+            >
+              <span
+                class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+                >sentiment_satisfied</span
+              >
+              <p class="text-sm font-medium leading-normal">Mood Log</p>
+            </a>
+          </div>
+          <div class="flex flex-col gap-1">
+            <div
+              class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+            >
+              <a
+                class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+                href="settings.html"
+              >
+                <span
+                  class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+                  >settings</span
+                >
+                <p class="text-sm font-medium leading-normal">Settings</p>
+              </a>
+            </div>
+            <div
+              class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+            >
+              <span
+                class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
+                >help</span
+              >
+              <p class="text-sm font-medium leading-normal">Help</p>
+            </div>
+          </div>
+        </div>
+        <!-- Main Content -->
+        <main class="flex-1 p-8 overflow-y-auto">
+          <div class="max-w-4xl mx-auto">
+            <!-- PageHeading -->
+            <div class="flex flex-wrap justify-between gap-3 p-4">
+              <h1
+                class="text-text-light dark:text-text-dark text-4xl font-black leading-tight tracking-[-0.033em] min-w-72"
+              >
+                History &amp; Reflections
+              </h1>
+            </div>
+            <!-- Tabs -->
+            <div
+              class="pb-3 sticky top-0 bg-background-light dark:bg-background-dark z-10"
+            >
+              <div
+                class="flex border-b border-gray-200/80 dark:border-gray-700/80 px-4 gap-8"
+              >
+                <a
+                  class="tab-btn flex flex-col items-center justify-center border-b-[3px] border-b-primary text-text-light dark:text-text-dark pb-[13px] pt-4"
+                >
+                  <p
+                    class="text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    Journal Entries
+                  </p>
+                </a>
+                <a
+                  class="tab-btn flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-muted-light dark:text-text-muted-dark pb-[13px] pt-4 hover:border-b-primary/50 transition-colors"
+                >
+                  <p
+                    class="text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    Chat History
+                  </p>
+                </a>
+                <a
+                  class="tab-btn flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-muted-light dark:text-text-muted-dark pb-[13px] pt-4 hover:border-b-primary/50 transition-colors"
+                >
+                  <p
+                    class="text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    Mood Log
+                  </p>
+                </a>
+              </div>
+            </div>
+            <!-- Search and Filters -->
+            <div class="flex items-center gap-4 px-4 py-5">
+              <!-- SearchBar -->
+              <div class="flex-grow">
+                <label class="flex flex-col min-w-40 h-12 w-full">
+                  <div
+                    class="flex w-full flex-1 items-stretch rounded-lg h-full"
+                  >
+                    <div
+                      class="text-text-muted-light dark:text-text-muted-dark flex border border-r-0 border-gray-300 dark:border-gray-700 bg-white dark:bg-background-dark items-center justify-center pl-4 rounded-l-lg"
+                    >
+                      <span class="material-symbols-outlined">search</span>
+                    </div>
+                    <input
+                      class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light dark:text-text-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-l-0 border-gray-300 dark:border-gray-700 bg-white dark:bg-background-dark focus:border-gray-300 dark:focus:border-gray-700 h-full placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark px-4 rounded-l-none pl-2 text-base font-normal leading-normal"
+                      placeholder="Search entries..."
+                      value=""
+                    />
+                  </div>
+                </label>
+              </div>
+              <!-- Chips -->
+              <div class="flex gap-3">
+                <button
+                  class="flex h-12 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-background-dark border border-gray-300 dark:border-gray-700 px-4"
+                >
+                  <p
+                    class="text-text-light dark:text-text-dark text-sm font-medium leading-normal"
+                  >
+                    Date Range
+                  </p>
+                  <span
+                    class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark text-xl"
+                    >expand_more</span
+                  >
+                </button>
+              </div>
+            </div>
+            <!-- Content List -->
+            <div class="px-4 py-2 space-y-4">
+              <!-- Chat History: full list of conversations -->
+              <div
+                id="chat-history-list"
+                class="bg-white p-4 rounded-lg shadow-sm mb-4"
+              >
+                <h2 class="text-lg font-bold mb-2">All Conversations</h2>
+                <div id="conversations-container" class="flex flex-col gap-3">
+                  <p class="text-sm text-gray-500">Loading conversations...</p>
+                </div>
+              </div>
+              <!-- Journal Entry Card 1 -->
+              <div
+                class="bg-white dark:bg-black/20 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-primary/30"
+              >
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-text-light dark:text-text-dark"
+                    >
+                      A breakthrough on my project
+                    </h3>
+                    <p
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark mt-1"
+                    >
+                      October 26, 2023
+                    </p>
+                  </div>
+                  <div
+                    class="flex items-center gap-2 bg-secondary/20 dark:bg-secondary/30 text-secondary-800 dark:text-secondary-200 px-3 py-1 rounded-full"
+                  >
+                    <span
+                      class="material-symbols-outlined text-lg"
+                      style="color: #ffb385"
+                      >celebration</span
+                    >
+                    <span class="text-sm font-medium" style="color: #c57642"
+                      >Proud</span
+                    >
+                  </div>
+                </div>
+                <p
+                  class="text-text-light dark:text-text-dark mt-4 leading-relaxed line-clamp-2"
+                >
+                  I finally solved that bug that's been bothering me for a week.
+                  I felt a huge wave of relief and accomplishment wash over me.
+                  It's moments like these that remind me why I love what I do. I
+                  should remember to take breaks more often, as the solution
+                  came to me when I was on a walk...
+                </p>
+              </div>
+              <!-- Journal Entry Card 2 -->
+              <div
+                class="bg-white dark:bg-black/20 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-primary/30"
+              >
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-text-light dark:text-text-dark"
+                    >
+                      Feeling overwhelmed with finals
+                    </h3>
+                    <p
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark mt-1"
+                    >
+                      October 24, 2023
+                    </p>
+                  </div>
+                  <div
+                    class="flex items-center gap-2 bg-accent/40 dark:bg-accent/30 px-3 py-1 rounded-full"
+                  >
+                    <span
+                      class="material-symbols-outlined text-lg"
+                      style="color: #90a4ae"
+                      >sentiment_stressed</span
+                    >
+                    <span class="text-sm font-medium" style="color: #546e7a"
+                      >Anxious</span
+                    >
+                  </div>
+                </div>
+                <p
+                  class="text-text-light dark:text-text-dark mt-4 leading-relaxed line-clamp-2"
+                >
+                  The pressure is really mounting this week. I have three major
+                  exams and a paper due. It's hard to focus on one thing when so
+                  many others are looming. Sana suggested I try the 5-4-3-2-1
+                  grounding technique, and it helped a bit to bring me back to
+                  the present moment. I'll try to break down my study
+                  schedule...
+                </p>
+              </div>
+              <!-- Journal Entry Card 3 -->
+              <div
+                class="bg-white dark:bg-black/20 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-primary/30"
+              >
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3
+                      class="text-lg font-bold text-text-light dark:text-text-dark"
+                    >
+                      A quiet afternoon
+                    </h3>
+                    <p
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark mt-1"
+                    >
+                      October 22, 2023
+                    </p>
+                  </div>
+                  <div
+                    class="flex items-center gap-2 bg-primary/20 dark:bg-primary/30 px-3 py-1 rounded-full"
+                  >
+                    <span
+                      class="material-symbols-outlined text-lg"
+                      style="color: #5e9c77"
+                      >self_improvement</span
+                    >
+                    <span class="text-sm font-medium" style="color: #38761d"
+                      >Calm</span
+                    >
+                  </div>
+                </div>
+                <p
+                  class="text-text-light dark:text-text-dark mt-4 leading-relaxed line-clamp-2"
+                >
+                  Didn't do much today, and that's okay. I spent the afternoon
+                  reading in the park and just enjoying the weather. It was nice
+                  to disconnect and not have any specific goals or tasks. I feel
+                  recharged and more ready to take on the week ahead. It's a
+                  good reminder that rest is productive too.
+                </p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script>
+      (async function () {
+        const CHAT_API_URL = "php/chat_api.php";
+        const container = document.getElementById("conversations-container");
+        if (!container) return;
+        container.innerHTML = "";
+        try {
+          const res = await fetch(`${CHAT_API_URL}?action=get_conversations`);
+          if (!res.ok) {
+            container.innerHTML =
+              '<p class="text-sm text-red-500">Failed to load conversations</p>';
+            return;
+          }
+          const data = await res.json();
+          const convs = (data && data.conversations) || [];
+          if (!convs.length) {
+            container.innerHTML =
+              '<p class="text-sm text-gray-500">No conversations found</p>';
+            return;
+          }
+          // sort newest first
+          convs.sort(
+            (a, b) =>
+              new Date(b.created_at || b.createdAt || 0) -
+              new Date(a.created_at || a.createdAt || 0)
+          );
+          convs.forEach((c) => {
+            const id = c.id || c.conversation_id || c.conversationId || "";
+            const title =
+              c.title ||
+              c.name ||
+              (c.last_message
+                ? String(c.last_message).slice(0, 120)
+                : new Date(
+                    c.created_at || c.createdAt || Date.now()
+                  ).toLocaleString());
+            const item = document.createElement("div");
+            item.className =
+              "p-3 bg-background-light rounded-lg flex items-start justify-between";
+            const left = document.createElement("div");
+            const h = document.createElement("div");
+            h.className = "font-medium text-sm";
+            h.textContent = title;
+            const meta = document.createElement("div");
+            meta.className = "text-xs text-gray-500 mt-1";
+            meta.textContent =
+              c.created_at || c.createdAt
+                ? new Date(c.created_at || c.createdAt).toLocaleString()
+                : "";
+            left.appendChild(h);
+            left.appendChild(meta);
+            const right = document.createElement("div");
+            const open = document.createElement("a");
+            open.href = `chat.html?conversation_id=${encodeURIComponent(id)}`;
+            open.className = "text-sm text-primary/80";
+            open.textContent = "Open in Chat";
+            right.appendChild(open);
+            item.appendChild(left);
+            item.appendChild(right);
+            container.appendChild(item);
+          });
+        } catch (err) {
+          console.error(err);
+          container.innerHTML =
+            '<p class="text-sm text-red-500">Error loading conversations</p>';
+        }
+      })();
+    </script>
+  </body>
+</html>

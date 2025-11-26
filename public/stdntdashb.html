@@ -13,6 +13,8 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
       tailwind.config = {
         darkMode: "class",
@@ -48,6 +50,50 @@
         },
       };
     </script>
+    <style>
+      /* Fade effect */
+      .page-transition {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .page-loaded {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      @keyframes pulseMood {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 0.7;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .mood-pulse {
+        animation: pulseMood 1.5s infinite;
+      }
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeInUp 0.5s ease forwards;
+      }
+    </style>
   </head>
   <body class="font-display bg-background-light dark:bg-background-dark">
     <div class="relative flex h-auto min-h-screen w-full flex-col">
@@ -110,28 +156,56 @@
                 >notifications</span
               >
             </button>
-            <div
-              class="aspect-square size-10 rounded-full bg-cover bg-center bg-no-repeat"
-              data-alt="User profile picture of Alex"
+            <button
+              id="logout-btn"
+              title="Logout"
+              class="aspect-square size-10 rounded-full bg-cover bg-center bg-no-repeat cursor-pointer border-2 border-primary hover:opacity-80 transition"
               style="
                 background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCWAVk6HUFJC1nlhRdJnKwNrrvm5dXL8kcCp8gT6lqdKowCZtMhps2Q_v0w8D7ksuoIThUSLFx30VwpEVpARGti5zdSh1ImbvlLgvdzLAfH8H93yVhQBfoxmg5lMZqZ6agcGCiyEvuyKJ0kr2HHoxgLasqPKCx5Kva0iOlYBrBVIjQNOu8FuWHf8Kz2zLS9ozzBIEzWkAiNkSZO8lV15lOyPwBmcIBYydCn9zzvNOaHx-ObgrEMfleAaOrkw2B_eNtG3eg5Kdpo7A');
               "
-            ></div>
+            ></button>
+            <script>
+              // Logout button functionality
+              document.addEventListener("DOMContentLoaded", function () {
+                const logoutBtn = document.getElementById("logout-btn");
+                if (logoutBtn) {
+                  logoutBtn.addEventListener("click", function () {
+                    localStorage.clear();
+                    window.location.href = "login.html";
+                  });
+                }
+              });
+            </script>
           </div>
         </nav>
       </header>
-      <main class="flex w-full flex-1 justify-center p-4 sm:p-6 lg:p-8">
+      <main
+        class="flex w-full flex-1 justify-center p-4 sm:p-6 lg:p-8 page-transition"
+        id="main-content"
+      >
+        <script>
+          // Slower page fade-in effect
+          document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+              document
+                .getElementById("main-content")
+                .classList.add("page-loaded");
+            }, 900); // Increased delay for slower effect
+          });
+        </script>
         <div class="w-full max-w-7xl">
           <div class="mb-8">
             <h2
               class="text-4xl font-black tracking-tight text-text-primary-light dark:text-text-primary-dark"
+              id="greeting-text"
             >
-              Good morning, Alex!
+              Good morning,
             </h2>
             <p
               class="text-base font-normal text-text-secondary-light dark:text-text-secondary-dark"
+              id="greeting-date"
             >
-              Monday, 28 October. Ready to start your day with a clear mind?
+              <!-- Date will be inserted here -->
             </p>
           </div>
           <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -237,6 +311,7 @@
                       Your Mood This Week
                     </h3>
                     <p
+                      id="recent-mood"
                       class="text-3xl font-bold text-primary dark:text-positive-dark"
                     >
                       Feeling Okay
@@ -257,89 +332,21 @@
                       </p>
                     </div>
                   </div>
-                  <button
-                    class="h-10 cursor-pointer rounded-lg bg-primary-accent px-4 text-sm font-bold text-white transition-opacity hover:opacity-90"
-                  >
-                    Log Today's Mood
-                  </button>
+                  <a href="logmood.html">
+                    <button
+                      class="h-10 cursor-pointer rounded-lg bg-primary-accent px-4 text-sm font-bold text-white transition-opacity hover:opacity-90"
+                    >
+                      Log Today's Mood
+                    </button>
+                  </a>
+                  <!-- MOOD HISTORY CHART -->
                 </div>
-                <div
-                  class="mt-6 flex min-h-[180px] flex-1 flex-col justify-end gap-2"
-                >
-                  <svg
-                    fill="none"
-                    height="150"
-                    preserveAspectRatio="none"
-                    viewBox="0 0 472 150"
-                    width="100%"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <defs>
-                      <linearGradient
-                        gradientUnits="userSpaceOnUse"
-                        id="chartGradient"
-                        x1="236"
-                        x2="236"
-                        y1="0"
-                        y2="150"
-                      >
-                        <stop stop-color="#4C9A7A" stop-opacity="0.3"></stop>
-                        <stop
-                          offset="1"
-                          stop-color="#4C9A7A"
-                          stop-opacity="0"
-                        ></stop>
-                      </linearGradient>
-                    </defs>
-                    <path
-                      d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V150H0V109Z"
-                      fill="url(#chartGradient)"
-                    ></path>
-                    <path
-                      d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25"
-                      stroke="#4C9A7A"
-                      stroke-linecap="round"
-                      stroke-width="3"
-                    ></path>
-                  </svg>
-                  <div
-                    class="flex justify-around border-t border-border-light pt-2 dark:border-border-dark"
-                  >
-                    <p
-                      class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark"
-                    >
-                      Mon
-                    </p>
-                    <p
-                      class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark"
-                    >
-                      Tue
-                    </p>
-                    <p
-                      class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark"
-                    >
-                      Wed
-                    </p>
-                    <p
-                      class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark"
-                    >
-                      Thu
-                    </p>
-                    <p
-                      class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark"
-                    >
-                      Fri
-                    </p>
-                    <p
-                      class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark"
-                    >
-                      Sat
-                    </p>
-                    <p
-                      class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark"
-                    >
-                      Sun
-                    </p>
+                <!-- MOOD HISTORY CHART -->
+                <div class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md">
+                  <h3 class="text-lg font-semibold mb-4">Mood History</h3>
+
+                  <div class="relative h-48 md:h-64">
+                    <canvas id="mood-history-chart"></canvas>
                   </div>
                 </div>
               </div>
@@ -433,84 +440,172 @@
                   </div>
                 </div>
               </div>
-              <div
-                class="rounded-xl border border-border-light bg-card-light p-6 shadow-sm dark:border-border-dark dark:bg-card-dark"
-              >
+              <!-- RECENT ACTIVITY -->
+              <div class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md">
                 <h3
-                  class="text-xl font-bold text-text-primary-light dark:text-text-primary-dark"
+                  class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4"
                 >
                   Recent Activity
                 </h3>
-                <ul class="mt-4 space-y-4">
-                  <li class="flex items-start gap-3">
-                    <div
-                      class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-positive-light/20 text-positive-light"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >self_improvement</span
-                      >
-                    </div>
-                    <div>
-                      <p
-                        class="font-medium text-text-primary-light dark:text-text-primary-dark"
-                      >
-                        Completed a breathing exercise
-                      </p>
-                      <p
-                        class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
-                      >
-                        Yesterday
-                      </p>
-                    </div>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <div
-                      class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >forum</span
-                      >
-                    </div>
-                    <div>
-                      <p
-                        class="font-medium text-text-primary-light dark:text-text-primary-dark"
-                      >
-                        Last chat on Oct 25
-                      </p>
-                      <a
-                        class="text-sm font-medium text-primary transition-opacity hover:opacity-80"
-                        href="#"
-                        >View summary</a
-                      >
-                    </div>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <div
-                      class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary"
-                    >
-                      <span class="material-symbols-outlined text-xl"
-                        >article</span
-                      >
-                    </div>
-                    <div>
-                      <p
-                        class="font-medium text-text-primary-light dark:text-text-primary-dark"
-                      >
-                        Read an article on mindfulness
-                      </p>
-                      <p
-                        class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
-                      >
-                        Oct 23
-                      </p>
-                    </div>
-                  </li>
-                </ul>
+
+                <p
+                  class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2"
+                  id="last-chat-date"
+                >
+                  Last chat on N/A
+                </p>
+
+                <p
+                  class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
+                >
+                  Recent messages: <span id="recent-messages">0</span>
+                </p>
+
+                <p
+                  class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
+                >
+                  Total conversations: <span id="conversation-count">0</span>
+                </p>
               </div>
             </div>
           </div>
         </div>
       </main>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const ctx = document
+          .getElementById("mood-history-chart")
+          .getContext("2d");
+
+        // Create gradient fill
+        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, "rgba(34, 139, 87, 0.35)"); // top (soft green)
+        gradient.addColorStop(1, "rgba(34, 139, 87, 0)"); // bottom fade
+
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            datasets: [
+              {
+                label: "Mood Intensity",
+                data: [6, 7, 5, 6, 3, 8, 7], // replace with API data
+                fill: true,
+                backgroundColor: gradient,
+                borderColor: "#2e7d6a", // deep dashboard green
+                borderWidth: 4,
+                tension: 0.45, // smooth curve
+                pointRadius: 0, // no dots
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: {
+                  color: "#555",
+                  font: { weight: "600" },
+                },
+              },
+              y: {
+                display: false, // hide Y-axis completely
+                min: 0,
+                max: 10,
+              },
+            },
+
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                enabled: true,
+                backgroundColor: "#2e7d6a",
+                titleColor: "#fff",
+                bodyColor: "#fff",
+                padding: 10,
+                cornerRadius: 8,
+              },
+            },
+
+            elements: {
+              line: {
+                borderCapStyle: "round", // rounded ends
+                borderJoinStyle: "round",
+              },
+            },
+          },
+        });
+      });
+    </script>
+
+    <script>
+      // Fetch dashboard data and user info
+      const userId = localStorage.getItem("user_id"); // MUST exist
+
+      fetch(
+        "php/api.php?action=get_dashboard_data&user_id=" +
+          localStorage.getItem("user_id")
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          const d = data.data;
+
+          const greetingText = document.getElementById("greeting-text");
+          const greetingDate = document.getElementById("greeting-date");
+
+          const userName = d.user_name || "there";
+          greetingText.textContent = `Good morning, ${userName}`;
+
+          const now = new Date();
+
+          const days = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ];
+          const months = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+
+          const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${
+            months[now.getMonth()]
+          }`;
+          greetingDate.textContent = `${dateStr}. Ready to start your day with a clear mind?`;
+
+          document.getElementById("recent-mood").textContent = d.mood || "N/A";
+          document.getElementById("conversation-count").textContent =
+            d.conversations;
+          document.getElementById("recent-messages").textContent =
+            d.recent_messages.length;
+          document.getElementById("last-chat-date").textContent =
+            "Last chat on " + (d.last_chat_date || "N/A");
+
+          if (d.mood_history && d.mood_history.length > 0) {
+            updateMoodChart(d.mood_history);
+          }
+
+          console.log(d);
+        });
+    </script>
   </body>
 </html>
