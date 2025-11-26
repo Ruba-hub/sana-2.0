@@ -524,17 +524,18 @@
           mobileMenu.classList.add("hidden");
         });
       });
+    }
 
-      // Dark mode toggle
-      const darkModeToggle = document.getElementById("dark-mode-toggle");
-      const mobileDarkModeToggle = document.getElementById("mobile-dark-mode-toggle");
+    // Dark mode toggle (safe guards)
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    const mobileDarkModeToggle = document.getElementById("mobile-dark-mode-toggle");
 
-      function toggleDarkMode() {
-        document.documentElement.classList.toggle("dark");
-      }
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle("dark");
+    }
 
-      darkModeToggle.addEventListener("click", toggleDarkMode);
-      mobileDarkModeToggle.addEventListener("click", toggleDarkMode);
+    if (darkModeToggle) darkModeToggle.addEventListener("click", toggleDarkMode);
+    if (mobileDarkModeToggle) mobileDarkModeToggle.addEventListener("click", toggleDarkMode);
   </script>
 
 </body>
