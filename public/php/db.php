@@ -1,3 +1,4 @@
+   
 <?php
 /**
  * Simple PDO-based Database helper for Sana app (MySQL)
@@ -5,6 +6,13 @@
  */
 
 class Database {
+
+    // Fetch user by id
+    public function getUserById($id) {
+        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     private $pdo;
 
     public function __construct(array $config = []) {
@@ -53,6 +61,13 @@ class Database {
         return $stmt->fetch();
     }
 
+    // Update a user's password hash
+    public function updateUserPassword(string $userId, string $hashedPassword) {
+        // assume users table has a 'password' column; adjust if different (e.g. password_hash)
+        $stmt = $this->pdo->prepare("UPDATE users SET password = :password WHERE id = :id");
+        return $stmt->execute([':password' => $hashedPassword, ':id' => $userId]);
+    }
+
     // Create conversation
     public function createConversation(string $userId, string $title = null) {
         $sql = "INSERT INTO conversations (id, user_id, title) VALUES (UUID(), :user_id, :title)";
@@ -83,6 +98,27 @@ class Database {
         $r = $q->fetch();
         return $r ? $r['id'] : null;
     }
+
+    // Get attachment by id
+    public function getAttachment(string $id) {
+        $stmt = $this->pdo->prepare("SELECT * FROM attachments WHERE id = :id LIMIT 1");
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+        // Fetch all conversations for a user, newest first
+        public function getUserConversations($userId) {
+            $stmt = $this->pdo->prepare("SELECT * FROM conversations WHERE user_id = ? ORDER BY created_at DESC");
+            $stmt->execute([$userId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        // Fetch the latest conversation for a user
+        public function getLatestConversation($userId) {
+            $stmt = $this->pdo->prepare("SELECT * FROM conversations WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
+            $stmt->execute([$userId]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
 
     // Add message (optionally with attachment)
     public function addMessage(string $conversationId, string $sender, string $content = null, string $attachmentId = null, bool $isAudio = false, array $metadata = null, int $seq = null) {
@@ -132,6 +168,116 @@ class Database {
         $stmt->execute();
         return array_reverse($stmt->fetchAll()); // return oldest->newest
     }
+    public function getMessagesByUser($userId, $limit = 10)
+{
+    $stmt = $this->pdo->prepare("
+        SELECT m.*
+        FROM messages m
+        JOIN conversations c ON m.conversation_id = c.id
+        WHERE c.user_id = ?
+        ORDER BY m.created_at DESC
+        LIMIT ?
+    ");
+    $stmt->execute([$userId, $limit]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+public function getConversationCount($userId)
+{
+    $stmt = $this->pdo->prepare("
+        SELECT COUNT(*) AS total
+        FROM conversations
+        WHERE user_id = ?
+    ");
+    $stmt->execute([$userId]);
+    return $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+}
+
+public function getLastMood($userId)
+{
+    $stmt = $this->pdo->prepare("
+        SELECT mood
+        FROM mood_logs
+        WHERE user_id = ?
+        ORDER BY timestamp DESC
+        LIMIT 1
+    ");
+    $stmt->execute([$userId]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $row ? $row['mood'] : 'N/A';
+}
+public function getMoodHistory($userId, $days = 7)
+{
+    $stmt = $this->pdo->prepare("
+        SELECT *
+        FROM mood_logs
+        WHERE user_id = ?
+        AND timestamp >= DATE_SUB(NOW(), INTERVAL ? DAY)
+        ORDER BY timestamp ASC
+");
+    $stmt->execute([$userId, $days]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function getLastChatDate($userId)
+{
+    $stmt = $this->pdo->prepare("
+        SELECT DATE_FORMAT(MAX(m.created_at), '%M %e') AS last_date
+        FROM messages m
+        JOIN conversations c ON m.conversation_id = c.id
+        WHERE c.user_id = ?
+    ");
+    $stmt->execute([$userId]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $row ? $row['last_date'] : null;
+}
+public function addMoodLog($userId, $mood, $intensity, $tags = null, $notes = null, $timestamp = null) {
+    $sql = "INSERT INTO mood_logs (user_id, mood, intensity, tags, notes, timestamp)
+            VALUES (:user_id, :mood, :intensity, :tags, :notes, :timestamp)";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([
+        ':user_id' => $userId,
+        ':mood' => $mood,
+        ':intensity' => $intensity,
+        ':tags' => $tags,
+        ':notes' => $notes,
+        ':timestamp' => $timestamp ?? date('Y-m-d H:i:s')
+    ]);
+    return $this->pdo->lastInsertId();
+}
+
+    // Add a journal entry for a user
+    public function addJournalEntry(string $userId, string $title = null, string $content = null, string $tags = null, string $createdAt = null) {
+        $sql = "INSERT INTO journal_entries (user_id, title, content, tags, created_at) VALUES (:user_id, :title, :content, :tags, :created_at)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':title' => $title,
+            ':content' => $content,
+            ':tags' => $tags,
+            ':created_at' => $createdAt ?? date('Y-m-d H:i:s')
+        ]);
+        // Table uses AUTO_INCREMENT on `id` — return the inserted numeric id
+        return $this->pdo->lastInsertId();
+    }
+
+    // Get journal entries for a user
+    public function getJournalEntries(string $userId, int $limit = 20, int $offset = 0) {
+        $stmt = $this->pdo->prepare("SELECT * FROM journal_entries WHERE user_id = :user_id ORDER BY created_at DESC LIMIT :limit OFFSET :offset");
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Get a single journal entry by id
+    public function getJournalEntry($id) {
+        $stmt = $this->pdo->prepare("SELECT * FROM journal_entries WHERE id = :id LIMIT 1");
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
 }
 
 // Usage note: include this file and instantiate Database with config

@@ -109,6 +109,64 @@
       .chat-message.user.show {
         transform: translateY(0) translateX(0);
       }
+      /* User audio bubble (green) */
+      .user-audio-bubble {
+        background: var(--tw-color-primary-green, #2a9d8f);
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.6rem 0.8rem;
+        border-radius: 1rem;
+        width: fit-content;
+        max-width: 16rem;
+      }
+
+      .user-audio-play {
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        color: var(--tw-color-primary-green, #2a9d8f);
+        border-radius: 9999px;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .user-audio-info {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+      }
+      .user-audio-meta {
+        font-size: 12px;
+        opacity: 0.95;
+      }
+      .user-audio-progress {
+        height: 6px;
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+      .user-audio-progress > i {
+        display: block;
+        height: 100%;
+        background: white;
+        width: 0%;
+      }
+      /* Sana (AI) audio bubble: lighter background and smaller width than user bubble */
+      .sana-audio-bubble {
+        background: var(--tw-color-sana-message-bg, #cf9f85);
+        color: var(--tw-color-text-primary-light, #fff);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 10px;
+        border-radius: 0.75rem;
+        width: fit-content;
+      }
     </style>
   </head>
   <body class="bg-background-light font-display">
@@ -120,202 +178,106 @@
       });
     </script>
     <div class="flex h-screen w-full text-text-primary-light">
-<aside
-  class="hidden md:flex flex-col w-72 bg-surface-light p-4 shrink-0 border-r border-border-light"
->
-  <!-- TOP BRAND -->
-  <div class="flex items-center gap-3 mb-8 px-2">
-    <svg class="size-6 text-primary-green" fill="none" viewBox="0 0 48 48"
-      xmlns="http://www.w3.org/2000/svg">
-      <path clip-rule="evenodd"
-        d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
-        fill="currentColor" fill-rule="evenodd"></path>
-    </svg>
-    <h1 class="text-text-primary-light text-xl font-bold">Sana</h1>
-  </div>
+      <aside
+        class="flex flex-col w-72 bg-surface-light p-4 shrink-0 border-r border-border-light"
+      >
+        <div class="flex items-center gap-3 mb-8 px-2">
+          <a href="stdntdashb.html">
+            <svg
+              class="size-6 text-primary-green"
+              fill="none"
+              viewBox="0 0 48 48"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+                fill="currentColor"
+                fill-rule="evenodd"
+              ></path>
+            </svg>
+          </a>
+          <h1 class="text-text-primary-light text-xl font-bold">Sana</h1>
+        </div>
+        <div class="flex flex-col gap-4 flex-grow">
+          <button
+            id="new-chat-btn"
+            class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary-green text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:bg-primary-green/90 transition-colors"
+          >
+            <span class="material-symbols-outlined text-lg">add_circle</span>
+            <span class="truncate">New Chat</span>
+          </button>
+          <div class="flex flex-col gap-1">
+            <p
+              class="text-text-secondary-light text-xs font-semibold uppercase px-3 pt-2"
+            >
+              Recent Chats
+            </p>
+            <div id="recent-chats-list" class="flex flex-col gap-2 px-0 py-0">
+              <!-- Recent chats will be populated here by JS -->
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-3 py-2 px-3">
+            <div
+              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+              data-alt="User avatar with a gradient background"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJxjNCWaageqt_bEEUTRF0VGBI1KmgSLlmwa6Q2cKZR1lzUho54st-7808DMj8X86n8Z3ZsBRN6HxwABReYhuOT5xBDn3gUHJH-Md1zuVHW4T5gELw2rHpEicEkVTvvAnfRsXXaSwLqeYGaYLmJcdz1K2T7x-6AZjhu7urs8S9F5JdyIH4-4gUkybu5VvJMuWfiy76UT9i6Zfd-UsDjoeokPyeRinejXqTZDZ7MOA9YPlpz7t8aKOkbGMbWKw14JFFFtESz6hohA');
+              "
+            ></div>
+            <div class="flex flex-col">
+              <h2
+                id="sidebar-username"
+                class="text-text-primary-light text-base font-medium leading-normal"
+              >
+                &nbsp;
+              </h2>
+              <p
+                id="sidebar-role"
+                class="text-text-secondary-light text-sm font-normal leading-normal"
+              >
+                &nbsp;
+              </p>
+            </div>
+          </div>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors"
+            href="settings.html"
+          >
+            <span
+              class="material-symbols-outlined text-lg text-text-secondary-light"
+              >settings</span
+            >
+            <p
+              class="text-text-primary-light text-sm font-medium leading-normal"
+            >
+              Settings
+            </p>
+          </a>
 
-  <!-- NEW CHAT BUTTON -->
-  <button
-    class="flex w-full cursor-pointer items-center overflow-hidden h-10 px-2 text-slate-700 text-sm font-bold leading-normal tracking-[0.015em] gap-2">
-    <span class="material-symbols-outlined text-lg">add_circle</span>
-    <span class="truncate">New Chat</span>
-  </button>
-
-  <!-- CHAT LIST -->
-  <div class="flex flex-col gap-1 mt-4 flex-grow">
-    <p class="text-text-secondary-light text-xs font-semibold px-3">Chats</p>
-
-    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-button-peach" href="#">
-      <span class="material-symbols-outlined text-lg text-primary-green">chat</span>
-      <p class="text-text-primary-light text-sm font-medium leading-normal">Today's Check-in</p>
-    </a>
-
-    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors" href="#">
-      <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
-      <p class="text-text-primary-light text-sm font-medium leading-normal">Talking about exams</p>
-    </a>
-
-    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors" href="#">
-      <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
-      <p class="text-text-primary-light text-sm font-medium leading-normal">Feeling overwhelmed</p>
-    </a>
-  </div>
-
-  <!-- PROFILE SECTION -->
-  <div class="flex flex-col gap-1 mt-4">
-    <div class="flex items-center gap-1 py-2 px-3 relative bg-white">
-
-      <!-- DROPDOWN MENU (hidden by default) -->
-      <div
-        class="absolute left-0 -top-[300%] w-full flex flex-col gap-1 bg-surface-light border border-border-light rounded-lg p-3 shadow-lg z-50 hidden">
-        <a class="flex items-center gap-3 px-3 py-1" href="settings.html">
-          <span class="material-symbols-outlined text-lg text-text-secondary-light">star</span>
-          <p class="text-text-primary-light text-sm font-medium leading-normal">Upgrade plan</p>
-        </a>
-
-        <a class="flex items-center gap-3 px-3 py-1" href="settings.html">
-          <span class="material-symbols-outlined text-lg text-text-secondary-light">settings</span>
-          <p class="text-text-primary-light text-sm font-medium leading-normal">Settings</p>
-        </a>
-
-        <hr />
-
-        <a class="flex items-center gap-3 px-3 py-1" href="#">
-          <span class="material-symbols-outlined text-lg text-text-secondary-light">help</span>
-          <p class="text-text-primary-light text-sm font-medium leading-normal">Help</p>
-        </a>
-
-        <a class="flex items-center gap-3 px-3 py-1" href="#">
-          <span class="material-symbols-outlined text-lg text-text-secondary-light">logout</span>
-          <p class="text-text-primary-light text-sm font-medium leading-normal">Logout</p>
-        </a>
-      </div>
-
-      <!-- PROFILE DISPLAY -->
-      <div
-        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJxjNCWaageqt_bEEUTRF0VGBI1KmgSLlmwa6Q2cKZR1lzUho54st-7808DMj8X86n8Z3ZsBRN6HxwABReYhuOT5xBDn3gUHJH-Md1zuVHW4T5gELw2rHpEicEkVTvvAnfRsXXaSwLqeYGaYLmJcdz1K2T7x-6AZjhu7urs8S9F5JdyIH4-4gUkybu5VvJMuWfiy76UT9i6Zfd-UsDjoeokPyeRinejXqTZDZ7MOA9YPlpz7t8aKOkbGMbWKw14JFFFtESz6hohA');">
-      </div>
-
-      <div class="flex flex-col relative ml-2">
-        <h2 class="text-text-primary-light text-base font-medium">Alex Johnson</h2>
-        <p class="text-text-secondary-light text-sm">Free</p>
-      </div>
-
-    </div>
-  </div>
-</aside>
-
-
-
-      <!-- MOBILE SLIDING SIDEBAR -->
-<aside
-  id="mobile-sidebar"
-  class="fixed top-0 left-0 h-full w-72 bg-surface-light p-4 z-50 transform -translate-x-full transition-transform duration-300 md:hidden border-r border-border-light"
->
-  <!-- Close button -->
-  <button
-    id="close-mobile-sidebar"
-    class="absolute top-4 right-4 text-text-primary-light">
-    <span class="material-symbols-outlined text-3xl">close</span>
-  </button>
-
-  <!-- TOP BRAND -->
-  <div class="flex items-center gap-3 mb-8 px-2">
-    <svg class="size-6 text-primary-green" fill="none" viewBox="0 0 48 48"
-      xmlns="http://www.w3.org/2000/svg">
-      <path clip-rule="evenodd"
-        d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
-        fill="currentColor" fill-rule="evenodd"></path>
-    </svg>
-    <h1 class="text-text-primary-light text-xl font-bold">Sana</h1>
-  </div>
-
-  <!-- NEW CHAT BUTTON -->
-  <button
-    class="flex w-full cursor-pointer items-center overflow-hidden h-10 px-2 text-slate-700 text-sm font-bold leading-normal tracking-[0.015em] gap-2">
-    <span class="material-symbols-outlined text-lg">add_circle</span>
-    <span class="truncate">New Chat</span>
-  </button>
-
-  <div 
-  class="w-full h-[80%] flex flex-col justify-between">
-    <!-- CHAT LIST -->
-  <div class="flex flex-col gap-1 mt-4 flex-grow">
-    <p class="text-text-secondary-light text-xs font-semibold px-3">Chats</p>
-
-    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-button-peach" href="#">
-      <span class="material-symbols-outlined text-lg text-primary-green">chat</span>
-      <p class="text-text-primary-light text-sm font-medium leading-normal">Today's Check-in</p>
-    </a>
-
-    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors" href="#">
-      <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
-      <p class="text-text-primary-light text-sm font-medium leading-normal">Talking about exams</p>
-    </a>
-
-    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors" href="#">
-      <span class="material-symbols-outlined text-lg text-text-secondary-light">chat</span>
-      <p class="text-text-primary-light text-sm font-medium leading-normal">Feeling overwhelmed</p>
-    </a>
-  </div>
-
-  <!-- PROFILE SECTION -->
-  <div class="flex flex-col gap-1 mt-4">
-    <div class="flex items-center gap-1 py-2 px-3 relative bg-white">
-
-      <!-- DROPDOWN MENU (hidden by default) -->
-      <div
-        class="absolute left-0 -top-[300%] w-full flex flex-col gap-1 bg-surface-light border border-border-light rounded-lg p-3 shadow-lg z-50 hidden">
-        <a class="flex items-center gap-3 px-3 py-1" href="settings.html">
-          <span class="material-symbols-outlined text-lg text-text-secondary-light">star</span>
-          <p class="text-text-primary-light text-sm font-medium leading-normal">Upgrade plan</p>
-        </a>
-
-        <a class="flex items-center gap-3 px-3 py-1" href="settings.html">
-          <span class="material-symbols-outlined text-lg text-text-secondary-light">settings</span>
-          <p class="text-text-primary-light text-sm font-medium leading-normal">Settings</p>
-        </a>
-
-        <hr />
-
-        <a class="flex items-center gap-3 px-3 py-1" href="#">
-          <span class="material-symbols-outlined text-lg text-text-secondary-light">help</span>
-          <p class="text-text-primary-light text-sm font-medium leading-normal">Help</p>
-        </a>
-
-        <a class="flex items-center gap-3 px-3 py-1" href="#">
-          <span class="material-symbols-outlined text-lg text-text-secondary-light">logout</span>
-          <p class="text-text-primary-light text-sm font-medium leading-normal">Logout</p>
-        </a>
-      </div>
-
-      <!-- PROFILE DISPLAY -->
-      <div
-        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJxjNCWaageqt_bEEUTRF0VGBI1KmgSLlmwa6Q2cKZR1lzUho54st-7808DMj8X86n8Z3ZsBRN6HxwABReYhuOT5xBDn3gUHJH-Md1zuVHW4T5gELw2rHpEicEkVTvvAnfRsXXaSwLqeYGaYLmJcdz1K2T7x-6AZjhu7urs8S9F5JdyIH4-4gUkybu5VvJMuWfiy76UT9i6Zfd-UsDjoeokPyeRinejXqTZDZ7MOA9YPlpz7t8aKOkbGMbWKw14JFFFtESz6hohA');">
-      </div>
-
-      <div class="flex flex-col relative ml-2">
-        <h2 class="text-text-primary-light text-base font-medium">Alex Johnson</h2>
-        <p class="text-text-secondary-light text-sm">Free</p>
-      </div>
-
-    </div>
-  </div>
-  </div>
-
-</aside>
-
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-light transition-colors"
+            href="php/logout.php"
+          >
+            <span
+              class="material-symbols-outlined text-lg text-text-secondary-light"
+              >logout</span
+            >
+            <p
+              class="text-text-primary-light text-sm font-medium leading-normal"
+            >
+              Logout
+            </p>
+          </a>
+        </div>
+      </aside>
       <main class="flex-1 flex flex-col bg-background-light">
         <header
           class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border-light px-8 py-4 shrink-0 bg-surface-light"
         >
           <div class="flex items-center gap-4 text-text-primary-light">
-            <button id="open-mobile-sidebar" class="md:hidden">
-        <span class="material-symbols-outlined text-3xl">menu</span>
-      </button>
-
             <div
               class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
               data-alt="Sana AI avatar with a soft, glowing background"
@@ -324,7 +286,6 @@
               "
             ></div>
             <div class="flex items-center gap-2">
-              
               <h2
                 class="text-text-primary-light text-lg font-bold leading-tight tracking-[-0.015em]"
               >
@@ -341,22 +302,13 @@
               </div>
             </div>
           </div>
-          <div class="flex flex-1 justify-end gap-2">
-            <button
-              class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-button-peach text-primary-orange hover:bg-button-peach/80 transition-colors gap-2 text-sm font-bold leading-normal tracking-[0.015em] px-3.5"
-              title="Start Video Call"
-            >
-              <span class="material-symbols-outlined text-xl">videocam</span>
-            </button>
-            <button
-              class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-button-peach text-primary-orange hover:bg-button-peach/80 transition-colors gap-2 text-sm font-bold leading-normal tracking-[0.015em] px-3.5"
-              title="Start Voice Call"
-            >
-              <span class="material-symbols-outlined text-xl">call</span>
-            </button>
-          </div>
+          <div class="flex flex-1 justify-end gap-2"></div>
         </header>
-        <div class="flex-1 overflow-y-auto p-8 space-y-6"></div>
+        <div
+          id="chat-container"
+          class="flex-1 overflow-y-auto p-8 space-y-6"
+        ></div>
+
         <div
           class="px-8 pb-8 pt-4 bg-surface-light border-t border-border-light"
         >
@@ -378,6 +330,7 @@
                 <span class="material-symbols-outlined text-2xl">mic</span>
               </button>
               <button
+                id="send-text-btn"
                 class="flex items-center justify-center size-9 bg-primary-orange rounded-md text-white hover:bg-primary-orange/90 transition-colors"
                 title="Send Message"
                 type="button"
@@ -419,6 +372,7 @@
         const CHAT_API_URL = "php/chat_api.php";
 
         let currentConversationId = null;
+        let lastUserWasAudio = false;
 
         // Elements
         const textarea = document.querySelector("textarea");
@@ -462,8 +416,420 @@
           }
         }
 
-        // Save message to database
-        async function saveMessage(message, sender, isAudio = false) {
+        // Convert Blob to base64 (no data: prefix)
+        function blobToBase64(blob) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const dataUrl = reader.result;
+              const idx = dataUrl.indexOf(",");
+              resolve(idx >= 0 ? dataUrl.slice(idx + 1) : dataUrl);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+        }
+
+        // Format seconds to mm:ss or hh:mm:ss
+        // Render audio message with <audio controls> tag
+        function renderAudioMessage(
+          audioUrl,
+          sender,
+          timestamp = null,
+          messageId = null,
+          signature = null
+        ) {
+          const isUser = sender === "user";
+          const timeText = timestamp
+            ? new Date(timestamp).toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+              })
+            : getCurrentTime();
+
+          const outer = document.createElement("div");
+          if (messageId) outer.dataset.messageId = messageId;
+          if (signature) outer.dataset.messageSignature = signature;
+          if (timestamp) outer.dataset.createdAt = timestamp;
+          outer.className = isUser
+            ? "flex items-start gap-4 justify-end"
+            : "flex gap-4";
+
+          const avatarHtml = isUser
+            ? `<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="User avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAOQCyegq35VfIL5s5DDM_XAUQ-XDh_MSoH8kt-oXB766TX_Ga-hgCbvpaftPUYf9zCLyuuIPaQ_R5STad1jLYbRL5uDUfFra_3dOTZnP3zl1C-ndGW3mv6FmPnKNEtlRRZA_KKFEm5JO3hG8TukLDNTbweRzFM4YecCZC9seWqgR_QNtswF7NvS2PloHCvgvC729KLt9HxpY88Jf7VHmR_Mbvoxpp0UjEoQ2FOeKB7lWB4Z6Xo_41JEb0nQniNyaqcYFyQjYT30A');"></div>`
+            : `<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>`;
+
+          const contentWrap = document.createElement("div");
+          contentWrap.className = isUser
+            ? "flex flex-col gap-2 items-end"
+            : "flex flex-col gap-2 flex-1";
+
+          const header = document.createElement("div");
+          header.className = isUser
+            ? "flex flex-wrap items-center gap-4 flex-row-reverse"
+            : "flex flex-wrap items-center gap-4";
+          header.innerHTML = `<p class="text-text-primary-light text-base font-bold leading-tight">${
+            isUser ? "You" : "Sana"
+          }</p><p class="text-text-secondary-light text-sm font-normal leading-normal">${timeText}</p>`;
+
+          const bubble = document.createElement("div");
+          bubble.className = isUser
+            ? "rounded-lg rounded-tr-none px-4 py-3 bg-user-message-bg w-fit max-w-md flex"
+            : "max-w-sm rounded-2xl rounded-tl-none px-5 py-3 bg-primary-green flex";
+
+          // If user message: render custom green player UI (play/pause, progress, duration)
+          if (isUser) {
+            const infoWrap = document.createElement("div");
+            infoWrap.className = "user-audio-bubble";
+
+            const playBtn = document.createElement("button");
+            playBtn.type = "button";
+            playBtn.className = "user-audio-play";
+            playBtn.title = "Play audio";
+            playBtn.innerHTML =
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
+
+            const info = document.createElement("div");
+            info.className = "user-audio-info";
+
+            const meta = document.createElement("div");
+            meta.className = "user-audio-meta";
+            meta.textContent = timestamp
+              ? new Date(timestamp).toLocaleTimeString([], {
+                  hour: "numeric",
+                  minute: "2-digit",
+                })
+              : "";
+
+            const progressWrap = document.createElement("div");
+            progressWrap.className = "user-audio-progress";
+            const progressFill = document.createElement("i");
+            progressFill.style.width = "0%";
+            progressWrap.appendChild(progressFill);
+
+            info.appendChild(meta);
+            info.appendChild(progressWrap);
+
+            // Hidden audio element used for playback control
+            const audioElem = document.createElement("audio");
+            audioElem.preload = "metadata";
+            audioElem.style.display = "none";
+            try {
+              let src = String(audioUrl || "");
+              if (src.startsWith("http")) {
+                const urlObj = new URL(src);
+                if (urlObj.origin !== window.location.origin)
+                  src = `php/audio_proxy.php?u=${encodeURIComponent(src)}`;
+              }
+              audioElem.src = src;
+            } catch (e) {
+              audioElem.src = audioUrl;
+            }
+
+            // Update duration when metadata loads
+            audioElem.addEventListener("loadedmetadata", () => {
+              const dur = isFinite(audioElem.duration)
+                ? Math.floor(audioElem.duration)
+                : 0;
+              const mm = Math.floor(dur / 60);
+              const ss = ("0" + (dur % 60)).slice(-2);
+              const durEl = document.createElement("div");
+              durEl.className = "user-audio-meta";
+              durEl.textContent = `${mm}:${ss}`;
+              // ensure duration element sits above progress
+              if (info.firstChild) info.insertBefore(durEl, info.firstChild);
+            });
+
+            // Update progress
+            audioElem.addEventListener("timeupdate", () => {
+              if (!audioElem.duration || !isFinite(audioElem.duration)) return;
+              const pct = (audioElem.currentTime / audioElem.duration) * 100;
+              progressFill.style.width = pct + "%";
+            });
+
+            // Toggle play/pause
+            playBtn.addEventListener("click", () => {
+              if (audioElem.paused) {
+                audioElem.play().catch(() => {});
+                playBtn.innerHTML =
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+              } else {
+                audioElem.pause();
+                playBtn.innerHTML =
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
+              }
+            });
+
+            infoWrap.appendChild(playBtn);
+            infoWrap.appendChild(info);
+            bubble.appendChild(infoWrap);
+            bubble.appendChild(audioElem);
+          } else {
+            // Sana (AI) uses a compact bubble UI (smaller than user)
+            // override bubble container to be fit-content and constrained
+            bubble.className =
+              "rounded-2xl rounded-tl-none px-4 py-3 bg-sana-message-bg w-fit max-w-xs flex";
+            const infoWrap = document.createElement("div");
+            infoWrap.className = "sana-audio-bubble";
+
+            const playBtn = document.createElement("button");
+            playBtn.type = "button";
+            playBtn.className = "user-audio-play";
+            playBtn.title = "Play audio";
+            playBtn.innerHTML =
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>';
+
+            const info = document.createElement("div");
+            info.className = "user-audio-info";
+
+            const meta = document.createElement("div");
+            meta.className = "user-audio-meta";
+            meta.textContent = timestamp
+              ? new Date(timestamp).toLocaleTimeString([], {
+                  hour: "numeric",
+                  minute: "2-digit",
+                })
+              : "";
+
+            const progressWrap = document.createElement("div");
+            progressWrap.className = "user-audio-progress";
+            const progressFill = document.createElement("i");
+            progressFill.style.width = "0%";
+            progressWrap.appendChild(progressFill);
+
+            info.appendChild(meta);
+            info.appendChild(progressWrap);
+
+            // Hidden audio element used for Sana playback control
+            const audioElem = document.createElement("audio");
+            audioElem.preload = "metadata";
+            audioElem.style.display = "none";
+            try {
+              let src = String(audioUrl || "");
+              if (src.startsWith("http")) {
+                const urlObj = new URL(src);
+                if (urlObj.origin !== window.location.origin)
+                  src = `php/audio_proxy.php?u=${encodeURIComponent(src)}`;
+              }
+              audioElem.src = src;
+            } catch (e) {
+              audioElem.src = audioUrl;
+            }
+
+            // Duration
+            audioElem.addEventListener("loadedmetadata", () => {
+              if (!isFinite(audioElem.duration)) return;
+              const dur = Math.floor(audioElem.duration);
+              const mm = Math.floor(dur / 60);
+              const ss = ("0" + (dur % 60)).slice(-2);
+
+              const durEl = document.createElement("div");
+              durEl.className = "user-audio-meta";
+              durEl.textContent = `${mm}:${ss}`;
+
+              if (info.firstChild) info.insertBefore(durEl, info.firstChild);
+            });
+
+            // Progress bar
+            audioElem.addEventListener("timeupdate", () => {
+              if (!audioElem.duration || !isFinite(audioElem.duration)) return;
+              const pct = (audioElem.currentTime / audioElem.duration) * 100;
+              progressFill.style.width = pct + "%";
+            });
+
+            // Play/pause toggle
+            playBtn.addEventListener("click", () => {
+              if (audioElem.paused) {
+                audioElem.play().catch(() => {});
+                playBtn.innerHTML =
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+              } else {
+                audioElem.pause();
+                playBtn.innerHTML =
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+              }
+            });
+
+            infoWrap.appendChild(playBtn);
+            infoWrap.appendChild(info);
+            bubble.appendChild(infoWrap);
+            bubble.appendChild(audioElem);
+          }
+
+          contentWrap.appendChild(header);
+          contentWrap.appendChild(bubble);
+
+          if (isUser) {
+            // User message: content on left, avatar on right
+            outer.appendChild(contentWrap);
+            outer.insertAdjacentHTML("beforeend", avatarHtml);
+          } else {
+            // Sana message: avatar on left, content on right
+            outer.insertAdjacentHTML("beforeend", avatarHtml);
+            outer.appendChild(contentWrap);
+          }
+
+          chatContainer.insertAdjacentElement("beforeend", outer);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+          animateLastChatMessage();
+        }
+
+        // Compute a lightweight signature for deduplication (type + content/url + sender)
+        function computeMessageSignature(msg) {
+          try {
+            const sender = msg.sender || "sana";
+            if (msg.type === "audio" || msg.is_audio) {
+              const audioUrl = msg.attachment
+                ? msg.attachment.url
+                : msg.audio_url ||
+                  (msg.metadata && msg.metadata.audio_url) ||
+                  null;
+              if (audioUrl) return `audio|${sender}|${audioUrl}`;
+              // fallback to base64 snippet
+              try {
+                const meta =
+                  typeof msg.metadata === "string"
+                    ? JSON.parse(msg.metadata)
+                    : msg.metadata;
+                if (meta && meta.audio_base64)
+                  return `audio|${sender}|base64:${meta.audio_base64.slice(
+                    0,
+                    64
+                  )}`;
+              } catch (e) {
+                // ignore
+              }
+              return `audio|${sender}|unknown`;
+            }
+            // Text signature: first 120 chars trimmed
+            const text = (
+              msg.content ||
+              msg.output ||
+              "" + (msg.message || "")
+            ).trim();
+            return `text|${sender}|${text.slice(0, 120)}`;
+          } catch (e) {
+            return `msg|${msg.id || Math.random()}`;
+          }
+        }
+
+        // Compute a signature for a Blob (audio) by converting to base64 snippet
+        async function computeSignatureForBlob(blob, sender = "sana") {
+          try {
+            const b64 = await blobToBase64(blob);
+            if (!b64) return `audio|${sender}|blob`;
+            return `audio|${sender}|base64:${b64.slice(0, 64)}`;
+          } catch (e) {
+            return `audio|${sender}|blob`;
+          }
+        }
+
+        // Render a message object returned by the server (includes id, sender, type, attachment, content)
+        function renderMessageFromServer(msg) {
+          if (!msg || !msg.id) return;
+
+          const sig = computeMessageSignature(msg);
+          // If DOM already contains an element with same message id, skip
+          const existingById = document.querySelector(
+            `[data-message-id="${msg.id}"]`
+          );
+          if (existingById) {
+            console.log(
+              `[renderMessageFromServer] skipping already-rendered id=${msg.id}`
+            );
+            return;
+          }
+
+          // If there's an existing message with same signature, decide which to keep
+          const existingBySig = document.querySelector(
+            `[data-message-signature="${CSS.escape(sig)}"]`
+          );
+          if (existingBySig) {
+            // Compare created timestamps (if available) - prefer the newest
+            const existingCreated = existingBySig.dataset.createdAt
+              ? new Date(existingBySig.dataset.createdAt).getTime()
+              : 0;
+            const incomingCreated = msg.created_at
+              ? new Date(msg.created_at).getTime()
+              : msg.createdAt
+              ? new Date(msg.createdAt).getTime()
+              : Date.now();
+            if (existingCreated >= incomingCreated) {
+              console.log(
+                `[renderMessageFromServer] duplicate signature found, keeping existing sig=${sig}`
+              );
+              return; // we already have same-or-newer message
+            }
+            // Incoming is newer: remove the older DOM node and continue to render the new one
+            existingBySig.remove();
+          }
+
+          console.log(
+            `[renderMessageFromServer] rendering id=${msg.id} sig=${sig} sender=${msg.sender} type=${msg.type}`
+          );
+
+          if (msg.type === "audio" || msg.is_audio) {
+            const audioUrl = msg.attachment
+              ? msg.attachment.url
+              : msg.audio_url || null;
+            if (audioUrl) {
+              // pass signature through by attaching it after render
+              renderAudioMessage(
+                audioUrl,
+                msg.sender === "user" ? "user" : "sana",
+                msg.created_at || msg.createdAt || null,
+                msg.id,
+                sig
+              );
+              return;
+            }
+            // If there's no direct URL but base64 is stored in metadata, use it
+            if (msg.metadata) {
+              try {
+                const meta =
+                  typeof msg.metadata === "string"
+                    ? JSON.parse(msg.metadata)
+                    : msg.metadata;
+                if (meta && meta.audio_base64 && meta.audio_mime) {
+                  const blob = base64ToBlob(meta.audio_base64, meta.audio_mime);
+                  if (blob) {
+                    renderAudioMessage(
+                      URL.createObjectURL(blob),
+                      msg.sender === "user" ? "user" : "sana",
+                      msg.created_at || null,
+                      msg.id,
+                      sig
+                    );
+                    return;
+                  }
+                }
+              } catch (e) {
+                // ignore
+              }
+            }
+          } else {
+            // Text message
+            if (msg.sender === "user") {
+              displayUserMessage(
+                msg.content || "",
+                msg.created_at || null,
+                msg.id,
+                sig
+              );
+            } else {
+              displaySanaMessage(
+                msg.content || "",
+                msg.created_at || null,
+                msg.id,
+                sig
+              );
+            }
+          }
+        }
+
+        // Save text message to database (JSON)
+        async function saveMessage(message, sender, type = "text") {
           try {
             const response = await fetch(CHAT_API_URL, {
               method: "POST",
@@ -474,7 +840,7 @@
                 message: message,
                 sender: sender,
                 conversation_id: currentConversationId,
-                is_audio: isAudio ? 1 : 0,
+                type: type,
               }),
             });
 
@@ -497,6 +863,83 @@
           }
         }
 
+        // Save audio message using multipart/form-data file upload
+        async function saveAudioMessage(audioBlob, sender) {
+          try {
+            const formData = new FormData();
+            formData.append("audio", audioBlob, `audio-${Date.now()}.webm`);
+            formData.append("sender", sender);
+            formData.append("conversation_id", currentConversationId);
+            formData.append("type", "audio");
+
+            const response = await fetch(CHAT_API_URL, {
+              method: "POST",
+              body: formData,
+            });
+
+            if (!response.ok) {
+              console.error("Failed to save audio:", response.statusText);
+              return null;
+            }
+
+            const data = await response.json();
+            if (data.success) {
+              currentConversationId = data.conversation_id;
+              return data;
+            } else {
+              console.error("API error:", data.error);
+              return null;
+            }
+          } catch (err) {
+            console.error("Error saving audio:", err);
+            return null;
+          }
+        }
+
+        // Save audio response from workflow (URL or base64)
+        async function saveAudioResponse(
+          audioUrl = null,
+          audioBase64 = null,
+          audioMime = "audio/webm"
+        ) {
+          try {
+            const response = await fetch(CHAT_API_URL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                sender: "sana",
+                conversation_id: currentConversationId,
+                type: "audio",
+                audio_url: audioUrl,
+                audio_base64: audioBase64,
+                audio_mime: audioMime,
+              }),
+            });
+
+            if (!response.ok) {
+              console.error(
+                "Failed to save audio response:",
+                response.statusText
+              );
+              return null;
+            }
+
+            const data = await response.json();
+            if (data.success) {
+              currentConversationId = data.conversation_id;
+              return data;
+            } else {
+              console.error("API error:", data.error);
+              return null;
+            }
+          } catch (err) {
+            console.error("Error saving audio response:", err);
+            return null;
+          }
+        }
+
         // Load messages from current conversation
         async function loadMessages() {
           if (!currentConversationId) return;
@@ -512,24 +955,29 @@
 
             const data = await response.json();
             if (data.success && data.messages) {
-              // Clear current messages except the initial ones
+              // Clear current messages
               chatContainer.innerHTML = "";
 
-              // Display all messages
-              data.messages.forEach((msg) => {
-                if (msg.sender === "user") {
-                  displayUserMessage(msg.content, msg.created_at);
-                } else {
-                  displaySanaMessage(msg.content, msg.created_at);
-                }
-              });
+              // Display all messages (oldest -> newest)
+              for (const msg of data.messages) {
+                // Check message type (audio or text)
+                // Use new renderer that attaches message IDs and handles base64/audio_url
+                renderMessageFromServer(msg);
+              }
+              // Start polling for new messages (so async webhook replies show up)
+              startPollingMessages();
             }
           } catch (err) {
             console.error("Error loading messages:", err);
           }
         }
 
-        function displayUserMessage(message, timestamp = null) {
+        function displayUserMessage(
+          message,
+          timestamp = null,
+          messageId = null,
+          signature = null
+        ) {
           const time = timestamp
             ? new Date(timestamp).toLocaleTimeString("en-US", {
                 hour: "numeric",
@@ -538,25 +986,36 @@
               })
             : getCurrentTime();
           const messageHTML = `
-            <div class="flex items-start gap-4 justify-end">
-              <div class="flex flex-1 flex-col gap-2 items-end">
-                <div class="flex flex-wrap items-center gap-3 flex-row-reverse">
-                  <p class="text-text-primary-light text-base font-bold leading-tight">You</p>
-                  <p class="text-text-secondary-light text-sm font-normal leading-normal">${time}</p>
-                </div>
-                <p class="text-base font-normal leading-relaxed flex max-w-xl rounded-lg rounded-tr-none px-4 py-3 bg-user-message-bg text-white">${escapeHtml(
-                  message
-                )}</p>
-              </div>
-              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="User avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAOQCyegq35VfIL5s5DDM_XAUQ-XDh_MSoH8kt-oXB766TX_Ga-hgCbvpaftPUYf9zCLyuuIPaQ_R5STad1jLYbRL5uDUfFra_3dOTZnP3zl1C-ndGW3mv6FmPnKNEtlRRZA_KKFEm5JO3hG8TukLDNTbweRzFM4YecCZC9seWqgR_QNtswF7NvS2PloHCvgvC729KLt9HxpY88Jf7VHmR_Mbvoxpp0UjEoQ2FOeKB7lWB4Z6Xo_41JEb0nQniNyaqcYFyQjYT30A');"></div>
-            </div>
-          `;
-          chatContainer.insertAdjacentHTML("beforeend", messageHTML);
+                  <div class="flex items-start gap-4 justify-end" data-message-id="">
+                    <div class="flex flex-1 flex-col gap-2 items-end">
+                      <div class="flex flex-wrap items-center gap-3 flex-row-reverse">
+                        <p class="text-text-primary-light text-base font-bold leading-tight">You</p>
+                        <p class="text-text-secondary-light text-sm font-normal leading-normal">${time}</p>
+                      </div>
+                      <p class="text-base font-normal leading-relaxed flex max-w-xl rounded-lg rounded-tr-none px-4 py-3 bg-user-message-bg text-white">${escapeHtml(
+                        message
+                      )}</p>
+                    </div>
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="User avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAOQCyegq35VfIL5s5DDM_XAUQ-XDh_MSoH8kt-oXB766TX_Ga-hgCbvpaftPUYf9zCLyuuIPaQ_R5STad1jLYbRL5uDUfFra_3dOTZnP3zl1C-ndGW3mv6FmPnKNEtlRRZA_KKFEm5JO3hG8TukLDNTbweRzFM4YecCZC9seWqgR_QNtswF7NvS2PloHCvgvC729KLt9HxpY88Jf7VHmR_Mbvoxpp0UjEoQ2FOeKB7lWB4Z6Xo_41JEb0nQniNyaqcYFyQjYT30A');"></div>
+                  </div>
+                `;
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = messageHTML.trim();
+          const el = wrapper.firstElementChild;
+          if (el && messageId) el.dataset.messageId = messageId;
+          if (el && signature) el.dataset.messageSignature = signature;
+          if (el && timestamp) el.dataset.createdAt = timestamp;
+          chatContainer.insertAdjacentElement("beforeend", el);
           chatContainer.scrollTop = chatContainer.scrollHeight;
           animateLastChatMessage();
         }
 
-        function displaySanaMessage(message, timestamp = null) {
+        function displaySanaMessage(
+          message,
+          timestamp = null,
+          messageId = null,
+          signature = null
+        ) {
           const time = timestamp
             ? new Date(timestamp).toLocaleTimeString("en-US", {
                 hour: "numeric",
@@ -565,75 +1024,129 @@
               })
             : getCurrentTime();
           const messageHTML = `
-            <div class="flex gap-4">
-              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
-              <div class="flex flex-1 flex-col items-start gap-2">
-                <div class="flex flex-col gap-3">
-                  <div class="flex flex-wrap items-center gap-3">
-                    <p class="text-text-primary-light text-base font-bold leading-tight">Sana</p>
-                    <p class="text-text-secondary-light text-xs font-normal leading-normal">${time}</p>
+                  <div class="flex gap-4" data-message-id="">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
+                    <div class="flex flex-1 flex-col items-start gap-2">
+                      <div class="flex flex-col gap-3">
+                        <div class="flex flex-wrap items-center gap-3">
+                          <p class="text-text-primary-light text-base font-bold leading-tight">Sana</p>
+                          <p class="text-text-secondary-light text-xs font-normal leading-normal">${time}</p>
+                        </div>
+                        <div class="flex items-center gap-3 max-w-xl rounded-2xl rounded-tl-none px-6 py-4 bg-gradient-to-r from-sana-message-bg to-accent-peach shadow-sm hover:shadow-md transition-shadow border border-primary-green border-opacity-20">
+                          <p class="text-text-primary-light text-base font-normal leading-relaxed">${escapeHtml(
+                            message
+                          )}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="flex items-center gap-3 max-w-xl rounded-2xl rounded-tl-none px-6 py-4 bg-gradient-to-r from-sana-message-bg to-accent-peach shadow-sm hover:shadow-md transition-shadow border border-primary-green border-opacity-20">
-                    <p class="text-text-primary-light text-base font-normal leading-relaxed">${escapeHtml(
-                      message
-                    )}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-          chatContainer.insertAdjacentHTML("beforeend", messageHTML);
+                `;
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = messageHTML.trim();
+          const el = wrapper.firstElementChild;
+          if (el && messageId) el.dataset.messageId = messageId;
+          if (el && signature) el.dataset.messageSignature = signature;
+          if (el && timestamp) el.dataset.createdAt = timestamp;
+          chatContainer.insertAdjacentElement("beforeend", el);
           chatContainer.scrollTop = chatContainer.scrollHeight;
           animateLastChatMessage();
+        }
+
+        // Polling for new messages (including audio replies) from the server
+        let _pollingIntervalId = null;
+        async function pollNewMessages() {
+          if (!currentConversationId) return;
+          try {
+            const res = await fetch(
+              `${CHAT_API_URL}?action=get_messages&conversation_id=${currentConversationId}`
+            );
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data && data.success && Array.isArray(data.messages)) {
+              for (const m of data.messages) {
+                renderMessageFromServer(m);
+              }
+            }
+          } catch (e) {
+            // ignore poll errors
+          }
+        }
+
+        function startPollingMessages(intervalMs = 3000) {
+          stopPollingMessages();
+          _pollingIntervalId = setInterval(pollNewMessages, intervalMs);
+        }
+
+        function stopPollingMessages() {
+          if (_pollingIntervalId) {
+            clearInterval(_pollingIntervalId);
+            _pollingIntervalId = null;
+          }
         }
 
         function addUserMessage(message) {
           displayUserMessage(message);
           // Save to database
-          saveMessage(message, "user", false);
+          saveMessage(message, "user", "text");
         }
 
         function addSanaMessage(message) {
           const messageHTML = `
-            <div class="flex gap-4">
-              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
-              <div class="flex flex-1 flex-col items-start gap-2">
-                <div class="flex flex-col gap-3">
-                  <div class="flex flex-wrap items-center gap-3">
-                    <p class="text-text-primary-light text-base font-bold leading-tight">Sana</p>
-                    <p class="text-text-secondary-light text-xs font-normal leading-normal">${getCurrentTime()}</p>
+                  <div class="flex gap-4">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
+                    <div class="flex flex-1 flex-col items-start gap-2">
+                      <div class="flex flex-col gap-3">
+                        <div class="flex flex-wrap items-center gap-3">
+                          <p class="text-text-primary-light text-base font-bold leading-tight">Sana</p>
+                          <p class="text-text-secondary-light text-xs font-normal leading-normal">${getCurrentTime()}</p>
+                        </div>
+                        <p class="text-text-primary-light text-base font-normal leading-relaxed max-w-xl bg-sana-message-bg rounded-lg rounded-tl-none px-4 py-3">${escapeHtml(
+                          message
+                        )}</p>
+                      </div>
+                    </div>
                   </div>
-                  <p class="text-text-primary-light text-base font-normal leading-relaxed max-w-xl bg-sana-message-bg rounded-lg rounded-tl-none px-4 py-3">${escapeHtml(
-                    message
-                  )}</p>
-                </div>
-              </div>
-            </div>
-          `;
+                `;
           chatContainer.insertAdjacentHTML("beforeend", messageHTML);
           chatContainer.scrollTop = chatContainer.scrollHeight;
 
           animateLastChatMessage();
 
           // Save to database
-          saveMessage(message, "sana", false);
+          saveMessage(message, "sana", "text");
+        }
+
+        // Speak text using the Web Speech API (used when user sent audio)
+        function speakText(text) {
+          try {
+            if (!text) return;
+            const utter = new SpeechSynthesisUtterance(String(text));
+            // You can adjust voice, rate, pitch here if desired
+            utter.lang = "en-US";
+            utter.rate = 1.0;
+            utter.pitch = 1.0;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utter);
+          } catch (e) {
+            console.warn("Speech synthesis failed:", e);
+          }
         }
 
         function addSanaTyping() {
           const typingHTML = `
-            <div class="flex gap-4 sana-typing">
-              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
-              <div class="flex flex-1 flex-col items-start gap-2">
-                <div class="flex flex-col gap-2">
-                  <div class="flex items-center gap-2 p-3 bg-sana-message-bg rounded-lg rounded-tl-none">
-                    <div class="size-1.5 bg-text-secondary-light rounded-full animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite]"></div>
-                    <div class="size-1.5 bg-text-secondary-light rounded-full animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite_0.2s]"></div>
-                    <div class="size-1.5 bg-text-secondary-light rounded-full animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite_0.4s]"></div>
+                  <div class="flex gap-4 sana-typing">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
+                    <div class="flex flex-1 flex-col items-start gap-2">
+                      <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-2 p-3 bg-sana-message-bg rounded-lg rounded-tl-none">
+                          <div class="size-1.5 bg-text-secondary-light rounded-full animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite]"></div>
+                          <div class="size-1.5 bg-text-secondary-light rounded-full animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite_0.2s]"></div>
+                          <div class="size-1.5 bg-text-secondary-light rounded-full animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite_0.4s]"></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          `;
+                `;
           chatContainer.insertAdjacentHTML("beforeend", typingHTML);
           chatContainer.scrollTop = chatContainer.scrollHeight;
         }
@@ -797,93 +1310,80 @@
           return text;
         }
 
-        // Display a Sana audio response from a Blob
-        function addSanaAudio(blob, mime) {
-          const audioUrl = URL.createObjectURL(blob);
-          const messageHTML = `
-            <div class="flex gap-4">
-              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
-              <div class="flex flex-1 flex-col items-start gap-2">
-                <div class="flex flex-col gap-3">
-                  <div class="flex flex-wrap items-center gap-3">
-                    <p class="text-text-primary-light text-base font-bold leading-tight">Sana</p>
-                    <p class="text-text-secondary-light text-xs font-normal leading-normal">${getCurrentTime()}</p>
-                  </div>
-                  <div class="flex items-center gap-3 max-w-sm rounded-2xl rounded-tl-none px-5 py-3 bg-primary-green shadow-lg">
-                    <button class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary-green hover:bg-opacity-90">
-                      <span class="material-symbols-outlined text-xl">play_arrow</span>
-                    </button>
-                    <audio id="audio-${Date.now()}" src="${audioUrl}" class="hidden" preload="auto"></audio>
-                    <span class="text-white text-sm font-semibold">0:00</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-          chatContainer.insertAdjacentHTML("beforeend", messageHTML);
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        // Display a Sana audio response from a URL
-        function addSanaAudioUrl(url, mime = "audio/opus") {
-          const messageHTML = `
-            <div class="flex gap-4">
-              <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
-              <div class="flex flex-1 flex-col items-start gap-2">
-                <div class="flex flex-col gap-3">
-                  <div class="flex flex-wrap items-center gap-3">
-                    <p class="text-text-primary-light text-base font-bold leading-tight">Sana</p>
-                    <p class="text-text-secondary-light text-xs font-normal leading-normal">${getCurrentTime()}</p>
-                  </div>
-                  <div class="flex items-center gap-3 max-w-sm rounded-2xl rounded-tl-none px-5 py-3 bg-primary-green shadow-lg">
-                    <button class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary-green hover:bg-opacity-90">
-                      <span class="material-symbols-outlined text-xl">play_arrow</span>
-                    </button>
-                    <audio id="audio-${Date.now()}" class="hidden" preload="none">
-                      <source src="${url}" type="${mime}">
-                      Your browser does not support the audio element.
-                    </audio>
-                    <span class="text-white text-sm font-semibold">0:00</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-          chatContainer.insertAdjacentHTML("beforeend", messageHTML);
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
         async function sendMessage() {
           const message = textarea.value.trim();
           if (!message) return;
 
+          lastUserWasAudio = false;
+
           addUserMessage(message);
           textarea.value = "";
-
-          // show typing indicator
           addSanaTyping();
 
           try {
-            console.debug("Sending to webhook:", message);
-            const result = await postToWorkflow(message);
-            console.debug("Workflow raw result:", result);
+            console.debug("Sending to workflow:", message);
+            const result = await postToWorkflow({
+              user_message: message,
+              request_audio: lastUserWasAudio,
+            });
+            console.debug("Workflow result:", result);
 
-            // Prefer audio responses when available
+            // Handle workflow responses
             if (result && result.__audio && result.blob) {
-              removeLastTyping();
-              addSanaAudio(result.blob, result.mime);
-            } else if (
-              result &&
-              typeof result === "object" &&
-              result.audio_url
-            ) {
-              removeLastTyping();
-              addSanaAudioUrl(
-                result.audio_url,
-                result.audio_mime || result.mime || "audio/opus"
-              );
+              // Workflow returned audio blob
+              try {
+                const sig = await computeSignatureForBlob(result.blob, "sana");
+                const saved = await saveAudioResponse(
+                  null,
+                  await blobToBase64(result.blob),
+                  result.mime
+                );
+                removeLastTyping();
+                renderAudioMessage(
+                  URL.createObjectURL(result.blob),
+                  "sana",
+                  null,
+                  null,
+                  sig
+                );
+                try {
+                  const el = document.querySelector(
+                    `[data-message-signature="${CSS.escape(sig)}"]`
+                  );
+                  if (el && saved && saved.message_id)
+                    el.dataset.messageId = saved.message_id;
+                } catch (e) {}
+              } catch (e) {
+                console.warn("Failed to save Sana audio:", e);
+                removeLastTyping();
+                // still render without signature
+                renderAudioMessage(URL.createObjectURL(result.blob), "sana");
+              }
+            } else if (result && result.audio_url) {
+              // Workflow returned audio URL
+              try {
+                const sig = `audio|sana|${result.audio_url}`;
+                const saved = await saveAudioResponse(
+                  result.audio_url,
+                  null,
+                  result.audio_mime || "audio/opus"
+                );
+                removeLastTyping();
+                renderAudioMessage(result.audio_url, "sana", null, null, sig);
+                try {
+                  const el = document.querySelector(
+                    `[data-message-signature="${CSS.escape(sig)}"]`
+                  );
+                  if (el && saved && saved.message_id)
+                    el.dataset.messageId = saved.message_id;
+                } catch (e) {}
+              } catch (e) {
+                console.warn("Failed to save Sana audio URL:", e);
+                removeLastTyping();
+                renderAudioMessage(result.audio_url, "sana");
+              }
             } else {
-              // Only fallback to text-to-speech if webhook didn't return audio
+              // Workflow returned text
               const reply = extractReply(result);
               removeLastTyping();
               addSanaMessage(reply);
@@ -933,85 +1433,117 @@
             mediaRecorder.onstop = async () => {
               const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
               const audioUrl = URL.createObjectURL(audioBlob);
-              // Show playback UI as user message
-              const audioElem = document.createElement("audio");
-              audioElem.controls = true;
-              audioElem.src = audioUrl;
-              audioElem.className = "mt-2";
-              // Add as a user message in chat
-              const messageHTML = `
-                <div class="flex items-start gap-4 justify-end">
-                  <div class="flex flex-1 flex-col gap-2 items-end">
-                    <div class="flex flex-wrap items-center gap-3 flex-row-reverse">
-                      <p class="text-text-primary-light text-base font-bold leading-tight">You</p>
-                      <p class="text-text-secondary-light text-sm font-normal leading-normal">${getCurrentTime()}</p>
-                    </div>
-                    <div class="flex items-center gap-2 max-w-xl rounded-lg rounded-tr-none px-4 py-3 bg-user-message-bg text-white">
-                      <span class="material-symbols-outlined text-2xl">mic</span>
-                      <audio controls src="${audioUrl}" class="h-8"></audio>
-                    </div>
-                  </div>
-                  <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0" data-alt="User avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAOQCyegq35VfIL5s5DDM_XAUQ-XDh_MSoH8kt-oXB766TX_Ga-hgCbvpaftPUYf9zCLyuuIPaQ_R5STad1jLYbRL5uDUfFra_3dOTZnP3zl1C-ndGW3mv6FmPnKNEtlRRZA_KKFEm5JO3hG8TukLDNTbweRzFM4YecCZC9seWqgR_QNtswF7NvS2PloHCvgvC729KLt9HxpY88Jf7VHmR_Mbvoxpp0UjEoQ2FOeKB7lWB4Z6Xo_41JEb0nQniNyaqcYFyQjYT30A');"></div>
-                </div>
-              `;
-              chatContainer.insertAdjacentHTML("beforeend", messageHTML);
-              chatContainer.scrollTop = chatContainer.scrollHeight;
+
+              // Compute signature for user audio so immediate render matches saved DB entry
+              let userSig = null;
+              try {
+                userSig = await computeSignatureForBlob(audioBlob, "user");
+              } catch (e) {
+                userSig = null;
+              }
+
+              // Display user audio message in chat (with signature)
+              renderAudioMessage(audioUrl, "user", null, null, userSig);
+              lastUserWasAudio = true;
 
               // Show Sana typing indicator
               addSanaTyping();
 
-              // Convert audioBlob to base64
-              const toBase64 = (blob) =>
-                new Promise((resolve, reject) => {
-                  const reader = new FileReader();
-                  reader.onloadend = () => resolve(reader.result.split(",")[1]);
-                  reader.onerror = reject;
-                  reader.readAsDataURL(blob);
-                });
-              let audioBase64 = null;
+              // Save the user's audio message to server (multipart upload)
               try {
-                audioBase64 = await toBase64(audioBlob);
+                const savedUser = await saveAudioMessage(audioBlob, "user");
+                try {
+                  const el = document.querySelector(
+                    `[data-message-signature="${CSS.escape(userSig)}"]`
+                  );
+                  if (el && savedUser && savedUser.message_id)
+                    el.dataset.messageId = savedUser.message_id;
+                } catch (e) {}
               } catch (e) {
-                removeLastTyping();
-                addSanaMessage("Sorry, failed to process audio.");
-                return;
+                console.warn("Failed to save user audio message:", e);
               }
 
-              // Send audio to workflow using postToWorkflow (handles audio responses)
+              // Send audio to workflow
               try {
+                const audioBase64 = await blobToBase64(audioBlob);
                 const payload = {
                   audio_base64: audioBase64,
                   audio_mime: audioBlob.type,
                   is_audio: true,
+                  request_audio: true,
                 };
-                console.debug("Sending audio payload:", {
-                  audio_length: audioBase64.length,
-                  audio_mime: audioBlob.type,
-                  is_audio: true,
-                });
 
+                console.debug("Sending audio to workflow");
                 const result = await postToWorkflow(payload);
                 console.debug("Workflow raw result for audio:", result);
 
-                // Prefer audio responses when available
+                // Handle audio response
                 if (result && result.__audio && result.blob) {
-                  removeLastTyping();
-                  addSanaAudio(result.blob, result.mime);
-                } else if (
-                  result &&
-                  typeof result === "object" &&
-                  result.audio_url
-                ) {
-                  removeLastTyping();
-                  addSanaAudioUrl(
-                    result.audio_url,
-                    result.audio_mime || result.mime || "audio/opus"
-                  );
+                  // Save Sana audio response to server
+                  try {
+                    const sig = await computeSignatureForBlob(
+                      result.blob,
+                      "sana"
+                    );
+                    const saved = await saveAudioResponse(
+                      null,
+                      await blobToBase64(result.blob),
+                      result.mime
+                    );
+                    removeLastTyping();
+                    renderAudioMessage(
+                      URL.createObjectURL(result.blob),
+                      "sana",
+                      null,
+                      null,
+                      sig
+                    );
+                    try {
+                      const el = document.querySelector(
+                        `[data-message-signature="${CSS.escape(sig)}"]`
+                      );
+                      if (el && saved && saved.message_id)
+                        el.dataset.messageId = saved.message_id;
+                    } catch (e) {}
+                  } catch (e) {
+                    console.warn("Failed to save Sana audio:", e);
+                  }
+                } else if (result && result.audio_url) {
+                  // Save audio URL response
+                  try {
+                    const sig = `audio|sana|${result.audio_url}`;
+                    const saved = await saveAudioResponse(
+                      result.audio_url,
+                      null,
+                      result.audio_mime || "audio/opus"
+                    );
+
+                    removeLastTyping();
+                    renderAudioMessage(
+                      result.audio_url,
+                      "sana",
+                      null,
+                      null,
+                      sig
+                    );
+                    try {
+                      const el = document.querySelector(
+                        `[data-message-signature="${CSS.escape(sig)}"]`
+                      );
+                      if (el && saved && saved.message_id)
+                        el.dataset.messageId = saved.message_id;
+                    } catch (e) {}
+                  } catch (e) {
+                    console.warn("Failed to save Sana audio URL:", e);
+                  }
                 } else {
-                  // Only fallback to text-to-speech if webhook didn't return audio
+                  // Text response - use TTS to speak it
                   const reply = extractReply(result);
                   removeLastTyping();
-                  addSanaMessage(reply);
+                  if (reply) {
+                    speakText(reply);
+                    addSanaMessage(reply);
+                  }
                 }
               } catch (err) {
                 removeLastTyping();
@@ -1183,44 +1715,29 @@
             // Clear UI and show welcome message
             chatContainer.innerHTML = "";
             const welcomeHTML = `
-              <div class="flex gap-4">
-                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
-                <div class="flex flex-1 flex-col items-start gap-2">
-                  <div class="flex flex-col gap-3">
-                    <div class="flex flex-wrap items-center gap-3">
-                      <p class="text-text-primary-light text-base font-bold leading-tight">Sana</p>
-                      <p class="text-text-secondary-light text-xs font-normal leading-normal">${getCurrentTime()}</p>
+                    <div class="flex gap-4">
+                      <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shrink-0 shadow-md" data-alt="Sana avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrQjJdvdUJXXZ8qj0SRjQE4QJSoDoUhpRyD31T-cOECItQi6VSt9MrLPMcq_2csC95GU2tPFeZg4gjOo5jHapdGjDog-s6YLD86MfoQBEqdutBoOUUbmZHrThyiHvZL351LayOJ_xDT8uyfYLkBYmdygvfE1GPB2RLWFZ9DDSiyneaXuCew080JLCBY-JpbFtrCvd_eWk0Z_CLSOiRAobevTvDDsYt0zC-9QUAXrjwdFOnOg0MhPlfZtngI6ZQ4ekpleeMrznJvg');"></div>
+                      <div class="flex flex-1 flex-col items-start gap-2">
+                        <div class="flex flex-col gap-3">
+                          <div class="flex flex-wrap items-center gap-3">
+                            <p class="text-text-primary-light text-base font-bold leading-tight">Sana</p>
+                            <p class="text-text-secondary-light text-xs font-normal leading-normal">${getCurrentTime()}</p>
+                          </div>
+                          <p class="text-text-primary-light text-base font-normal leading-relaxed max-w-xl bg-sana-message-bg rounded-lg rounded-tl-none px-4 py-3">
+                            Hello! I'm Sana, your mental health companion. How can I help you today?
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <p class="text-text-primary-light text-base font-normal leading-relaxed max-w-xl bg-sana-message-bg rounded-lg rounded-tl-none px-4 py-3">
-                      Hello! I'm Sana, your mental health companion. How can I help you today?
-                    </p>
-                  </div>
-                </div>
-              </div>
-            `;
+                  `;
             chatContainer.insertAdjacentHTML("beforeend", welcomeHTML);
             animateLastChatMessage();
             if (typeof loadRecentChats === "function") loadRecentChats();
+            // Start polling for messages for this new conversation (if created)
+            if (currentConversationId) startPollingMessages();
           });
         }
       })();
     </script>
-
-    <!-- JS TOGGLE SCRIPT -->
-<script>
-  const mobileSidebar = document.getElementById("mobile-sidebar");
-  const openBtn = document.getElementById("open-mobile-sidebar");
-  const closeBtn = document.getElementById("close-mobile-sidebar");
-
-  openBtn.addEventListener("click", () => {
-    mobileSidebar.classList.remove("-translate-x-full");
-    mobileSidebar.classList.add("translate-x-0");
-  });
-
-  closeBtn.addEventListener("click", () => {
-    mobileSidebar.classList.add("-translate-x-full");
-    mobileSidebar.classList.remove("translate-x-0");
-  });
-</script>
   </body>
 </html>

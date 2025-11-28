@@ -50,6 +50,143 @@
         },
       };
     </script>
+
+    <script>
+      // Dashboard: poll recent messages and render audio replies inside Recent Activity
+      (function () {
+        const DASH_API = "php/api.php";
+        const userId = localStorage.getItem("user_id");
+        if (!userId) return;
+
+        const seen = new Set();
+
+        function base64ToBlob(base64, mime = "audio/webm") {
+          try {
+            const byteChars = atob(base64);
+            const byteNumbers = new Array(byteChars.length);
+            for (let i = 0; i < byteChars.length; i++) {
+              byteNumbers[i] = byteChars.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            return new Blob([byteArray], { type: mime });
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function findRecentActivityBlock() {
+          const headings = Array.from(document.querySelectorAll("h3"));
+          for (const h of headings) {
+            if (
+              h.textContent &&
+              h.textContent.trim().toLowerCase().includes("recent activity")
+            ) {
+              return h.parentElement;
+            }
+          }
+          return null;
+        }
+
+        function renderAudioNoteInBlock(
+          url,
+          sender = "sana",
+          time = null,
+          id = null
+        ) {
+          const block = findRecentActivityBlock();
+          if (!block) return;
+          const el = document.createElement("div");
+          el.className =
+            "flex items-center gap-3 py-2 border-t border-border-light";
+          if (id) el.dataset.messageId = id;
+
+          const info = document.createElement("div");
+          info.className = "flex-1";
+          const title = document.createElement("div");
+          title.textContent =
+            sender === "user" ? "You — voice message" : "Sana — voice reply";
+          title.className = "font-medium";
+          const ts = document.createElement("div");
+          ts.className = "text-sm text-text-secondary-light";
+          ts.textContent = time ? new Date(time).toLocaleString() : "";
+          info.appendChild(title);
+          info.appendChild(ts);
+
+          const audio = document.createElement("audio");
+          audio.controls = true;
+          try {
+            let src = String(url || "");
+            if (src.startsWith("http")) {
+              const urlObj = new URL(src);
+              if (urlObj.origin !== window.location.origin)
+                src = `php/audio_proxy.php?u=${encodeURIComponent(src)}`;
+            }
+            audio.src = src;
+          } catch (e) {
+            audio.src = url;
+          }
+
+          el.appendChild(info);
+          el.appendChild(audio);
+          // append at end of block
+          block.appendChild(el);
+        }
+
+        async function poll() {
+          try {
+            const res = await fetch(
+              `${DASH_API}?action=get_dashboard_data&user_id=${encodeURIComponent(
+                userId
+              )}`
+            );
+            if (!res.ok) return;
+            const j = await res.json();
+            if (!j.ok || !j.data) return;
+            const msgs = j.data.recent_messages || [];
+            for (const m of msgs) {
+              if (!m.id) continue;
+              if (seen.has(m.id)) continue;
+              if (m.attachment && m.attachment.url) {
+                renderAudioNoteInBlock(
+                  m.attachment.url,
+                  m.sender || "sana",
+                  m.created_at || m.createdAt || null,
+                  m.id
+                );
+                seen.add(m.id);
+                continue;
+              }
+              if (m.metadata) {
+                try {
+                  const meta =
+                    typeof m.metadata === "string"
+                      ? JSON.parse(m.metadata)
+                      : m.metadata;
+                  if (meta && meta.audio_base64 && meta.audio_mime) {
+                    const blob = base64ToBlob(
+                      meta.audio_base64,
+                      meta.audio_mime
+                    );
+                    if (blob) {
+                      renderAudioNoteInBlock(
+                        URL.createObjectURL(blob),
+                        m.sender || "sana",
+                        m.created_at || null,
+                        m.id
+                      );
+                      seen.add(m.id);
+                    }
+                  }
+                } catch (e) {}
+              }
+            }
+          } catch (e) {}
+        }
+
+        poll();
+        setInterval(poll, 4000);
+      })();
+    </script>
     <style>
       /* Fade effect */
       .page-transition {
