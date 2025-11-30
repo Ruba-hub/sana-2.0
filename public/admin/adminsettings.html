@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sana Dedicated Admin Settings</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4a8f5e",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+              "text-light": "#0d1b12",
+              "text-dark": "#f0fdf4",
+              "text-muted-light": "#4c9a66",
+              "text-muted-dark": "#a3e635",
+              "border-light": "#cfe7d7",
+              "border-dark": "#275939",
+              "surface-light": "#f8fcf9",
+              "surface-dark": "#1a3a25",
+              "primary-subtle-light": "#e7f3eb",
+              "primary-subtle-dark": "#11d45226",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "0.75rem",
+              xl: "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+
+      // Custom confirmation modal helper
+      function showConfirmModal(message, title = "Confirm") {
+        return new Promise((resolve) => {
+          const overlay = document.createElement("div");
+          overlay.className = "fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4";
+          
+          const modal = document.createElement("div");
+          modal.className = "bg-white dark:bg-card-dark rounded-lg shadow-lg max-w-sm w-full animate-[scale-in_0.2s_ease-out]";
+          modal.style.animation = "scale-in 0.2s ease-out";
+          
+          modal.innerHTML = `
+            <div class="p-6">
+              <h3 class="text-lg font-bold text-text-light dark:text-text-dark mb-2">${title}</h3>
+              <p class="text-text-light dark:text-text-dark mb-6 text-sm leading-relaxed">${message}</p>
+              <div class="flex gap-3 justify-end">
+                <button 
+                  id="confirm-cancel" 
+                  class="px-4 py-2 rounded-lg bg-border-light dark:bg-border-dark text-text-light dark:text-text-dark hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium text-sm"
+                >
+                  Cancel
+                </button>
+                <button 
+                  id="confirm-ok" 
+                  class="px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors font-medium text-sm"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          `;
+          
+          overlay.appendChild(modal);
+          document.body.appendChild(overlay);
+          
+          const cleanup = () => {
+            overlay.remove();
+          };
+          
+          document.getElementById("confirm-ok").addEventListener("click", () => {
+            cleanup();
+            resolve(true);
+          });
+          
+          document.getElementById("confirm-cancel").addEventListener("click", () => {
+            cleanup();
+            resolve(false);
+          });
+          
+          overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) {
+              cleanup();
+              resolve(false);
+            }
+          });
+        });
+      }
+    </script>
+    <style>
+      @keyframes scale-in {
+        from { transform: scale(0.95); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+    </style>
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+              "text-light": "#0d1b12",
+              "text-dark": "#f0fdf4",
+              "text-muted-light": "#4c9a66",
+              "text-muted-dark": "#a3e635",
+              "border-light": "#cfe7d7",
+              "border-dark": "#275939",
+              "surface-light": "#f8fcf9",
+              "surface-dark": "#1a3a25",
+              "primary-subtle-light": "#e7f3eb",
+              "primary-subtle-dark": "#11d45226",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "0.75rem",
+              xl: "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        font-size: 24px;
+      }
+      .material-symbols-outlined.fill {
+        font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark"
+  >
+    <div
+      class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden"
+    >
+      <div class="flex flex-row min-h-screen">
+        <!-- SideNavBar -->
+        <aside
+          class="w-64 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark flex flex-col p-4"
+        >
+          <div class="flex items-center gap-2 mb-8">
+            <div
+              class="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-sm"
+              id="sidebar-logo-avatar"
+              data-alt="Admin initial"
+            >
+              R
+            </div>
+            <span
+              class="text-xl font-bold text-text-light dark:text-text-dark"
+              id="sidebar-admin-name"
+              data-admin-name-header
+            >
+              Loading...
+            </span>
+          </div>
+          <div class="flex flex-col gap-4 flex-grow">
+            <div class="flex flex-col gap-2">
+              <a
+                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-subtle-light dark:hover:bg-primary-subtle-dark transition-colors duration-200"
+                href="admin.html"
+              >
+                <span
+                  class="material-symbols-outlined text-text-light dark:text-text-dark"
+                  >dashboard</span
+                >
+                <p
+                  class="text-sm font-medium leading-normal text-text-light dark:text-text-dark"
+                >
+                  Dashboard
+                </p>
+              </a>
+              <a
+                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary-subtle-light dark:hover:bg-primary-subtle-dark transition-colors duration-200"
+                href="usermgt.html"
+              >
+                <span
+                  class="material-symbols-outlined text-text-light dark:text-text-dark"
+                  >group</span
+                >
+                <p
+                  class="text-sm font-medium leading-normal text-text-light dark:text-text-dark"
+                >
+                  Users
+                </p>
+              </a>
+
+              <a
+                class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary-subtle-light dark:bg-primary-subtle-dark"
+                href="adminsettings.html"
+              >
+                <span
+                  class="material-symbols-outlined fill text-text-light dark:text-text-dark"
+                  >settings</span
+                >
+                <p
+                  class="text-sm font-medium leading-normal text-text-light dark:text-text-dark"
+                >
+                  Settings
+                </p>
+              </a>
+            </div>
+          </div>
+          <div class="flex flex-col gap-4">
+            <div class="flex gap-3 items-center">
+              <div
+                class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 flex items-center justify-center text-white font-semibold text-lg"
+                id="admin-avatar"
+                data-alt="Admin user avatar"
+                style="background-color: #4a8f5e"
+              >
+                A
+              </div>
+              <div class="flex flex-col">
+                <h1
+                  class="text-base font-medium leading-normal text-text-light dark:text-text-dark"
+                  data-admin-name
+                >
+                  Loading...
+                </h1>
+                <p
+                  class="text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                  data-admin-role
+                >
+                  Admin
+                </p>
+              </div>
+            </div>
+            <button
+              id="logout-btn"
+              class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity"
+            >
+              <span class="truncate">Logout</span>
+            </button>
+          </div>
+        </aside>
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+          <div class="layout-content-container flex flex-col w-full mx-auto">
+            <!-- PageHeading -->
+            <div class="flex flex-wrap justify-between gap-4 p-4 items-center">
+              <div class="flex flex-col gap-2">
+                <p
+                  class="text-4xl font-black leading-tight tracking-[-0.033em] text-text-light dark:text-text-dark"
+                >
+                  Admin Settings
+                </p>
+                <p
+                  class="text-base font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                >
+                  Configure core application-wide settings for Sana.
+                </p>
+              </div>
+              <button
+                id="add-role-btn"
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary-subtle-light dark:bg-primary-subtle-dark text-text-light dark:text-text-dark text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity"
+              >
+                <span class="truncate">Add New Role</span>
+              </button>
+            </div>
+            <!-- Tabs -->
+            <div class="pb-3 mt-4">
+              <div
+                class="flex border-b border-border-light dark:border-border-dark px-4 gap-8"
+              >
+                <a
+                  class="flex flex-col items-center justify-center border-b-[3px] border-b-primary pb-[13px] pt-4"
+                  href="#"
+                >
+                  <p
+                    class="text-sm font-bold leading-normal tracking-[0.015em] text-text-light dark:text-text-dark"
+                  >
+                    User Roles
+                  </p>
+                </a>
+                <a
+                  class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-muted-light dark:text-text-muted-dark pb-[13px] pt-4"
+                  href="#"
+                >
+                  <p
+                    class="text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    Integrations
+                  </p>
+                </a>
+                <a
+                  class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-muted-light dark:text-text-muted-dark pb-[13px] pt-4"
+                  href="#"
+                >
+                  <p
+                    class="text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    Notifications
+                  </p>
+                </a>
+                <a
+                  class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-muted-light dark:text-text-muted-dark pb-[13px] pt-4"
+                  href="#"
+                >
+                  <p
+                    class="text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    Audit Log
+                  </p>
+                </a>
+                <a
+                  class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-muted-light dark:text-text-muted-dark pb-[13px] pt-4"
+                  href="#"
+                >
+                  <p
+                    class="text-sm font-bold leading-normal tracking-[0.015em]"
+                  >
+                    Maintenance
+                  </p>
+                </a>
+              </div>
+            </div>
+            <!-- Table -->
+            <div class="px-4 py-3 @container mt-4">
+              <div
+                class="flex overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark"
+              >
+                <table class="flex-1">
+                  <thead>
+                    <tr class="bg-surface-light dark:bg-surface-dark">
+                      <th
+                        class="px-4 py-3 text-left text-sm font-medium leading-normal text-text-light dark:text-text-dark w-[25%]"
+                      >
+                        Role Name
+                      </th>
+                      <th
+                        class="px-4 py-3 text-left text-sm font-medium leading-normal text-text-light dark:text-text-dark w-[40%]"
+                      >
+                        Description
+                      </th>
+                      <th
+                        class="px-4 py-3 text-left text-sm font-medium leading-normal text-text-light dark:text-text-dark w-[10%]"
+                      >
+                        Users
+                      </th>
+                      <th
+                        class="px-4 py-3 text-left text-sm font-medium leading-normal text-text-light dark:text-text-dark w-[15%]"
+                      >
+                        Last Updated
+                      </th>
+                      <th
+                        class="px-4 py-3 text-left text-sm font-medium leading-normal text-text-light dark:text-text-dark w-[10%]"
+                      >
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      class="border-t border-t-border-light dark:border-t-border-dark"
+                    >
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-light dark:text-text-dark"
+                      >
+                        Super Admin
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        Full access to all system settings and user data.
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        3
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        2023-10-26
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-bold leading-normal tracking-[0.015em] text-text-muted-light dark:text-text-muted-dark cursor-pointer hover:text-primary"
+                      >
+                        Edit
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-t border-t-border-light dark:border-t-border-dark"
+                    >
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-light dark:text-text-dark"
+                      >
+                        Content Manager
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        Can manage educational content and resources.
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        5
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        2023-10-25
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-bold leading-normal tracking-[0.015em] text-text-muted-light dark:text-text-muted-dark cursor-pointer hover:text-primary"
+                      >
+                        Edit
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-t border-t-border-light dark:border-t-border-dark"
+                    >
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-light dark:text-text-dark"
+                      >
+                        Support Lead
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        Access to user support tools and communication logs.
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        8
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        2023-10-22
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-bold leading-normal tracking-[0.015em] text-text-muted-light dark:text-text-muted-dark cursor-pointer hover:text-primary"
+                      >
+                        Edit
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-t border-t-border-light dark:border-t-border-dark"
+                    >
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-light dark:text-text-dark"
+                      >
+                        Analyst
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        Read-only access to analytics and reporting dashboards.
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        12
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-normal leading-normal text-text-muted-light dark:text-text-muted-dark"
+                      >
+                        2023-10-20
+                      </td>
+                      <td
+                        class="h-[72px] px-4 py-2 text-sm font-bold leading-normal tracking-[0.015em] text-text-muted-light dark:text-text-muted-dark cursor-pointer hover:text-primary"
+                      >
+                        Edit
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- SectionHeader for permissions -->
+            <div class="mt-8">
+              <h3
+                class="text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 text-text-light dark:text-text-dark"
+              >
+                Role Permissions: Super Admin
+              </h3>
+            </div>
+            <!-- Permissions Checklist -->
+            <div class="p-4 mt-2">
+              <div
+                class="bg-surface-light dark:bg-surface-dark rounded-lg border border-border-light dark:border-border-dark p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                <div class="flex flex-col gap-4">
+                  <h4 class="font-bold text-text-light dark:text-text-dark">
+                    User Management
+                  </h4>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                      checked=""
+                      class="form-checkbox rounded border-gray-300 text-primary focus:ring-primary"
+                      type="checkbox"
+                    />
+                    <span
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                      >Create users</span
+                    >
+                  </label>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                      checked=""
+                      class="form-checkbox rounded border-gray-300 text-primary focus:ring-primary"
+                      type="checkbox"
+                    />
+                    <span
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                      >Edit users</span
+                    >
+                  </label>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                      checked=""
+                      class="form-checkbox rounded border-gray-300 text-primary focus:ring-primary"
+                      type="checkbox"
+                    />
+                    <span
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                      >Delete users</span
+                    >
+                  </label>
+                </div>
+                <div class="flex flex-col gap-4">
+                  <h4 class="font-bold text-text-light dark:text-text-dark">
+                    Settings Management
+                  </h4>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                      checked=""
+                      class="form-checkbox rounded border-gray-300 text-primary focus:ring-primary"
+                      type="checkbox"
+                    />
+                    <span
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                      >Manage Integrations</span
+                    >
+                  </label>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                      checked=""
+                      class="form-checkbox rounded border-gray-300 text-primary focus:ring-primary"
+                      type="checkbox"
+                    />
+                    <span
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                      >Edit Notifications</span
+                    >
+                  </label>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                      checked=""
+                      class="form-checkbox rounded border-gray-300 text-primary focus:ring-primary"
+                      type="checkbox"
+                    />
+                    <span
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                      >Control Maintenance Mode</span
+                    >
+                  </label>
+                </div>
+                <div class="flex flex-col gap-4">
+                  <h4 class="font-bold text-text-light dark:text-text-dark">
+                    Data &amp; Analytics
+                  </h4>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                      checked=""
+                      class="form-checkbox rounded border-gray-300 text-primary focus:ring-primary"
+                      type="checkbox"
+                    />
+                    <span
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                      >View Analytics</span
+                    >
+                  </label>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                      checked=""
+                      class="form-checkbox rounded border-gray-300 text-primary focus:ring-primary"
+                      type="checkbox"
+                    />
+                    <span
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                      >Export Data</span
+                    >
+                  </label>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                      checked=""
+                      class="form-checkbox rounded border-gray-300 text-primary focus:ring-primary"
+                      type="checkbox"
+                    />
+                    <span
+                      class="text-sm text-text-muted-light dark:text-text-muted-dark"
+                      >View Audit Logs</span
+                    >
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script>
+      // Session verification - ensure only admin can access this page
+      async function verifyAdminSession() {
+        try {
+          const response = await fetch("../php/api.php?action=get_user");
+          const data = await response.json();
+
+          if (!data.ok || data.user.role !== "admin") {
+            console.error("Not authorized. Redirecting to login...");
+            window.location.href = "../index.html";
+            return false;
+          }
+
+          // Update admin profile info
+          updateAdminProfile(data.user);
+          console.log(
+            "[Admin Settings] Session verified for admin:",
+            data.user.display_name || data.user.email
+          );
+
+          return true;
+        } catch (error) {
+          console.error("Session verification failed:", error);
+          window.location.href = "../index.html";
+          return false;
+        }
+      }
+
+      // Update admin profile in sidebar
+      function updateAdminProfile(user) {
+        // Update name in sidebar profile section
+        const adminNameElement = document.querySelector("[data-admin-name]");
+        if (adminNameElement && user.display_name) {
+          adminNameElement.textContent = user.display_name;
+        }
+
+        // Update name in header
+        const headerNameElement = document.querySelector(
+          "[data-admin-name-header]"
+        );
+        if (headerNameElement && user.display_name) {
+          headerNameElement.textContent = user.display_name;
+        }
+
+        // Update role display
+        const adminRoleElement = document.querySelector("[data-admin-role]");
+        if (adminRoleElement && user.role) {
+          adminRoleElement.textContent =
+            user.role.charAt(0).toUpperCase() + user.role.slice(1);
+        }
+
+        // Update avatar with first letter
+        const avatarElement = document.getElementById("admin-avatar");
+        if (avatarElement) {
+          const firstLetter = (user.display_name || user.email)
+            .charAt(0)
+            .toUpperCase();
+          avatarElement.textContent = firstLetter;
+        }
+
+        console.log(
+          "[Admin Settings] Admin profile updated:",
+          user.display_name || user.email
+        );
+      }
+
+      // Handle logout
+      function setupLogoutButton() {
+        const logoutBtn = document.getElementById("logout-btn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const confirmed = await showConfirmModal("You will be logged out of your account.", "Logout?");
+            if (!confirmed) {
+              return;
+            }
+            try {
+              const response = await fetch("../php/logout.php");
+              if (response.ok) {
+                console.log("[Admin Settings] Logged out successfully");
+                window.location.href = "../index.html";
+              }
+            } catch (error) {
+              console.error("Logout error:", error);
+              window.location.href = "../index.html";
+            }
+          });
+        }
+      }
+
+      // Toast helper
+      function showToast(message, type = "success", timeout = 3000) {
+        let container = document.getElementById("toast-container-settings");
+        if (!container) {
+          container = document.createElement("div");
+          container.id = "toast-container-settings";
+          container.className =
+            "fixed bottom-6 right-6 flex flex-col gap-2 z-50";
+          document.body.appendChild(container);
+        }
+        const el = document.createElement("div");
+        el.className = `rounded-lg px-4 py-2 shadow-md text-sm text-white ${
+          type === "error" ? "bg-red-500" : "bg-green-500"
+        }`;
+        el.textContent = message;
+        container.appendChild(el);
+        setTimeout(() => {
+          el.classList.add("opacity-0");
+          setTimeout(() => el.remove(), 300);
+        }, timeout);
+      }
+
+      // Setup Add Role Modal
+      function setupAddRoleModal() {
+        const addBtn = document.getElementById("add-role-btn");
+        if (!addBtn) return;
+
+        addBtn.addEventListener("click", () => {
+          showAddRoleModal();
+        });
+
+        // Setup modal cancel button
+        const cancelBtn = document.getElementById("add-role-cancel");
+        if (cancelBtn) {
+          cancelBtn.addEventListener("click", hideAddRoleModal);
+        }
+
+        // Setup form submission
+        const form = document.getElementById("add-role-form");
+        if (form) {
+          form.addEventListener("submit", handleAddRole);
+        }
+      }
+
+      function showAddRoleModal() {
+        const modal = document.getElementById("add-role-modal");
+        if (!modal) return;
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+
+      function hideAddRoleModal() {
+        const modal = document.getElementById("add-role-modal");
+        if (!modal) return;
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+
+      async function handleAddRole(e) {
+        e.preventDefault();
+        const roleName = document
+          .getElementById("add-role-name")
+          ?.value?.trim();
+        const description = document
+          .getElementById("add-role-description")
+          ?.value?.trim();
+
+        if (!roleName || !description) {
+          showToast("Role name and description required", "error");
+          return;
+        }
+
+        try {
+          // Since there's no API endpoint for adding roles yet, we'll show a success message
+          // In a real app, you'd POST to an API endpoint
+          console.log("[Admin Settings] New role:", { roleName, description });
+          hideAddRoleModal();
+          showToast(`Role "${roleName}" created successfully`, "success");
+
+          // Reset form
+          document.getElementById("add-role-form")?.reset();
+        } catch (err) {
+          console.error("Add role error", err);
+          showToast("Failed to create role", "error");
+        }
+      }
+
+      // Initialize on page load
+      document.addEventListener("DOMContentLoaded", async () => {
+        console.log("[Admin Settings] Page loaded. Verifying admin session...");
+        const isAdmin = await verifyAdminSession();
+        if (isAdmin) {
+          setupLogoutButton();
+          setupAddRoleModal();
+        }
+      });
+    </script>
+
+    <!-- Add Role Modal -->
+    <div
+      id="add-role-modal"
+      class="fixed inset-0 hidden items-center justify-center z-50"
+    >
+      <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+      <div
+        class="relative bg-white dark:bg-surface-dark rounded-lg shadow-lg w-11/12 max-w-md p-6"
+      >
+        <h3
+          class="text-lg font-semibold text-text-light dark:text-text-dark mb-3"
+        >
+          Add New Role
+        </h3>
+        <form id="add-role-form" class="space-y-4">
+          <div>
+            <label
+              class="block text-sm font-medium mb-1 text-text-light dark:text-text-dark"
+              >Role Name</label
+            >
+            <input
+              id="add-role-name"
+              required
+              type="text"
+              class="w-full form-input px-3 py-2 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark"
+              placeholder="e.g., Content Manager"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium mb-1 text-text-light dark:text-text-dark"
+              >Description</label
+            >
+            <textarea
+              id="add-role-description"
+              required
+              rows="3"
+              class="w-full form-textarea px-3 py-2 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark"
+              placeholder="Describe the role and its permissions..."
+            ></textarea>
+          </div>
+          <div class="flex justify-end gap-3">
+            <button
+              type="button"
+              id="add-role-cancel"
+              class="px-4 py-2 rounded-lg bg-gray-300 dark:bg-gray-600 text-text-light dark:text-text-dark hover:opacity-90"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90"
+            >
+              Create Role
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

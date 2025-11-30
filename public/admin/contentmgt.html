@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sana Admin Content Management</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4CAF50",
+              secondary: "#FF9800",
+              accent: "#FFDAB9",
+              "background-light": "#f8fcf9",
+              "background-dark": "#102216",
+              "text-light": "#0d1b12",
+              "text-dark": "#f6f8f6",
+              "text-muted-light": "#4c9a66",
+              "text-muted-dark": "#a7d7b8",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "0.75rem",
+              xl: "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-[#0d1b12] dark:text-white"
+  >
+    <div class="flex h-screen">
+      <!-- SideNavBar -->
+      <aside
+        class="w-64 flex-shrink-0 bg-[#f8fcf9] dark:bg-[#1a2c20] p-4 flex flex-col justify-between border-r border-[#e7f3eb] dark:border-[#223e2b]"
+      >
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center gap-3 px-3">
+            <div
+              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+              data-alt="Sana logo"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBVh4W7oEckgJfQhtXe9YW1hbvmpAcN8zLLdosEB-l0yH4ck7AK4RJFnUo2UnKXa9D1Q0iNSmDYiSq8jaj8YLLxGxaNsJlvSwq0RMAiA-cIiHTtYwQn-CObah6oZJCyyZviPLT1BhT5tNTV6YA_aVRwsXcXcoA8nnVufoCGq4ZrR-fAc-bH4FaKFvpvSguYsZfOHsGTN7BHazmMVWBUX2XZmdnFHn_HKl1WOrwZZ2Xo8kU5IyKwOuR_-P834HAnQR4z8d85Fu6WEQ');
+              "
+            ></div>
+            <div class="flex flex-col">
+              <h1
+                class="text-[#0d1b12] dark:text-[#e7f3eb] text-base font-medium leading-normal"
+              >
+                Sana Admin
+              </h1>
+              <p
+                class="text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-normal leading-normal"
+              >
+                AI Mental Health Agent
+              </p>
+            </div>
+          </div>
+          <nav class="flex flex-col gap-2 mt-4">
+            <a
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#0d1b12] dark:text-[#e7f3eb] hover:bg-[#e7f3eb] dark:hover:bg-[#223e2b]"
+              href="#"
+            >
+              <span class="material-symbols-outlined">dashboard</span>
+              <p class="text-sm font-medium leading-normal">Dashboard</p>
+            </a>
+            <a
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#0d1b12] dark:text-[#e7f3eb] hover:bg-[#e7f3eb] dark:hover:bg-[#223e2b]"
+              href="#"
+            >
+              <span class="material-symbols-outlined">group</span>
+              <p class="text-sm font-medium leading-normal">Users</p>
+            </a>
+            <a
+              class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#e7f3eb] dark:bg-[#223e2b] text-[#0d1b12] dark:text-white"
+              href="#"
+            >
+              <span
+                class="material-symbols-outlined"
+                style="font-variation-settings: 'FILL' 1"
+                >folder</span
+              >
+              <p class="text-sm font-medium leading-normal">
+                Content Management
+              </p>
+            </a>
+            <a
+              class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#0d1b12] dark:text-[#e7f3eb] hover:bg-[#e7f3eb] dark:hover:bg-[#223e2b]"
+              href="#"
+            >
+              <span class="material-symbols-outlined">settings</span>
+              <p class="text-sm font-medium leading-normal">Settings</p>
+            </a>
+          </nav>
+        </div>
+        <button
+          class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#0d1b12] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90"
+        >
+          <span class="truncate">View Website</span>
+        </button>
+      </aside>
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col p-6 overflow-y-auto">
+        <div class="flex flex-col gap-6">
+          <!-- PageHeading -->
+          <div class="flex flex-wrap justify-between items-center gap-3">
+            <div class="flex flex-col gap-2">
+              <p
+                class="text-[#0d1b12] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]"
+              >
+                Content Management
+              </p>
+              <p
+                class="text-[#4c9a66] dark:text-[#a3d9b1] text-base font-normal leading-normal"
+              >
+                Create, edit, and publish articles, FAQs, and external
+                resources.
+              </p>
+            </div>
+            <button
+              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#0d1b12] text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:bg-opacity-90"
+            >
+              <span class="material-symbols-outlined text-base"
+                >add_circle</span
+              >
+              <span class="truncate">Add New Content</span>
+            </button>
+          </div>
+          <!-- SegmentedButtons -->
+          <div class="flex">
+            <div
+              class="flex h-10 items-center justify-center rounded-lg bg-[#e7f3eb] dark:bg-[#1a2c20] p-1"
+            >
+              <label
+                class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-4 has-[:checked]:bg-background-light dark:has-[:checked]:bg-[#223e2b] has-[:checked]:shadow-sm has-[:checked]:text-[#0d1b12] dark:has-[:checked]:text-white text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-medium leading-normal"
+              >
+                <span class="truncate">Articles</span>
+                <input
+                  checked=""
+                  class="invisible w-0"
+                  name="content-type"
+                  type="radio"
+                  value="Articles"
+                />
+              </label>
+              <label
+                class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-4 has-[:checked]:bg-background-light dark:has-[:checked]:bg-[#223e2b] has-[:checked]:shadow-sm has-[:checked]:text-[#0d1b12] dark:has-[:checked]:text-white text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-medium leading-normal"
+              >
+                <span class="truncate">FAQs</span>
+                <input
+                  class="invisible w-0"
+                  name="content-type"
+                  type="radio"
+                  value="FAQs"
+                />
+              </label>
+              <label
+                class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-4 has-[:checked]:bg-background-light dark:has-[:checked]:bg-[#223e2b] has-[:checked]:shadow-sm has-[:checked]:text-[#0d1b12] dark:has-[:checked]:text-white text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-medium leading-normal"
+              >
+                <span class="truncate">External Resources</span>
+                <input
+                  class="invisible w-0"
+                  name="content-type"
+                  type="radio"
+                  value="External Resources"
+                />
+              </label>
+            </div>
+          </div>
+          <!-- Toolbar -->
+          <div
+            class="flex justify-between items-center gap-2 px-1 py-3 border-b border-[#e7f3eb] dark:border-[#223e2b]"
+          >
+            <div class="flex gap-2 items-center">
+              <div class="relative">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#4c9a66] dark:text-[#a3d9b1]"
+                  >search</span
+                >
+                <input
+                  class="pl-10 pr-4 py-2 h-10 rounded-lg bg-[#e7f3eb] dark:bg-[#1a2c20] border-transparent focus:border-primary focus:ring-primary text-sm w-64 text-black dark:text-white"
+                  placeholder="Search articles..."
+                  type="text"
+                />
+              </div>
+              <button
+                class="p-2 text-[#0d1b12] dark:text-[#e7f3eb] rounded-lg hover:bg-[#e7f3eb] dark:hover:bg-[#1a2c20]"
+              >
+                <span class="material-symbols-outlined">filter_list</span>
+              </button>
+            </div>
+            <button
+              class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-primary text-[#0d1b12] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-4 hover:bg-opacity-90"
+            >
+              <span class="material-symbols-outlined text-base">add</span>
+              <span class="truncate">Add New Article</span>
+            </button>
+          </div>
+          <!-- Table -->
+          <div class="@container">
+            <div
+              class="flex overflow-hidden rounded-lg border border-[#cfe7d7] dark:border-[#223e2b] bg-[#f8fcf9] dark:bg-[#1a2c20]"
+            >
+              <table class="w-full">
+                <thead class="bg-[#f8fcf9] dark:bg-[#1a2c20]">
+                  <tr>
+                    <th
+                      class="px-4 py-3 text-left text-[#0d1b12] dark:text-white w-2/5 text-sm font-medium leading-normal"
+                    >
+                      Title
+                    </th>
+                    <th
+                      class="px-4 py-3 text-left text-[#0d1b12] dark:text-white w-1/5 text-sm font-medium leading-normal"
+                    >
+                      Category
+                    </th>
+                    <th
+                      class="px-4 py-3 text-left text-[#0d1b12] dark:text-white w-1/5 text-sm font-medium leading-normal"
+                    >
+                      Status
+                    </th>
+                    <th
+                      class="px-4 py-3 text-left text-[#0d1b12] dark:text-white w-1/5 text-sm font-medium leading-normal"
+                    >
+                      Last Modified
+                    </th>
+                    <th
+                      class="px-4 py-3 text-left text-[#4c9a66] dark:text-[#a3d9b1] w-auto text-sm font-medium leading-normal"
+                    >
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[#cfe7d7] dark:divide-[#223e2b]">
+                  <tr>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#0d1b12] dark:text-[#e7f3eb] text-sm font-normal leading-normal"
+                    >
+                      Coping with Exam Stress
+                    </td>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-normal leading-normal"
+                    >
+                      Academic
+                    </td>
+                    <td class="h-[72px] px-4 py-2">
+                      <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/20 text-[#0d1b12] dark:bg-primary/30 dark:text-white"
+                        >Published</span
+                      >
+                    </td>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-normal leading-normal"
+                    >
+                      Oct 26, 2023
+                    </td>
+                    <td class="h-[72px] px-4 py-2">
+                      <button
+                        class="text-primary dark:text-[#a3d9b1] text-sm font-bold leading-normal tracking-[0.015em] hover:underline"
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#0d1b12] dark:text-[#e7f3eb] text-sm font-normal leading-normal"
+                    >
+                      Understanding Anxiety
+                    </td>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-normal leading-normal"
+                    >
+                      General Wellness
+                    </td>
+                    <td class="h-[72px] px-4 py-2">
+                      <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/20 text-[#0d1b12] dark:bg-primary/30 dark:text-white"
+                        >Published</span
+                      >
+                    </td>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-normal leading-normal"
+                    >
+                      Oct 24, 2023
+                    </td>
+                    <td class="h-[72px] px-4 py-2">
+                      <button
+                        class="text-primary dark:text-[#a3d9b1] text-sm font-bold leading-normal tracking-[0.015em] hover:underline"
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#0d1b12] dark:text-[#e7f3eb] text-sm font-normal leading-normal"
+                    >
+                      Mindfulness for Beginners
+                    </td>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-normal leading-normal"
+                    >
+                      Techniques
+                    </td>
+                    <td class="h-[72px] px-4 py-2">
+                      <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#f6ad55]/20 dark:bg-[#f6ad55]/30 text-[#0d1b12] dark:text-white"
+                        >Draft</span
+                      >
+                    </td>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-normal leading-normal"
+                    >
+                      Oct 22, 2023
+                    </td>
+                    <td class="h-[72px] px-4 py-2">
+                      <button
+                        class="text-primary dark:text-[#a3d9b1] text-sm font-bold leading-normal tracking-[0.015em] hover:underline"
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#0d1b12] dark:text-[#e7f3eb] text-sm font-normal leading-normal"
+                    >
+                      Navigating Social Challenges
+                    </td>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-normal leading-normal"
+                    >
+                      Relationships
+                    </td>
+                    <td class="h-[72px] px-4 py-2">
+                      <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/20 text-[#0d1b12] dark:bg-primary/30 dark:text-white"
+                        >Published</span
+                      >
+                    </td>
+                    <td
+                      class="h-[72px] px-4 py-2 text-[#4c9a66] dark:text-[#a3d9b1] text-sm font-normal leading-normal"
+                    >
+                      Oct 20, 2023
+                    </td>
+                    <td class="h-[72px] px-4 py-2">
+                      <button
+                        class="text-primary dark:text-[#a3d9b1] text-sm font-bold leading-normal tracking-[0.015em] hover:underline"
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
