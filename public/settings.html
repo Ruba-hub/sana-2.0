@@ -20,34 +20,129 @@
         theme: {
           extend: {
             colors: {
-              primary: "#4C9A7A", // Muted Green
-              "primary-accent": "#FF7F50", // Coral Orange
-              "secondary-accent": "#FFDAB9", // Peach Puff
-              "background-light": "#FDFBF7",
-              "background-dark": "#1A2421",
-              "text-primary-light": "#36454F",
-              "text-primary-dark": "#E0E0E0",
-              "text-secondary-light": "#6E7A83",
-              "text-secondary-dark": "#A9A9A9",
-              "card-light": "#FFFFFF",
-              "card-dark": "#25312D",
-              "border-light": "#F3EAE2",
-              "border-dark": "#36453F",
-              "positive-light": "#4C9A7A",
-              "positive-dark": "#5DBE99",
+              primary: "#11d452",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+              "orange-accent": "#ff9f1c",
+              "peach-accent": "#ffdab9",
+              "text-light": "#102216",
+              "text-dark": "#f6f8f6",
+              "card-light": "#ffffff",
+              "card-dark": "#1a3824",
+              "border-light": "#e2e8f0",
+              "border-dark": "#2d573d",
             },
             fontFamily: {
-              display: ["Lexend", "sans-serif"],
+              display: ["Inter", "sans-serif"],
             },
             borderRadius: {
-              DEFAULT: "0.5rem",
-              lg: "0.75rem",
-              xl: "1rem",
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
               full: "9999px",
             },
           },
         },
       };
+    </script>
+    <script>
+      // Helper: set the settings page avatar initials and deterministic bg color
+      function setSettingsAvatarFromName(name) {
+        const initial = name && String(name).trim() ? String(name).trim()[0].toUpperCase() : 'U';
+        const el = document.getElementById('settings-user-avatar-initial');
+        const wrap = document.getElementById('settings-user-avatar');
+        if (el) el.textContent = initial;
+        if (!wrap) return;
+        const palette = ['bg-emerald-500','bg-green-600','bg-indigo-500','bg-sky-500','bg-fuchsia-500','bg-rose-500','bg-amber-500','bg-purple-500'];
+        const cls = palette[(initial.charCodeAt(0) || 0) % palette.length];
+        palette.forEach((c) => wrap.classList.remove(c));
+        wrap.classList.add(cls);
+        wrap.classList.remove('bg-primary');
+      }
+
+      // Load user data on page load
+      (async function () {
+        try {
+          // Get user_id from session or URL params or localStorage
+          const urlParams = new URLSearchParams(window.location.search);
+          let userId =
+            urlParams.get("user_id") || localStorage.getItem("user_id");
+
+          // Try to get user data from session first
+          if (!userId) {
+            const sessionRes = await fetch("php/api.php?action=get_user");
+            if (sessionRes.ok) {
+              const sessionData = await sessionRes.json();
+              if (sessionData.ok && sessionData.user && sessionData.user.id) {
+                userId = sessionData.user.id;
+                window.currentUserId = userId;
+                const userNameEl = document.getElementById("settings-user-name");
+                if (userNameEl) {
+                  const display = sessionData.user.display_name || sessionData.user.user_name || "User";
+                  userNameEl.textContent = display;
+                  setSettingsAvatarFromName(display);
+                }
+                return;
+              }
+            }
+          }
+
+          if (!userId) {
+            const userNameEl = document.getElementById("settings-user-name");
+            if (userNameEl) {
+              userNameEl.textContent = "Guest";
+            }
+            return;
+          }
+
+          // Store user_id for later use
+          window.currentUserId = userId;
+
+          // Fetch user data from API
+          const res = await fetch(
+            `php/api.php?action=get_user&user_id=${encodeURIComponent(userId)}`
+          );
+          if (!res.ok) {
+            console.error("Failed to fetch user data");
+            return;
+          }
+
+          const data = await res.json();
+          if (data.ok && data.user) {
+            const userNameEl = document.getElementById("settings-user-name");
+            if (userNameEl) {
+              const display = data.user.display_name || data.user.user_name || "User";
+              userNameEl.textContent = display;
+              setSettingsAvatarFromName(display);
+            }
+            // Also populate the Personal Information form fields
+            const fullNameInput = document.getElementById("settings-full-name");
+            if (fullNameInput) {
+              fullNameInput.value = data.user.display_name || "";
+            }
+            const emailInput = document.getElementById("settings-email");
+            if (emailInput) {
+              emailInput.value = data.user.email || "";
+            }
+            const universityInput = document.getElementById(
+              "settings-university"
+            );
+            if (universityInput) {
+              universityInput.value = data.user.university || "";
+            }
+            const campusSelect = document.getElementById("settings-campus");
+            if (campusSelect && data.user.campus) {
+              campusSelect.value = data.user.campus;
+            }
+            const yearSelect = document.getElementById("settings-year");
+            if (yearSelect && data.user.year_of_study) {
+              yearSelect.value = data.user.year_of_study;
+            }
+          }
+        } catch (err) {
+          console.error("Error loading user:", err);
+        }
+      })();
     </script>
     <style>
       .material-symbols-outlined {
@@ -58,16 +153,16 @@
       }
     </style>
   </head>
-  <body class="bg-[#FFF8F5] font-['Inter']">
+  <body class="bg-background-light font-display text-text-light">
     <div class="flex min-h-screen">
       <!-- SideNavBar -->
       <aside
-        class="w-64 flex-shrink-0 bg-[#FFF8F5] p-6 border-r border-[#F5B895]/30"
+        class="w-64 flex-shrink-0 bg-background-light p-6 border-r border-peach-accent/30"
       >
         <div class="flex flex-col justify-between h-full">
           <div class="flex flex-col gap-8">
             <div class="flex items-center gap-4">
-              <a href="index3.html">
+              <a href="stdntdashb.html">
                 <div class="size-6 text-primary">
                   <svg
                     fill="none"
@@ -83,75 +178,69 @@
                   </svg>
                 </div>
               </a>
-              <h1
-                class="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark"
+              <h2
+                class="text-text-light text-xl font-bold leading-tight tracking-[-0.015em] px-6 py-4 border-b border-peach-accent/30"
               >
                 Sana
               </h1>
             </div>
             <div class="flex flex-col gap-4">
               <div class="flex gap-3">
-                <div
-                  class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12"
-                  data-alt="User profile picture"
-                  style="
-                    background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAhtyyFeCdaRl_ZnwW37W0_DHmIfiHHQDk4gyFXlY31NVMiQ5tY2t9AC_gTwGeFRT19r4X5ObAaxoEiZoHJyGF50aiB2NIm4SeuCxjOGJgQP1L0OsnqpJLWx462cejFl4busXN-18n3_98l8oFqtDs1wr4BisQmGMJ_42FHcdF9Dm-s67mAKargjE1MdJTKD9ikRzftC06CX0jR3kkUBi7pAZYioIO7IDQliUDKXtNEmJboGeuzjzoN8AUkY5-vNJrB76Pk6Q_q2Q');
-                  "
-                ></div>
-                <div class="flex flex-col justify-center">
-                  <h2
-                    class="text-[#333333] text-base font-medium leading-normal"
-                  >
-                    Alex Doe
-                  </h2>
-                  <p class="text-gray-500 text-sm font-normal leading-normal">
-                    University of Waterloo
-                  </p>
+                  <div id="settings-user-avatar" class="w-12 h-12 rounded-full flex items-center justify-center text-white text-sm font-medium bg-primary">
+                    <span id="settings-user-avatar-initial">U</span>
+                  </div>
+                  <div class="flex flex-col justify-center">
+                    <h2
+                      id="settings-user-name"
+                      class="text-text-light text-base font-medium leading-normal"
+                    >
+                      Loading...
+                    </h2>
+                  </div>
                 </div>
-              </div>
               <div class="flex flex-col gap-2 pt-4">
                 <a
-                  class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#A8D5BA]/30"
+                  class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/30"
                   href="#"
                 >
-                  <span class="material-symbols-outlined fill text-[#333333]"
+                  <span class="material-symbols-outlined fill text-text-light"
                     >person</span
                   >
-                  <p class="text-[#333333] text-sm font-medium leading-normal">
+                  <p class="text-text-light text-sm font-medium leading-normal">
                     Profile
                   </p>
                 </a>
                 <a
-                  class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#A8D5BA]/20"
-                  href="#"
+                  class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20"
+                  href="chat.html"
                 >
-                  <span class="material-symbols-outlined text-[#333333]"
-                    >notifications</span
+                  <span class="material-symbols-outlined text-text-light"
+                    >chat</span
                   >
-                  <p class="text-[#333333] text-sm font-medium leading-normal">
-                    Notifications
+                  <p class="text-text-light text-sm font-medium leading-normal">
+                    Chat
                   </p>
                 </a>
                 <a
-                  class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#A8D5BA]/20"
-                  href="#"
+                  class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20"
+                  href="journal.html"
                 >
-                  <span class="material-symbols-outlined text-[#333333]"
-                    >lock</span
+                  <span class="material-symbols-outlined text-text-light"
+                    >ent</span
                   >
-                  <p class="text-[#333333] text-sm font-medium leading-normal">
-                    Privacy &amp; Security
+                  <p class="text-text-light text-sm font-medium leading-normal">
+                     Journal
                   </p>
                 </a>
                 <a
-                  class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#A8D5BA]/20"
+                  class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20"
                   href="#"
                 >
-                  <span class="material-symbols-outlined text-[#333333]"
-                    >tune</span
+                  <span class="material-symbols-outlined text-text-light"
+                    >mood</span
                   >
-                  <p class="text-[#333333] text-sm font-medium leading-normal">
-                    General
+                  <p class="text-text-light text-sm font-medium leading-normal">
+                    Log Mood
                   </p>
                 </a>
               </div>
@@ -160,7 +249,7 @@
           <form method="POST" action="php/logout.php" style="width: 100%">
             <button
               type="submit"
-              class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#F5B895] text-[#333333] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#F5B895]/80"
+              class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-green-200 text-text-light text-sm font-bold leading-normal tracking-[0.015em] hover:bg-peach-accent/80"
             >
               <span class="truncate">Log Out</span>
             </button>
@@ -174,7 +263,7 @@
           <div class="flex flex-wrap justify-between gap-3 pb-8">
             <div class="flex min-w-72 flex-col gap-2">
               <p
-                class="text-[#333333] text-4xl font-bold leading-tight tracking-tight"
+                class="text-text-light text-4xl font-bold leading-tight tracking-tight"
               >
                 Profile Settings
               </p>
@@ -182,13 +271,22 @@
                 Manage your personal information and account settings.
               </p>
             </div>
+            <div class="flex items-center">
+              <a
+                href="stdntdashb.html"
+                class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors font-medium text-sm"
+              >
+                <span class="material-symbols-outlined">arrow_back</span>
+                <span>Go Back</span>
+              </a>
+            </div>
           </div>
           <!-- Profile/Account Section -->
           <div
-            class="bg-white rounded-xl border border-[#F5B895]/30 shadow-sm mb-8"
+            class="bg-card-light rounded-xl border border-peach-accent/30 shadow-sm mb-8"
           >
             <h2
-              class="text-[#333333] text-xl font-bold leading-tight tracking-[-0.015em] px-6 py-4 border-b border-[#F5B895]/30"
+              class="text-text-light text-xl font-bold leading-tight tracking-[-0.015em] px-6 py-4 border-b border-peach-accent/30"
             >
               Personal Information
             </h2>
@@ -200,9 +298,10 @@
                   Full Name
                 </p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#333333] focus:outline-0 focus:ring-2 focus:ring-[#A8D5BA] border border-gray-300 bg-white h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"
+                  id="settings-full-name"
+                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light bg-card-light h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"
                   placeholder="Alex Doe"
-                  value="Alex Doe"
+                  value=""
                 />
               </label>
               <label class="flex flex-col">
@@ -212,9 +311,10 @@
                   Email Address
                 </p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#333333] focus:outline-0 focus:ring-2 focus:ring-[#A8D5BA] border border-gray-300 bg-white h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"
+                  id="settings-email"
+                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light bg-card-light h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"
                   placeholder="alex.doe@university.com"
-                  value="alex.doe@university.com"
+                  value=""
                 />
               </label>
               <label class="flex flex-col">
@@ -224,9 +324,10 @@
                   University
                 </p>
                 <input
-                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#333333] focus:outline-0 focus:ring-2 focus:ring-[#A8D5BA] border border-gray-300 bg-white h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"
+                  id="settings-university"
+                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light bg-card-light h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"
                   placeholder="University of Waterloo"
-                  value="University of Waterloo"
+                  value=""
                 />
               </label>
               <label class="flex flex-col">
@@ -236,7 +337,8 @@
                   Campus
                 </p>
                 <select
-                  class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#333333] focus:outline-0 focus:ring-2 focus:ring-[#A8D5BA] border border-gray-300 bg-white h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"
+                  id="settings-campus"
+                  class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light bg-card-light h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"
                 >
                   <option>Main Campus</option>
                   <option>Satellite Campus A</option>
@@ -250,10 +352,11 @@
                   Year of Study
                 </p>
                 <select
+                  id="settings-year"
                   class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#333333] focus:outline-0 focus:ring-2 focus:ring-[#A8D5BA] border border-gray-300 bg-white h-12 placeholder:text-gray-400 px-4 text-base font-normal leading-normal"
                 >
                   <option>1st Year</option>
-                  <option selected="">2nd Year</option>
+                  <option>2nd Year</option>
                   <option>3rd Year</option>
                   <option>4th Year</option>
                   <option>Graduate Studies</option>
@@ -261,11 +364,11 @@
               </label>
             </div>
             <div
-              class="flex flex-col sm:flex-row justify-between items-center gap-4 px-6 py-4 bg-[#FFF8F5] rounded-b-xl border-t border-[#F5B895]/30"
+              class="flex flex-col sm:flex-row justify-between items-center gap-4 px-6 py-4 bg-[#fff] rounded-b-xl border-t border-[#F5B895]/30"
             >
               <div class="flex gap-4">
                 <button
-                  class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-transparent text-[#F5B895] text-sm font-bold leading-normal border-2 border-[#F5B895] hover:bg-[#F5B895]/10"
+                  class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-transparent text-black-700 text-sm font-bold leading-normal border-2 border-green-400 hover:bg-[#F5B895]/10"
                 >
                   <span class="truncate">Change Password</span>
                 </button>
@@ -276,190 +379,87 @@
                 </button>
               </div>
               <button
-                class="flex w-full sm:w-auto min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-[#A8D5BA] text-[#333333] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#A8D5BA]/80"
+                class="flex w-full sm:w-auto min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-green-200 text-text-light text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/80"
               >
                 <span class="truncate">Save Changes</span>
               </button>
             </div>
           </div>
-          <!-- Notifications Section -->
-          <div
-            class="bg-white rounded-xl border border-[#F5B895]/30 shadow-sm mb-8"
-          >
-            <h2
-              class="text-[#333333] text-xl font-bold leading-tight tracking-[-0.015em] px-6 py-4 border-b border-[#F5B895]/30"
-            >
-              Notifications
-            </h2>
-            <div class="p-6 space-y-6">
-              <div>
-                <h3 class="text-[#333333] text-base font-semibold mb-3">
-                  Notification Channels
-                </h3>
-                <div class="space-y-3">
-                  <div class="flex items-center justify-between">
-                    <p class="text-gray-600">Push Notifications</p>
-                    <label
-                      class="relative inline-flex items-center cursor-pointer"
-                    >
-                      <input
-                        checked=""
-                        class="sr-only peer"
-                        type="checkbox"
-                        value=""
-                      />
-                      <div
-                        class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-[#A8D5BA] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#A8D5BA]"
-                      ></div>
-                    </label>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <p class="text-gray-600">Email Notifications</p>
-                    <label
-                      class="relative inline-flex items-center cursor-pointer"
-                    >
-                      <input class="sr-only peer" type="checkbox" value="" />
-                      <div
-                        class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-[#A8D5BA] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#A8D5BA]"
-                      ></div>
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <hr class="border-[#F5B895]/30" />
-              <div>
-                <h3 class="text-[#333333] text-base font-semibold mb-3">
-                  Activity Preferences
-                </h3>
-                <div class="space-y-3">
-                  <div class="flex items-center justify-between">
-                    <p class="text-gray-600">New Chat Messages</p>
-                    <label
-                      class="relative inline-flex items-center cursor-pointer"
-                    >
-                      <input
-                        checked=""
-                        class="sr-only peer"
-                        type="checkbox"
-                        value=""
-                      />
-                      <div
-                        class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-[#A8D5BA] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#A8D5BA]"
-                      ></div>
-                    </label>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <p class="text-gray-600">Video Call Reminders</p>
-                    <label
-                      class="relative inline-flex items-center cursor-pointer"
-                    >
-                      <input
-                        checked=""
-                        class="sr-only peer"
-                        type="checkbox"
-                        value=""
-                      />
-                      <div
-                        class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-[#A8D5BA] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#A8D5BA]"
-                      ></div>
-                    </label>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <p class="text-gray-600">Session Summaries</p>
-                    <label
-                      class="relative inline-flex items-center cursor-pointer"
-                    >
-                      <input class="sr-only peer" type="checkbox" value="" />
-                      <div
-                        class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-[#A8D5BA] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#A8D5BA]"
-                      ></div>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Privacy & Security Section -->
-          <div class="bg-white rounded-xl border border-[#F5B895]/30 shadow-sm">
-            <h2
-              class="text-[#333333] text-xl font-bold leading-tight tracking-[-0.015em] px-6 py-4 border-b border-[#F5B895]/30"
-            >
-              Privacy &amp; Security
-            </h2>
-            <div class="p-6 space-y-6">
-              <div class="flex items-start justify-between">
-                <div>
-                  <h3 class="text-[#333333] text-base font-semibold">
-                    Share Anonymized Data
-                  </h3>
-                  <p class="text-gray-500 text-sm max-w-lg">
-                    Help improve our AI by allowing us to use your anonymized
-                    conversation data for research and development. Your
-                    personal information is always removed.
-                  </p>
-                </div>
-                <label
-                  class="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1"
-                >
-                  <input
-                    checked=""
-                    class="sr-only peer"
-                    type="checkbox"
-                    value=""
-                  />
-                  <div
-                    class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-[#A8D5BA] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#A8D5BA]"
-                  ></div>
-                </label>
-              </div>
-              <hr class="border-[#F5B895]/30" />
-              <div class="flex items-start justify-between">
-                <div>
-                  <h3 class="text-[#333333] text-base font-semibold">
-                    AI Emotion Detection
-                  </h3>
-                  <p class="text-gray-500 text-sm max-w-lg">
-                    Allow Sana to analyze your voice tone and facial expressions
-                    during calls to provide more empathetic and relevant
-                    support.
-                  </p>
-                  <a
-                    class="text-sm font-medium text-[#A8D5BA] hover:underline"
-                    href="#"
-                    >Learn more about how this works</a
-                  >
-                </div>
-                <label
-                  class="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1"
-                >
-                  <input class="sr-only peer" type="checkbox" value="" />
-                  <div
-                    class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-[#A8D5BA] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#A8D5BA]"
-                  ></div>
-                </label>
-              </div>
-              <hr class="border-[#F5B895]/30" />
-              <div>
-                <h3 class="text-[#333333] text-base font-semibold mb-3">
-                  Session History
-                </h3>
-                <div class="flex gap-4">
-                  <button
-                    class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-transparent text-[#333333] text-sm font-bold leading-normal border border-gray-300 hover:bg-gray-50"
-                  >
-                    <span class="truncate">View History</span>
-                  </button>
-                  <button
-                    class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-transparent text-[#333333] text-sm font-bold leading-normal border border-gray-300 hover:bg-gray-50"
-                  >
-                    <span class="truncate">Clear History</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </main>
     </div>
+    <script>
+      // Privacy & Security functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        // Load preferences from localStorage
+        const shareDataToggle = document.getElementById("share-data-toggle");
+        const emotionDetectionToggle = document.getElementById(
+          "emotion-detection-toggle"
+        );
+        const viewHistoryBtn = document.getElementById("view-history-btn");
+        const clearHistoryBtn = document.getElementById("clear-history-btn");
+
+        /* ---------------------------
+       LOAD SAVED PREFERENCES
+    ---------------------------- */
+        if (shareDataToggle) {
+          const shareDataPref = localStorage.getItem("shareAnonymizedData");
+          if (shareDataPref !== null) {
+            shareDataToggle.checked = shareDataPref === "true";
+          }
+          shareDataToggle.addEventListener("change", function () {
+            localStorage.setItem("shareAnonymizedData", this.checked);
+            console.log("Share Anonymized Data:", this.checked);
+          });
+        }
+
+        if (emotionDetectionToggle) {
+          const emotionPref = localStorage.getItem("emotionDetection");
+          if (emotionPref !== null) {
+            emotionDetectionToggle.checked = emotionPref === "true";
+          }
+          emotionDetectionToggle.addEventListener("change", function () {
+            localStorage.setItem("emotionDetection", this.checked);
+            console.log("AI Emotion Detection:", this.checked);
+          });
+        }
+
+        /* ---------------------------
+       FIXED VIEW HISTORY BUTTON
+       (Redirects to history.html)
+    ---------------------------- */
+        if (viewHistoryBtn) {
+          viewHistoryBtn.addEventListener("click", function () {
+            const userId = window.currentUserId;
+
+            if (!userId) {
+              alert("Please log in to view session history.");
+              return;
+            }
+
+            // Redirect to actual history page
+            window.location.href = "history.html";
+          });
+        }
+
+        /* ---------------------------
+       CLEAR HISTORY BUTTON
+       (You may want to replace this later
+       with a server-side clear function)
+    ---------------------------- */
+        if (clearHistoryBtn) {
+          clearHistoryBtn.addEventListener("click", function () {
+            if (
+              confirm("Are you sure you want to clear all session history?")
+            ) {
+              localStorage.removeItem("sessionHistory");
+              alert("Session history cleared.");
+              console.log("Session history cleared");
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>

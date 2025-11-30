@@ -25,28 +25,230 @@
         theme: {
           extend: {
             colors: {
-              primary: "#A8D5BA", // Green
-              secondary: "#FFB385", // Orange
-              accent: "#FFDAB9", // Peach
-              "background-light": "#FFF9F5",
-              "background-dark": "#1f1a17",
-              "text-light": "#333333",
-              "text-dark": "#e0e0e0",
-              "text-muted-light": "#6b7280",
-              "text-muted-dark": "#9ca3af",
+              primary: "#11d452",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+              "orange-accent": "#ff9f1c",
+              "peach-accent": "#ffdab9",
+              "text-light": "#102216",
+              "text-dark": "#f6f8f6",
+              "card-light": "#ffffff",
+              "card-dark": "#1a3824",
+              "border-light": "#e2e8f0",
+              "border-dark": "#2d573d",
             },
             fontFamily: {
               display: ["Inter", "sans-serif"],
             },
             borderRadius: {
-              DEFAULT: "0.5rem",
-              lg: "0.75rem",
-              xl: "1rem",
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
               full: "9999px",
             },
           },
         },
       };
+
+      // Custom confirmation modal helper
+      function showConfirmModal(message, title = "Confirm") {
+        return new Promise((resolve) => {
+          const overlay = document.createElement("div");
+          overlay.className =
+            "fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4";
+
+          const modal = document.createElement("div");
+          modal.className =
+            "bg-white dark:bg-card-dark rounded-lg shadow-lg max-w-sm w-full animate-[scale-in_0.2s_ease-out]";
+          modal.style.animation = "scale-in 0.2s ease-out";
+
+          modal.innerHTML = `
+            <div class="p-6">
+              <h3 class="text-lg font-bold text-text-light dark:text-text-dark mb-2">${title}</h3>
+              <p class="text-text-light dark:text-text-dark mb-6 text-sm leading-relaxed">${message}</p>
+              <div class="flex gap-3 justify-end">
+                <button 
+                  id="confirm-cancel" 
+                  class="px-4 py-2 rounded-lg bg-border-light dark:bg-border-dark text-text-light dark:text-text-dark hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium text-sm"
+                >
+                  Cancel
+                </button>
+                <button 
+                  id="confirm-ok" 
+                  class="px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors font-medium text-sm"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          `;
+
+          overlay.appendChild(modal);
+          document.body.appendChild(overlay);
+
+          const cleanup = () => {
+            overlay.remove();
+          };
+
+          document
+            .getElementById("confirm-ok")
+            .addEventListener("click", () => {
+              cleanup();
+              resolve(true);
+            });
+
+          document
+            .getElementById("confirm-cancel")
+            .addEventListener("click", () => {
+              cleanup();
+              resolve(false);
+            });
+
+          overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) {
+              cleanup();
+              resolve(false);
+            }
+          });
+        });
+      }
+    </script>
+    <style>
+      @keyframes scale-in {
+        from {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    </style>
+    <script>
+      // Logout button handler (clears localStorage, hits server logout, then redirects)
+      document.addEventListener("DOMContentLoaded", function () {
+        const btn = document.getElementById("logout-btn");
+        if (!btn) return;
+        btn.addEventListener("click", async function (e) {
+          e.preventDefault();
+          // Ask for confirmation
+          const confirmed = await showConfirmModal(
+            "You will be logged out of your account.",
+            "Logout?"
+          );
+          if (!confirmed) {
+            return;
+          }
+          try {
+            // clear client state
+            try {
+              localStorage.clear();
+            } catch (e) {}
+            // call server logout endpoint (best-effort)
+            await fetch("php/logout.php", {
+              method: "POST",
+              credentials: "same-origin",
+            });
+          } catch (err) {
+            console.warn("Logout request failed", err);
+          }
+          // redirect to login page
+          window.location.href = "login.html";
+        });
+      });
+    </script>
+
+    <script>
+      // Load user data on page load
+      (async function () {
+        // helper: set avatar initial and deterministic bg color from name
+        function setUserAvatarFromName(name) {
+          const initial =
+            name && String(name).trim()
+              ? String(name).trim()[0].toUpperCase()
+              : "G";
+          const avatarEl = document.getElementById("user-avatar-initial");
+          const avatarWrap = document.getElementById("user-avatar");
+          if (avatarEl) avatarEl.textContent = initial;
+          if (!avatarWrap) return;
+          // choose a color class deterministically based on initial
+          const palette = [
+            "bg-indigo-500",
+            "bg-emerald-500",
+            "bg-rose-500",
+            "bg-yellow-500",
+            "bg-sky-500",
+            "bg-purple-500",
+            "bg-fuchsia-500",
+            "bg-amber-500",
+          ];
+          const code = initial.charCodeAt(0) || 0;
+          const cls = palette[code % palette.length];
+          // remove any palette classes first
+          palette.forEach((c) => avatarWrap.classList.remove(c));
+          // apply chosen color and ensure text is white for contrast
+          avatarWrap.classList.add(cls);
+          avatarWrap.classList.remove("bg-primary");
+        }
+        try {
+          // Get user_id from session or URL params or localStorage
+          const urlParams = new URLSearchParams(window.location.search);
+          let userId =
+            urlParams.get("user_id") || localStorage.getItem("user_id");
+
+          // Try to get user data from session first
+          if (!userId) {
+            const sessionRes = await fetch("php/api.php?action=get_user");
+            if (sessionRes.ok) {
+              const sessionData = await sessionRes.json();
+              if (sessionData.ok && sessionData.user && sessionData.user.id) {
+                userId = sessionData.user.id;
+                window.currentUserId = userId;
+                const userNameEl = document.getElementById("user-name");
+                if (userNameEl) {
+                  const display = sessionData.user.display_name || "User";
+                  userNameEl.textContent = display;
+                  setUserAvatarFromName(display);
+                }
+                return;
+              }
+            }
+          }
+
+          if (!userId) {
+            const userNameEl = document.getElementById("user-name");
+            if (userNameEl) {
+              userNameEl.textContent = "Guest";
+            }
+            return;
+          }
+
+          // Store user_id for later use
+          window.currentUserId = userId;
+
+          // Fetch user data from API
+          const res = await fetch(
+            `php/api.php?action=get_user&user_id=${encodeURIComponent(userId)}`
+          );
+          if (!res.ok) {
+            console.error("Failed to fetch user data");
+            return;
+          }
+
+          const data = await res.json();
+          if (data.ok && data.user) {
+            const userNameEl = document.getElementById("user-name");
+            if (userNameEl) {
+              const display = data.user.display_name || "User";
+              userNameEl.textContent = display;
+              setUserAvatarFromName(display);
+            }
+          }
+        } catch (err) {
+          console.error("Error loading user:", err);
+        }
+      })();
     </script>
   </head>
   <body class="font-display bg-background-light dark:bg-background-dark">
@@ -59,30 +261,27 @@
           class="flex flex-col gap-4 border-r border-gray-200/50 dark:border-gray-700/50 bg-white/50 dark:bg-black/10 w-64 p-4 shrink-0"
         >
           <div class="flex items-center gap-3 px-2 py-2">
+            <!-- Dynamic initial avatar: will be filled by JS from the user's display name -->
             <div
-              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-              data-alt="User profile picture for Alex Johnson"
-              style="
-                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZBjrpggVRkMlV9uOJ6iap1WSK9oLCsV7U0wq_iyUxTvtqsasv1j-Syy5jL4KKbqnDjIIYnA91bQWPZo6AURwVGSZ5YYWt2Gvu2DO-WVJOsCIsxUgksUf4V9zjVhC1UcZSqY-3rFlRCOgauwTkeIwomDHK7EodkNQuFaw9J532lVS7-cQHfg7IHqTbqccs0W_bfDlLS3kVYRvMhziI9JgpdN_oFjK4WAxe9IrVkDEFv3fIZLxKGVrNtEupyRbsjTyPeZmie1oSlw');
-              "
-            ></div>
+              id="user-avatar"
+              class="w-10 h-10 rounded-full flex items-center justify-center bg-[#11d452] text-white text-sm font-medium"
+              aria-hidden="true"
+            >
+              <span id="user-avatar-initial">G</span>
+            </div>
             <div class="flex flex-col">
               <h1
+                id="user-name"
                 class="text-text-light dark:text-text-dark text-base font-medium leading-normal"
               >
-                Alex Johnson
+                Loading...
               </h1>
-              <p
-                class="text-text-muted-light dark:text-text-muted-dark text-sm font-normal leading-normal"
-              >
-                alex.j@university.edu
-              </p>
             </div>
           </div>
           <div class="flex flex-col gap-2 mt-4 grow">
             <a
               class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
-              href="index.html"
+              href="stdntdashb.html"
             >
               <span
                 class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
@@ -123,39 +322,24 @@
             </a>
             <a
               class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
-              href="logmood.html"
+              href="settings.html"
             >
               <span
                 class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
-                >sentiment_satisfied</span
+                >settings</span
               >
-              <p class="text-sm font-medium leading-normal">Mood Log</p>
+              <p class="text-sm font-medium leading-normal">Settings</p>
             </a>
           </div>
           <div class="flex flex-col gap-1">
-            <div
-              class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
+            <button
+              id="logout-btn"
+              class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors w-full"
+              aria-label="Logout"
             >
-              <a
-                class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
-                href="settings.html"
-              >
-                <span
-                  class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
-                  >settings</span
-                >
-                <p class="text-sm font-medium leading-normal">Settings</p>
-              </a>
-            </div>
-            <div
-              class="flex items-center gap-3 px-3 py-2 text-text-light dark:text-text-dark hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors"
-            >
-              <span
-                class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark"
-                >help</span
-              >
-              <p class="text-sm font-medium leading-normal">Help</p>
-            </div>
+              <span class="material-symbols-outlined">logout</span>
+              <span class="text-sm font-medium leading-normal">Logout</span>
+            </button>
           </div>
         </div>
         <!-- Main Content -->
@@ -170,39 +354,49 @@
               </h1>
             </div>
             <!-- Tabs -->
+
             <div
               class="pb-3 sticky top-0 bg-background-light dark:bg-background-dark z-10"
             >
               <div
                 class="flex border-b border-gray-200/80 dark:border-gray-700/80 px-4 gap-8"
               >
-                <a
-                  class="tab-btn flex flex-col items-center justify-center border-b-[3px] border-b-primary text-text-light dark:text-text-dark pb-[13px] pt-4"
+                <!-- Journal Tab -->
+                <button
+                  type="button"
+                  class="tab-btn border-b-[3px] border-b-primary text-text-light dark:text-text-dark pb-[13px] pt-4"
+                  data-tab="journalContent"
+                  aria-controls="journalContent"
+                  aria-selected="true"
                 >
-                  <p
-                    class="text-sm font-bold leading-normal tracking-[0.015em]"
-                  >
+                  <p class="text-sm font-bold tracking-[0.015em]">
                     Journal Entries
                   </p>
-                </a>
-                <a
-                  class="tab-btn flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-muted-light dark:text-text-muted-dark pb-[13px] pt-4 hover:border-b-primary/50 transition-colors"
+                </button>
+
+                <!-- Chat Tab -->
+                <button
+                  type="button"
+                  class="tab-btn border-b-[3px] border-b-transparent text-text-muted-light dark:text-text-muted-dark pb-[13px] pt-4"
+                  data-tab="chatContent"
+                  aria-controls="chatContent"
+                  aria-selected="false"
                 >
-                  <p
-                    class="text-sm font-bold leading-normal tracking-[0.015em]"
-                  >
+                  <p class="text-sm font-bold tracking-[0.015em]">
                     Chat History
                   </p>
-                </a>
-                <a
-                  class="tab-btn flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-muted-light dark:text-text-muted-dark pb-[13px] pt-4 hover:border-b-primary/50 transition-colors"
+                </button>
+
+                <!-- Mood Tab -->
+                <button
+                  type="button"
+                  class="tab-btn border-b-[3px] border-b-transparent text-text-muted-light dark:text-text-muted-dark pb-[13px] pt-4"
+                  data-tab="moodContent"
+                  aria-controls="moodContent"
+                  aria-selected="false"
                 >
-                  <p
-                    class="text-sm font-bold leading-normal tracking-[0.015em]"
-                  >
-                    Mood Log
-                  </p>
-                </a>
+                  <p class="text-sm font-bold tracking-[0.015em]">Mood Log</p>
+                </button>
               </div>
             </div>
             <!-- Search and Filters -->
@@ -243,9 +437,19 @@
                 </button>
               </div>
             </div>
-            <!-- Content List -->
-            <div class="px-4 py-2 space-y-4">
-              <!-- Chat History: full list of conversations -->
+            <!-- ░░░ JOURNAL CONTENT (dynamic) ░░░ -->
+            <div id="journalContent" class="tab-content px-4 py-2 space-y-4">
+              <div id="journal-list" class="space-y-4">
+                <div class="text-sm text-gray-500">Loading entries...</div>
+              </div>
+            </div>
+
+            <!-- ░░░ CHAT HISTORY CONTENT ░░░ -->
+            <div
+              id="chatContent"
+              class="tab-content px-4 py-2 space-y-4 hidden"
+            >
+              <!-- Chat History: full list of conversations (moved into tab) -->
               <div
                 id="chat-history-list"
                 class="bg-white p-4 rounded-lg shadow-sm mb-4"
@@ -255,132 +459,216 @@
                   <p class="text-sm text-gray-500">Loading conversations...</p>
                 </div>
               </div>
-              <!-- Journal Entry Card 1 -->
-              <div
-                class="bg-white dark:bg-black/20 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-primary/30"
-              >
-                <div class="flex justify-between items-start">
-                  <div>
-                    <h3
-                      class="text-lg font-bold text-text-light dark:text-text-dark"
-                    >
-                      A breakthrough on my project
-                    </h3>
-                    <p
-                      class="text-sm text-text-muted-light dark:text-text-muted-dark mt-1"
-                    >
-                      October 26, 2023
-                    </p>
-                  </div>
-                  <div
-                    class="flex items-center gap-2 bg-secondary/20 dark:bg-secondary/30 text-secondary-800 dark:text-secondary-200 px-3 py-1 rounded-full"
-                  >
-                    <span
-                      class="material-symbols-outlined text-lg"
-                      style="color: #ffb385"
-                      >celebration</span
-                    >
-                    <span class="text-sm font-medium" style="color: #c57642"
-                      >Proud</span
-                    >
-                  </div>
-                </div>
-                <p
-                  class="text-text-light dark:text-text-dark mt-4 leading-relaxed line-clamp-2"
-                >
-                  I finally solved that bug that's been bothering me for a week.
-                  I felt a huge wave of relief and accomplishment wash over me.
-                  It's moments like these that remind me why I love what I do. I
-                  should remember to take breaks more often, as the solution
-                  came to me when I was on a walk...
-                </p>
+            </div>
+
+            <!-- ░░░ MOOD LOG CONTENT ░░░ -->
+            <div
+              id="moodContent"
+              class="tab-content px-4 py-2 space-y-4 hidden"
+            >
+              <div id="mood-log-list" class="space-y-4">
+                <p class="text-sm text-gray-500">Loading mood logs...</p>
               </div>
-              <!-- Journal Entry Card 2 -->
-              <div
-                class="bg-white dark:bg-black/20 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-primary/30"
-              >
-                <div class="flex justify-between items-start">
-                  <div>
-                    <h3
-                      class="text-lg font-bold text-text-light dark:text-text-dark"
-                    >
-                      Feeling overwhelmed with finals
-                    </h3>
-                    <p
-                      class="text-sm text-text-muted-light dark:text-text-muted-dark mt-1"
-                    >
-                      October 24, 2023
-                    </p>
-                  </div>
-                  <div
-                    class="flex items-center gap-2 bg-accent/40 dark:bg-accent/30 px-3 py-1 rounded-full"
-                  >
-                    <span
-                      class="material-symbols-outlined text-lg"
-                      style="color: #90a4ae"
-                      >sentiment_stressed</span
-                    >
-                    <span class="text-sm font-medium" style="color: #546e7a"
-                      >Anxious</span
-                    >
-                  </div>
-                </div>
-                <p
-                  class="text-text-light dark:text-text-dark mt-4 leading-relaxed line-clamp-2"
-                >
-                  The pressure is really mounting this week. I have three major
-                  exams and a paper due. It's hard to focus on one thing when so
-                  many others are looming. Sana suggested I try the 5-4-3-2-1
-                  grounding technique, and it helped a bit to bring me back to
-                  the present moment. I'll try to break down my study
-                  schedule...
-                </p>
-              </div>
-              <!-- Journal Entry Card 3 -->
-              <div
-                class="bg-white dark:bg-black/20 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-primary/30"
-              >
-                <div class="flex justify-between items-start">
-                  <div>
-                    <h3
-                      class="text-lg font-bold text-text-light dark:text-text-dark"
-                    >
-                      A quiet afternoon
-                    </h3>
-                    <p
-                      class="text-sm text-text-muted-light dark:text-text-muted-dark mt-1"
-                    >
-                      October 22, 2023
-                    </p>
-                  </div>
-                  <div
-                    class="flex items-center gap-2 bg-primary/20 dark:bg-primary/30 px-3 py-1 rounded-full"
-                  >
-                    <span
-                      class="material-symbols-outlined text-lg"
-                      style="color: #5e9c77"
-                      >self_improvement</span
-                    >
-                    <span class="text-sm font-medium" style="color: #38761d"
-                      >Calm</span
-                    >
-                  </div>
-                </div>
-                <p
-                  class="text-text-light dark:text-text-dark mt-4 leading-relaxed line-clamp-2"
-                >
-                  Didn't do much today, and that's okay. I spent the afternoon
-                  reading in the park and just enjoying the weather. It was nice
-                  to disconnect and not have any specific goals or tasks. I feel
-                  recharged and more ready to take on the week ahead. It's a
-                  good reminder that rest is productive too.
-                </p>
-              </div>
+            </div>
+
+            <!-- Content List -->
+            <div class="px-4 py-2 space-y-4">
+              <!-- other content (journal cards moved into Journal tab) -->
             </div>
           </div>
         </main>
       </div>
     </div>
+    <script>
+      // Load journal entries into the Journal Entries tab
+      (async function () {
+        const container = document.getElementById("journal-list");
+        if (!container) return;
+        container.innerHTML = "";
+
+        // add a small inline spinner while loading
+        const spinner = document.createElement("div");
+        spinner.className =
+          "journal-spinner flex items-center justify-center py-6";
+        spinner.innerHTML = `
+            <svg class="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+          `;
+        container.appendChild(spinner);
+        try {
+          // Wait for user ID to be set (other script may set it)
+          let attempts = 0;
+          while (!window.currentUserId && attempts < 20) {
+            await new Promise((r) => setTimeout(r, 50));
+            attempts++;
+          }
+
+          // If still not set, try to get the session user directly
+          if (!window.currentUserId) {
+            try {
+              const sessionRes = await fetch("php/api.php?action=get_user");
+              if (sessionRes.ok) {
+                const sessionData = await sessionRes.json();
+                if (sessionData.ok && sessionData.user && sessionData.user.id) {
+                  window.currentUserId = sessionData.user.id;
+                  const userNameEl = document.getElementById("user-name");
+                  if (userNameEl)
+                    userNameEl.textContent =
+                      sessionData.user.display_name || "User";
+                }
+              }
+            } catch (e) {
+              console.warn("Session check failed", e);
+            }
+          }
+
+          if (!window.currentUserId) {
+            container.innerHTML =
+              '<div class="text-sm text-gray-500">Please log in to view journal entries</div>';
+            return;
+          }
+
+          const res = await fetch(
+            `php/api.php?action=get_journal_entries&limit=50&user_id=${encodeURIComponent(
+              window.currentUserId
+            )}`
+          );
+          const data = await res.json();
+          console.log("Journal entries response:", {
+            status: res.status,
+            ok: res.ok,
+            data,
+          });
+          if (!res.ok || !data.ok) {
+            if (spinner && spinner.parentNode)
+              spinner.parentNode.removeChild(spinner);
+            container.innerHTML = `<div class="text-sm text-red-500">Failed to load journal entries: ${
+              data.error || "Unknown error"
+            }</div>`;
+            return;
+          }
+
+          const entries = data.entries || [];
+          // remove spinner before rendering entries
+          if (spinner && spinner.parentNode)
+            spinner.parentNode.removeChild(spinner);
+          if (!entries.length) {
+            container.innerHTML =
+              '<div class="text-sm text-gray-500">No journal entries yet</div>';
+            return;
+          }
+          // render entries
+          for (const e of entries) {
+            const wrapper = document.createElement("div");
+            wrapper.className =
+              "bg-white dark:bg-black/20 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer border border-transparent hover:border-primary/30";
+            const left = document.createElement("div");
+            const h = document.createElement("h3");
+            h.className =
+              "text-lg font-bold text-text-light dark:text-text-dark";
+            h.textContent =
+              e.title || (e.content ? e.content.substring(0, 60) : "Untitled");
+            const meta = document.createElement("p");
+            meta.className =
+              "text-sm text-text-muted-light dark:text-text-muted-dark mt-1";
+            meta.textContent = e.created_at
+              ? new Date(e.created_at).toLocaleString()
+              : "";
+            left.appendChild(h);
+            left.appendChild(meta);
+            // Tags (if any)
+            if (e.tags) {
+              const tagsDiv = document.createElement("div");
+              tagsDiv.className = "flex flex-wrap gap-2 mt-2";
+              let tags = [];
+              try {
+                if (
+                  typeof e.tags === "string" &&
+                  e.tags.trim().startsWith("[")
+                ) {
+                  tags = JSON.parse(e.tags);
+                } else if (typeof e.tags === "string") {
+                  tags = e.tags
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter(Boolean);
+                }
+              } catch (err) {
+                // fallback to comma-split
+                tags = String(e.tags)
+                  .split(",")
+                  .map((t) => t.trim())
+                  .filter(Boolean);
+              }
+              tags.forEach((tag) => {
+                const tagEl = document.createElement("span");
+                tagEl.className =
+                  "bg-primary/20 text-text-light dark:text-text-dark px-3 py-1 rounded-full text-xs font-medium";
+                tagEl.textContent = tag;
+                tagsDiv.appendChild(tagEl);
+              });
+              left.appendChild(tagsDiv);
+            }
+            const tone = document.createElement("div");
+            tone.className =
+              "flex items-center gap-2 bg-accent/30 px-3 py-1 rounded-full";
+            tone.innerHTML =
+              '<span class="material-symbols-outlined text-lg">book</span><span class="text-sm font-medium">Entry</span>';
+            const p = document.createElement("p");
+            p.className =
+              "text-text-light dark:text-text-dark mt-4 leading-relaxed line-clamp-2";
+            p.textContent = e.content || "";
+            wrapper.appendChild(left);
+            wrapper.appendChild(tone);
+            wrapper.appendChild(p);
+            // Open link
+            const openLink = document.createElement("a");
+            openLink.href = `journal.html?entry_id=${encodeURIComponent(
+              e.id || e.ID || ""
+            )}`;
+            openLink.className = "inline-block mt-3 text-sm text-primary/80";
+            openLink.textContent = "Open in Journal";
+            wrapper.appendChild(openLink);
+            // click to open journal modal preview
+            wrapper.addEventListener("click", () => {
+              if (window.showHistoryModal) window.showHistoryModal(e);
+            });
+            container.appendChild(wrapper);
+          }
+        } catch (err) {
+          console.error(err);
+          container.innerHTML =
+            '<div class="text-sm text-red-500">Error loading entries</div>';
+        }
+      })();
+    </script>
+    <script>
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = btn.getAttribute("data-tab");
+
+          // Hide all tab contents
+          document.querySelectorAll(".tab-content").forEach((content) => {
+            content.classList.add("hidden");
+          });
+
+          // Remove active style from all buttons
+          document.querySelectorAll(".tab-btn").forEach((b) => {
+            b.classList.remove("border-b-primary", "text-text-light");
+            b.classList.add("border-b-transparent", "text-text-muted-light");
+          });
+
+          // Show the clicked tab content
+          document.getElementById(target).classList.remove("hidden");
+
+          // Add active styling to clicked button
+          btn.classList.add("border-b-primary", "text-text-light");
+          btn.classList.remove("border-b-transparent", "text-text-muted-light");
+        });
+      });
+    </script>
     <script>
       (async function () {
         const CHAT_API_URL = "php/chat_api.php";
@@ -448,6 +736,222 @@
             '<p class="text-sm text-red-500">Error loading conversations</p>';
         }
       })();
+    </script>
+    <script>
+      // Load mood logs from the database
+      (async function () {
+        const container = document.getElementById("mood-log-list");
+        if (!container) return;
+        container.innerHTML = "";
+        try {
+          // Wait for user ID to be set
+          let attempts = 0;
+          while (!window.currentUserId && attempts < 20) {
+            await new Promise((r) => setTimeout(r, 50));
+            attempts++;
+          }
+
+          if (!window.currentUserId) {
+            container.innerHTML =
+              '<div class="text-sm text-gray-500">Please log in to view mood logs</div>';
+            return;
+          }
+
+          const res = await fetch(
+            `php/api.php?action=get_mood_history&days=365&user_id=${encodeURIComponent(
+              window.currentUserId
+            )}`
+          );
+          const data = await res.json();
+          console.log("Mood history response:", {
+            status: res.status,
+            ok: res.ok,
+            data,
+          });
+          if (!res.ok || !data.ok) {
+            container.innerHTML = `<div class="text-sm text-red-500">Failed to load mood logs: ${
+              data.error || "Unknown error"
+            }</div>`;
+            return;
+          }
+          const logs = (data.history || []).sort((a, b) => {
+            const dateA = new Date(a.timestamp || a.created_at || 0);
+            const dateB = new Date(b.timestamp || b.created_at || 0);
+            return dateB - dateA; // newest first
+          });
+          if (!logs.length) {
+            container.innerHTML =
+              '<div class="text-sm text-gray-500">No mood logs yet</div>';
+            return;
+          }
+          // Helper to get emoji for mood
+          const moodEmoji = {
+            very_sad: "😭",
+            sad: "😔",
+            neutral: "😐",
+            happy: "🙂",
+            very_happy: "😁",
+          };
+          const moodLabel = {
+            very_sad: "Very Sad",
+            sad: "Sad",
+            neutral: "Neutral",
+            happy: "Happy",
+            very_happy: "Very Happy",
+          };
+          // Render mood logs
+          logs.forEach((log) => {
+            const wrapper = document.createElement("div");
+            wrapper.className =
+              "bg-white dark:bg-black/20 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-transparent hover:border-primary/30";
+
+            const header = document.createElement("div");
+            header.className = "flex items-start justify-between mb-4";
+
+            const mood = log.mood || "neutral";
+            const emoji = moodEmoji[mood] || "😐";
+            const label = moodLabel[mood] || "Unknown";
+
+            const moodInfo = document.createElement("div");
+            moodInfo.className = "flex items-center gap-3";
+            moodInfo.innerHTML = `
+              <div class="text-4xl">${emoji}</div>
+              <div>
+                <div class="text-lg font-bold text-text-light dark:text-text-dark">${label}</div>
+                <div class="text-sm text-text-muted-light dark:text-text-muted-dark">
+                  Intensity: ${log.intensity || 5}/10
+                </div>
+              </div>
+            `;
+
+            const dateEl = document.createElement("div");
+            dateEl.className =
+              "text-sm text-text-muted-light dark:text-text-muted-dark";
+            dateEl.textContent =
+              log.timestamp || log.created_at
+                ? new Date(log.timestamp || log.created_at).toLocaleString()
+                : "Unknown date";
+
+            header.appendChild(moodInfo);
+            header.appendChild(dateEl);
+            wrapper.appendChild(header);
+
+            // Tags
+            if (log.tags) {
+              const tagsDiv = document.createElement("div");
+              tagsDiv.className = "flex flex-wrap gap-2 mb-3";
+              const tags =
+                typeof log.tags === "string"
+                  ? log.tags
+                      .split(",")
+                      .map((t) => t.trim())
+                      .filter(Boolean)
+                  : [];
+              tags.forEach((tag) => {
+                const tagEl = document.createElement("span");
+                tagEl.className =
+                  "bg-primary/20 text-text-light dark:text-text-dark px-3 py-1 rounded-full text-xs font-medium";
+                tagEl.textContent = tag;
+                tagsDiv.appendChild(tagEl);
+              });
+              wrapper.appendChild(tagsDiv);
+            }
+
+            // Notes
+            if (log.notes) {
+              const notesDiv = document.createElement("div");
+              notesDiv.className =
+                "bg-background-light dark:bg-black/20 p-3 rounded-lg";
+              const notesText = document.createElement("p");
+              notesText.className =
+                "text-text-light dark:text-text-dark text-sm line-clamp-3";
+              notesText.textContent = log.notes;
+              notesDiv.appendChild(notesText);
+              wrapper.appendChild(notesDiv);
+            }
+
+            container.appendChild(wrapper);
+          });
+        } catch (err) {
+          console.error(err);
+          container.innerHTML =
+            '<div class="text-sm text-red-500">Error loading mood logs</div>';
+        }
+      })();
+    </script>
+    <div
+      id="history-entry-modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center"
+    >
+      <div
+        class="absolute inset-0 bg-black/40"
+        onclick="closeHistoryModal()"
+      ></div>
+      <div
+        class="relative z-10 w-full max-w-2xl rounded-lg bg-white shadow-lg overflow-auto max-h-[80vh]"
+      >
+        <div class="flex items-start justify-between border-b px-4 py-3">
+          <div>
+            <h3 id="history-modal-title" class="text-lg font-semibold">
+              Entry
+            </h3>
+            <p id="history-modal-date" class="text-sm text-gray-500"></p>
+          </div>
+          <div class="flex items-center gap-2">
+            <a
+              id="history-open-link"
+              class="text-sm px-3 py-1 rounded bg-white border"
+              href="#"
+              >Open in Journal</a
+            >
+            <button
+              onclick="closeHistoryModal()"
+              class="text-sm px-3 py-1 rounded bg-gray-100"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div class="p-4">
+          <div id="history-modal-tags" class="mb-2 text-sm text-gray-600"></div>
+          <div
+            id="history-modal-content"
+            class="whitespace-pre-wrap text-text-primary"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showHistoryModal(entry) {
+        const modal = document.getElementById("history-entry-modal");
+        if (!modal) return;
+        document.getElementById("history-modal-title").textContent =
+          entry.title || "Untitled";
+        document.getElementById("history-modal-date").textContent =
+          entry.created_at ? new Date(entry.created_at).toLocaleString() : "";
+        const tagsEl = document.getElementById("history-modal-tags");
+        let tagsVal = entry.tags;
+        try {
+          if (typeof tagsVal === "string" && tagsVal.trim().startsWith("["))
+            tagsVal = JSON.parse(tagsVal);
+        } catch (e) {}
+        if (Array.isArray(tagsVal))
+          tagsEl.textContent = "Tags: " + tagsVal.join(", ");
+        else tagsEl.textContent = tagsVal ? "Tags: " + tagsVal : "";
+        document.getElementById("history-modal-content").textContent =
+          entry.content || "";
+        const openLink = document.getElementById("history-open-link");
+        openLink.href = `journal.html?entry_id=${encodeURIComponent(
+          entry.id || entry.ID || ""
+        )}`;
+        modal.classList.remove("hidden");
+      }
+      function closeHistoryModal() {
+        const modal = document.getElementById("history-entry-modal");
+        if (!modal) return;
+        modal.classList.add("hidden");
+      }
     </script>
   </body>
 </html>

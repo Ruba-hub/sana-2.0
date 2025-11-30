@@ -16,7 +16,7 @@
         theme: {
           extend: {
             colors: {
-              primary: "#4C9A7A",
+              primary: "#11d452",
               "primary-accent": "#FF7F50",
               "background-light": "#FDFBF7",
               "background-dark": "#1A2421",
@@ -109,7 +109,7 @@
         >
           <button
             @click="activeTab = 'login'"
-            :class="activeTab === 'login' ? 'bg-primary text-white' : 'text-gray-600 dark:text-gray-300'"
+            :class="activeTab === 'login' ? 'bg-green-400 text-white' : 'text-gray-600 dark:text-gray-300'"
             class="w-1/2 py-2 text-sm font-semibold transition-colors"
           >
             Log In
@@ -133,6 +133,7 @@
               >
               <input
                 id="login-email"
+                name="email"
                 type="email"
                 placeholder="you@example.com"
                 class="w-full rounded-lg border border-border-light bg-white/70 dark:bg-background-dark dark:border-border-dark mt-1 focus:ring-primary focus:border-primary"
@@ -146,6 +147,7 @@
               >
               <input
                 id="login-password"
+                name="password"
                 type="password"
                 placeholder="••••••••"
                 class="w-full rounded-lg border border-border-light bg-white/70 dark:bg-background-dark dark:border-border-dark mt-1 focus:ring-primary focus:border-primary"
@@ -155,7 +157,7 @@
 
             <button
               type="submit"
-              class="w-full py-3 bg-primary-accent text-white font-bold rounded-lg hover:opacity-90 focus:ring-2 focus:ring-offset-2 focus:ring-primary-accent"
+              class="w-full py-3 bg-green-400 text-white font-bold rounded-lg hover:opacity-90 focus:ring-2 focus:ring-offset-2 focus:ring-primary-accent"
             >
               Log In
             </button>
@@ -175,13 +177,14 @@
 
         <!-- REGISTER FORM -->
         <div x-cloak x-show="activeTab === 'register'" x-transition>
-          <form class="space-y-5" action="php/register.php">
+          <form class="space-y-5" action="php/register.php" method="POST">
             <div>
               <label for="reg-name" class="block text-sm font-medium"
                 >Full Name</label
               >
               <input
                 id="reg-name"
+                name="display_name"
                 type="text"
                 placeholder="Alex Doe"
                 class="w-full rounded-lg border border-border-light bg-white/70 dark:bg-background-dark dark:border-border-dark mt-1 focus:ring-primary focus:border-primary"
@@ -195,6 +198,7 @@
               >
               <input
                 id="reg-email"
+                name="email"
                 type="email"
                 placeholder="alex.doe@university.edu"
                 class="w-full rounded-lg border border-border-light bg-white/70 dark:bg-background-dark dark:border-border-dark mt-1 focus:ring-primary focus:border-primary"
@@ -208,12 +212,13 @@
               >
               <select
                 id="reg-campus"
+                name="campus"
                 class="w-full rounded-lg border border-border-light bg-white/70 dark:bg-background-dark dark:border-border-dark mt-1 focus:ring-primary focus:border-primary"
               >
-                <option>Select your campus</option>
-                <option>Main Campus</option>
-                <option>North Campus</option>
-                <option>South Campus</option>
+                <option value="">Select your campus</option>
+                <option value="main">Main Campus</option>
+                <option value="north">North Campus</option>
+                <option value="south">South Campus</option>
               </select>
             </div>
 
@@ -223,6 +228,7 @@
               >
               <input
                 id="reg-password"
+                name="password"
                 type="password"
                 placeholder="••••••••"
                 class="w-full rounded-lg border border-border-light bg-white/70 dark:bg-background-dark dark:border-border-dark mt-1 focus:ring-primary focus:border-primary"
@@ -232,21 +238,10 @@
 
             <button
               type="submit"
-              class="w-full py-3 bg-primary-accent text-white font-bold rounded-lg hover:opacity-90 focus:ring-2 focus:ring-offset-2 focus:ring-primary-accent"
+              class="w-full py-3 bg-green-400 text-white font-bold rounded-lg hover:opacity-90 focus:ring-2 focus:ring-offset-2 focus:ring-primary-accent"
             >
               Create Account
             </button>
-
-            <p class="text-center text-sm text-gray-500">
-              Already have an account?
-              <button
-                type="button"
-                class="text-primary font-medium hover:underline"
-                @click="activeTab = 'login'"
-              >
-                Log in here
-              </button>
-            </p>
           </form>
         </div>
       </div>

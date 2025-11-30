@@ -13,19 +13,23 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
       rel="stylesheet"
     />
-
     <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             colors: {
-              primary: "rgb(255, 174, 137)",
-              peach: "#FFDAB9",
-              orange: "#FAB48A",
-              "background-light": "#F9F9F9",
-              "background-dark": "#10221c",
-              "text-primary": "#4A4A4A",
+              primary: "#11d452",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+              "orange-accent": "#ff9f1c",
+              "peach-accent": "#ffdab9",
+              "text-light": "#102216",
+              "text-dark": "#f6f8f6",
+              "card-light": "#ffffff",
+              "card-dark": "#1a3824",
+              "border-light": "#e2e8f0",
+              "border-dark": "#2d573d",
             },
             fontFamily: {
               display: ["Inter", "sans-serif"],
@@ -47,6 +51,126 @@
           },
         },
       };
+    </script>
+    <!-- Full-entry modal -->
+    <div
+      id="journal-modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center"
+    >
+      <div
+        class="absolute inset-0 bg-black/40"
+        onclick="closeJournalModal()"
+      ></div>
+      <div
+        class="relative z-10 w-full max-w-2xl rounded-lg bg-white shadow-lg overflow-hidden"
+      >
+        <div class="flex items-start justify-between border-b px-4 py-3">
+          <div>
+            <h3 id="modal-title" class="text-lg font-semibold">Entry</h3>
+            <p id="modal-date" class="text-sm text-gray-500"></p>
+          </div>
+          <div class="relative flex items-center gap-4">
+            <button
+              id="notification-btn"
+              class="text-gray-600 hover:text-primary transition-all relative"
+              aria-label="Toggle notifications and navigation"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                id="notification-badge"
+                class="absolute -top-1 -right-1 bg-orange-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden"
+                >0</span
+              >
+            </button>
+            <!-- Notifications Dropdown -->
+            <div
+              id="notifications-panel"
+              class="absolute right-0 mt-2 w-80 bg-card-light dark:bg-card-dark rounded-lg shadow-lg border border-border-light dark:border-border-dark hidden z-40 max-h-96 overflow-y-auto"
+            >
+              <div
+                class="p-4 border-b border-border-light dark:border-border-dark"
+              >
+                <h3
+                  class="text-lg font-bold text-text-primary-light dark:text-text-primary-dark"
+                >
+                  Notifications
+                </h3>
+              </div>
+              <div id="notifications-list" class="p-4 space-y-3">
+                <p
+                  class="text-sm text-text-secondary-light dark:text-text-secondary-dark text-center py-8"
+                >
+                  No notifications
+                </p>
+              </div>
+            </div>
+            <button
+              id="edit-entry-btn"
+              class="text-sm px-3 py-1 rounded bg-primary/10 text-primary hover:bg-primary/20"
+              onclick="editEntryFromModal()"
+            >
+              Edit
+            </button>
+            <button
+              onclick="closeJournalModal()"
+              class="text-sm px-3 py-1 rounded bg-gray-100"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div class="p-4">
+          <div id="modal-tags" class="mb-2 text-sm text-gray-600"></div>
+          <div
+            id="modal-content"
+            class="whitespace-pre-wrap text-text-primary"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showJournalModal(entry) {
+        const modal = document.getElementById("journal-modal");
+        if (!modal) return;
+        document.getElementById("modal-title").textContent =
+          entry.title || "Untitled";
+        document.getElementById("modal-date").textContent = entry.created_at
+          ? new Date(entry.created_at).toLocaleString()
+          : "";
+        const tagsEl = document.getElementById("modal-tags");
+        let tagsVal = entry.tags;
+        try {
+          if (typeof tagsVal === "string" && tagsVal.trim().startsWith("["))
+            tagsVal = JSON.parse(tagsVal);
+        } catch (e) {}
+        if (Array.isArray(tagsVal))
+          tagsEl.textContent = "Tags: " + tagsVal.join(", ");
+        else tagsEl.textContent = tagsVal ? "Tags: " + tagsVal : "";
+        document.getElementById("modal-content").textContent =
+          entry.content || "";
+        modal.dataset.entry = JSON.stringify(entry);
+        modal.classList.remove("hidden");
+      }
+
+      function closeJournalModal() {
+        const modal = document.getElementById("journal-modal");
+        if (!modal) return;
+        modal.classList.add("hidden");
+        modal.dataset.entry = "";
+      }
+
+      function editEntryFromModal() {
+        const modal = document.getElementById("journal-modal");
+        if (!modal || !modal.dataset.entry) return;
+        try {
+          const entry = JSON.parse(modal.dataset.entry);
+          if (window.openJournalEntry) window.openJournalEntry(entry);
+        } catch (e) {
+          console.error(e);
+        }
+        closeJournalModal();
+      }
     </script>
 
     <style>
@@ -83,7 +207,7 @@
     <div class="flex min-h-screen w-full flex-col">
       <!-- HEADER -->
       <header
-        class="sticky top-0 z-10 flex w-full items-center justify-between border-b border-gray-200 bg-white/70 p-4 backdrop-blur-md shadow-sm animate-fadeInUp"
+        class="sticky top-0 z-10 relative flex w-full items-center justify-between border-b border-gray-200 bg-white/70 p-4 backdrop-blur-md shadow-sm animate-fadeInUp"
       >
         <div class="flex items-center gap-4">
           <a href="index3.html">
@@ -109,7 +233,7 @@
           </h1>
         </div>
 
-        <nav class="hidden items-center gap-6 md:flex">
+        <nav id="primary-nav" class="hidden items-center gap-6 md:flex">
           <a
             class="text-base font-medium text-gray-600 hover:text-primary transition-all"
             href="stdntdashb.html"
@@ -127,16 +251,31 @@
           >
           <a
             class="text-base font-medium text-gray-600 hover:text-primary transition-all"
-            href="resources.html"
-            >Resources</a
+            href="settings.html"
+            >Settings</a
+          >
+          <!-- Mobile-only logout link (visible when nav is toggled on small screens) -->
+          <a
+            id="mobile-logout"
+            href="#"
+            class="md:hidden text-base font-medium text-gray-600 hover:text-primary transition-all"
+            >Logout</a
           >
         </nav>
 
         <div class="flex items-center gap-4">
-          <button class="text-gray-600 hover:text-primary transition-all">
+          <button
+            id="notification-btn"
+            class="text-gray-600 hover:text-primary transition-all"
+            aria-label="Toggle notifications and navigation"
+          >
             <span class="material-symbols-outlined">notifications</span>
           </button>
-          <button class="hover:scale-105 transition-transform duration-200">
+          <button
+            id="user-icon-btn"
+            class="hover:scale-105 transition-transform duration-200"
+            aria-label="User menu"
+          >
             <img
               alt="User profile picture"
               class="h-8 w-8 rounded-full"
@@ -144,16 +283,60 @@
             />
           </button>
         </div>
+        <!-- Notifications dropdown (main header) -->
+        <div
+          id="notifications-panel-main"
+          class="absolute right-20 top-full mt-2 w-80 bg-card-light dark:bg-card-dark rounded-lg shadow-lg border border-border-light dark:border-border-dark hidden z-40 max-h-96 overflow-y-auto"
+        >
+          <div class="p-3 border-b border-border-light dark:border-border-dark">
+            <h4 class="font-semibold">Notifications</h4>
+          </div>
+          <div id="notifications-list-main" class="p-3 text-sm text-gray-600">
+            <p class="text-center py-6">No notifications</p>
+          </div>
+        </div>
+
+        <!-- User menu dropdown -->
+        <div
+          id="user-menu-panel"
+          class="absolute right-3 top-full mt-2 w-44 bg-card-light dark:bg-card-dark rounded-lg shadow-lg border border-border-light dark:border-border-dark hidden z-40 overflow-hidden"
+        >
+          <a href="settings.html" class="block px-4 py-2 text-sm hover:bg-gray-50"
+            >Settings</a
+          >
+          <a
+            href="chat.html"
+            class="block px-4 py-2 text-sm hover:bg-gray-50"
+            >Chat</a
+          >
+          <button
+            id="logout-btn"
+            class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+          >
+            Logout
+          </button>
+        </div>
       </header>
 
       <!-- MAIN -->
       <main class="flex flex-1 w-full">
         <aside
+          id="journal-entries-aside"
           class="hidden w-80 flex-shrink-0 border-r border-gray-200 bg-white/80 p-6 backdrop-blur-sm fade-section md:block"
         >
           <h2 class="text-xl font-bold tracking-tight text-text-primary">
             Past Entries
           </h2>
+          <!-- mobile close button (only visible on small screens when opened as overlay) -->
+          <div class="md:hidden mt-3">
+            <button
+              id="close-entries-btn"
+              class="inline-flex items-center gap-2 rounded-md bg-gray-100 px-3 py-1 text-sm"
+            >
+              <span class="material-symbols-outlined">close</span>
+              Close
+            </button>
+          </div>
           <div class="relative mt-4">
             <span
               class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -166,32 +349,12 @@
             />
           </div>
           <div
+            id="journal-entries-list"
             class="mt-6 space-y-3 overflow-y-auto"
             style="max-height: calc(100vh - 180px)"
           >
-            <a
-              class="block rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover-glow transition-all"
-              href="#"
-            >
-              <p class="text-sm font-medium text-gray-500">October 26, 2023</p>
-              <h3 class="font-semibold text-text-primary">
-                Feeling Overwhelmed
-              </h3>
-              <p class="mt-1 text-sm text-gray-600 line-clamp-2">
-                Today was really tough with midterms approaching...
-              </p>
-            </a>
-
-            <a
-              class="block rounded-lg border-2 border-primary bg-peach/30 p-4 shadow-sm hover-glow"
-              href="#"
-            >
-              <p class="text-sm font-medium text-gray-500">October 27, 2023</p>
-              <h3 class="font-semibold text-text-primary">A Moment of Calm</h3>
-              <p class="mt-1 text-sm text-gray-600 line-clamp-2">
-                I took a walk by the campus lake this afternoon...
-              </p>
-            </a>
+            <!-- Recent entries will be loaded here via JS -->
+            <div class="text-sm text-gray-500">Loading entries...</div>
           </div>
         </aside>
 
@@ -210,20 +373,45 @@
                   A safe space for your thoughts and feelings.
                 </p>
               </div>
-              <p class="text-lg font-medium text-gray-600">
-                Friday, October 27
-              </p>
+              <!-- Mobile: open entries drawer -->
+              <div class="flex items-center gap-3">
+                <button
+                  id="open-entries-btn"
+                  class="md:hidden inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50"
+                  aria-controls="journal-entries-list"
+                  aria-expanded="false"
+                >
+                  <span class="material-symbols-outlined">menu</span>
+                  Entries
+                </button>
+                <p class="text-lg font-medium text-gray-600 hidden md:block">
+                  Friday, October 27
+                </p>
+              </div>
             </div>
 
             <div
               class="mt-8 flex h-full min-h-[500px] flex-col rounded-xl border border-gray-200 bg-white shadow-sm hover-glow transition-all"
             >
               <div class="flex-1 p-6">
+                <div class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <input
+                    id="journal-title"
+                    type="text"
+                    placeholder="Title (optional)"
+                    class="col-span-2 form-input w-full rounded-lg border-gray-300 px-3 py-2"
+                  />
+                  <input
+                    id="journal-date"
+                    type="date"
+                    class="form-input w-full rounded-lg border-gray-300 px-3 py-2"
+                  />
+                </div>
                 <textarea
-                  class="h-full w-full resize-none border-0 p-0 text-base text-text-primary placeholder-gray-400 focus:ring-0"
+                  id="journal-content"
+                  class="h-60 md:h-[320px] w-full resize-none border-0 p-0 text-base text-text-primary placeholder-gray-400 focus:ring-0"
                   placeholder="What's on your mind today?"
                 >
-I took a walk by the campus lake this afternoon and it really helped clear my head...
                 </textarea>
               </div>
               <div
@@ -233,16 +421,676 @@ I took a walk by the campus lake this afternoon and it really helped clear my he
                   <span class="material-symbols-outlined text-base">lock</span>
                   <span>Your entries are private and secure.</span>
                 </div>
-                <button
-                  class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-gradient-to-r from-peach to-primary text-gray-800 text-base font-bold shadow-md transform transition-all hover:scale-105 hover:shadow-lg focus:outline-none"
-                >
-                  Save Entry
-                </button>
+                <div class="flex items-center gap-3">
+                  <input
+                    id="journal-tags"
+                    type="text"
+                    placeholder="Tags (comma separated)"
+                    class="form-input rounded-lg border-gray-300 px-3 py-2 text-sm"
+                  />
+                  <button
+                    id="new-journal-btn"
+                    class="flex items-center justify-center rounded-lg h-10 px-4 bg-white border border-gray-200 text-sm text-gray-700 hover:bg-gray-50"
+                    title="Start a new entry"
+                  >
+                    New
+                  </button>
+                  <button
+                    class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-gradient-to-r from-peach to-primary text-gray-800 text-base font-bold shadow-md transform transition-all hover:scale-105 hover:shadow-lg focus:outline-none"
+                    id="save-journal-btn"
+                  >
+                    Save Entry
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </main>
     </div>
+    <script>
+      (function () {
+        const btn = document.getElementById("save-journal-btn");
+        const newBtn = document.getElementById("new-journal-btn");
+        const textarea = document.getElementById("journal-content");
+        const titleEl = document.getElementById("journal-title");
+        const tagsEl = document.getElementById("journal-tags");
+        const dateEl = document.getElementById("journal-date");
+        const API = "php/api.php?action=save_journal";
+        if (!btn || !textarea) return;
+
+        function clearEditor() {
+          if (titleEl) titleEl.value = "";
+          if (tagsEl) tagsEl.value = "";
+          if (dateEl) dateEl.value = "";
+          if (textarea) textarea.value = "";
+          document
+            .querySelectorAll(".journal-selected")
+            .forEach((el) => el.classList.remove("journal-selected"));
+        }
+
+        if (newBtn)
+          newBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            clearEditor();
+            textarea.focus();
+          });
+
+        btn.addEventListener("click", async () => {
+          const content = textarea.value.trim();
+          if (!content) {
+            alert("Please write something before saving.");
+            return;
+          }
+          btn.disabled = true;
+          btn.textContent = "Saving...";
+          try {
+            const title = titleEl ? titleEl.value.trim() : null;
+            const tagsRaw = tagsEl ? tagsEl.value.trim() : "";
+            const tags = tagsRaw
+              ? tagsRaw
+                  .split(",")
+                  .map((t) => t.trim())
+                  .filter(Boolean)
+              : null;
+            const created_at = dateEl && dateEl.value ? dateEl.value : null;
+
+            // Don't include user_id in payload; rely on session (credentials: same-origin sends cookies)
+            const payload = {
+              title,
+              content,
+              tags,
+              created_at,
+            };
+            const res = await fetch(API, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+              credentials: "same-origin",
+            });
+            // Read raw response once and parse JSON safely so we can
+            // surface server-side errors (HTML/PHP warnings) that break JSON.
+            const raw = await res.text();
+            let data;
+            try {
+              data = JSON.parse(raw);
+            } catch (parseErr) {
+              console.error("Save journal: non-JSON response", {
+                status: res.status,
+                statusText: res.statusText,
+                headers: {
+                  contentType: res.headers.get("content-type"),
+                  contentLength: res.headers.get("content-length"),
+                },
+                body: raw.substring(0, 500), // first 500 chars to avoid spam
+              });
+              alert(
+                "Error saving entry (server returned unexpected response). Check console for details."
+              );
+              btn.disabled = false;
+              btn.textContent = "Save Entry";
+              return;
+            }
+
+            if (res.ok && data.ok) {
+              btn.textContent = "Saved";
+              setTimeout(() => {
+                btn.textContent = "Save Entry";
+                btn.disabled = false;
+                if (window.fetchJournalEntries) window.fetchJournalEntries();
+                if (data.id && window.highlightJournalEntry)
+                  window.highlightJournalEntry(data.id);
+              }, 1200);
+            } else {
+              console.error("Save journal failed", data);
+              if (data.error && data.error.indexOf("user_id") !== -1) {
+                alert(
+                  "You must be signed in to save journal entries. Please log in."
+                );
+              } else {
+                alert("Failed to save entry");
+              }
+              btn.disabled = false;
+              btn.textContent = "Save Entry";
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Error saving entry");
+            btn.disabled = false;
+            btn.textContent = "Save Entry";
+          }
+        });
+      })();
+    </script>
+    <script src="js/notifications.js"></script>
+    <script>
+      // Ensure user_id is available before fetching entries
+      let _userIdCache = null;
+      let _userIdCacheTime = 0;
+      const USER_ID_CACHE_TTL = 2000; // 2 seconds
+
+      async function ensureUserId() {
+        const now = Date.now();
+        // Use cached result if fresh (within 2 seconds)
+        if (_userIdCache && now - _userIdCacheTime < USER_ID_CACHE_TTL) {
+          return _userIdCache;
+        }
+
+        // Always verify session is valid (don't trust stale localStorage)
+        try {
+          const res = await fetch("php/api.php?action=get_user", {
+            credentials: "same-origin",
+          });
+          const data = await res.json();
+          if (data.ok && data.user && data.user.id) {
+            const sessionUserId = data.user.id;
+            const cachedUserId = localStorage.getItem("user_id");
+
+            // If user changed (new login), clear cache and trigger refresh
+            if (cachedUserId && cachedUserId !== sessionUserId) {
+              console.log(
+                `User changed from ${cachedUserId} to ${sessionUserId}. Refreshing entries.`
+              );
+              localStorage.clear();
+              localStorage.setItem("user_id", sessionUserId);
+              // Trigger entries refresh after user change
+              setTimeout(() => {
+                if (window.fetchJournalEntries) window.fetchJournalEntries();
+              }, 100);
+            } else if (!cachedUserId) {
+              localStorage.setItem("user_id", sessionUserId);
+            }
+
+            // Update cache
+            _userIdCache = sessionUserId;
+            _userIdCacheTime = now;
+            return sessionUserId;
+          }
+        } catch (e) {
+          console.warn("Failed to fetch user from session", e);
+        }
+
+        // Fallback to localStorage if session fetch fails (offline scenario)
+        let userId = localStorage.getItem("user_id");
+        if (userId) {
+          _userIdCache = userId;
+          _userIdCacheTime = now;
+          return userId;
+        }
+
+        return null;
+      }
+
+      // Fetch and render recent journal entries in the aside
+      window.fetchJournalEntries = async function (limit = 8) {
+        const container = document.getElementById("journal-entries-list");
+        if (!container) return;
+        container.innerHTML =
+          '<div class="text-sm text-gray-500">Loading entries...</div>';
+        try {
+          // Ensure user_id is available (from localStorage or session)
+          let userId = await ensureUserId();
+          if (!userId) {
+            container.innerHTML =
+              '<div class="text-sm text-red-500">Please log in to view entries</div>';
+            return;
+          }
+
+          let apiUrl = `php/api.php?action=get_journal_entries&limit=${limit}&user_id=${encodeURIComponent(
+            userId
+          )}`;
+
+          const res = await fetch(apiUrl, { credentials: "same-origin" });
+          // Read raw response once, then attempt to parse JSON from it.
+          const raw = await res.text();
+          let data;
+          try {
+            data = JSON.parse(raw);
+          } catch (parseErr) {
+            console.error("Failed to parse JSON from get_journal_entries", {
+              status: res.status,
+              contentType: res.headers.get("content-type"),
+              responseBody: raw,
+            });
+            container.innerHTML =
+              '<div class="text-sm text-red-500">Error loading entries</div>';
+            return;
+          }
+          if (!res.ok || !data.ok) {
+            console.warn("API returned error", { status: res.status, data });
+            container.innerHTML =
+              '<div class="text-sm text-red-500">Failed to load entries</div>';
+            return;
+          }
+          const entries = data.entries || [];
+          if (entries.length === 0) {
+            container.innerHTML =
+              '<div class="text-sm text-gray-500">No entries yet</div>';
+            return;
+          }
+          container.innerHTML = "";
+          for (const e of entries) {
+            const title = e.title
+              ? e.title
+              : e.content
+              ? e.content.substring(0, 40) + (e.content.length > 40 ? "…" : "")
+              : "Untitled";
+            const date = e.created_at
+              ? new Date(e.created_at).toLocaleDateString()
+              : "";
+            const excerpt = e.content
+              ? e.content.length > 120
+                ? e.content.substring(0, 120) + "…"
+                : e.content
+              : "";
+
+            const card = document.createElement("a");
+            card.className =
+              "block rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover-glow transition-all";
+            card.href = "#";
+            card.dataset.entryId = e.id || e.ID || "";
+            card.innerHTML = `
+              <p class="text-sm font-medium text-gray-500">${date}</p>
+              <h3 class="font-semibold text-text-primary">${escapeHtml(
+                title
+              )}</h3>
+              <p class="mt-1 text-sm text-gray-600 line-clamp-2">${escapeHtml(
+                excerpt
+              )}</p>
+            `;
+            card.addEventListener("click", (ev) => {
+              ev.preventDefault();
+              // open full-entry modal
+              if (window.showJournalModal) window.showJournalModal(e);
+              // highlight selection
+              document
+                .querySelectorAll("#journal-entries-list a")
+                .forEach((a) => a.classList.remove("journal-selected"));
+              card.classList.add("journal-selected");
+            });
+            container.appendChild(card);
+          }
+        } catch (err) {
+          console.error(err);
+          container.innerHTML =
+            '<div class="text-sm text-red-500">Error loading entries</div>';
+        }
+      };
+
+      function highlightJournalEntry(id) {
+        // after a save, try to highlight the entry with id (if present)
+        const container = document.getElementById("journal-entries-list");
+        if (!container || !id) return;
+        const el = Array.from(container.querySelectorAll("a")).find(
+          (a) => a.dataset.entryId == id
+        );
+        if (el) {
+          container
+            .querySelectorAll("a")
+            .forEach((a) => a.classList.remove("journal-selected"));
+          el.classList.add("journal-selected");
+        }
+      }
+
+      function openJournalEntry(e) {
+        const titleEl = document.getElementById("journal-title");
+        const tagsEl = document.getElementById("journal-tags");
+        const dateEl = document.getElementById("journal-date");
+        const textarea = document.getElementById("journal-content");
+        if (titleEl) titleEl.value = e.title || "";
+        if (tagsEl) {
+          let tagsVal = e.tags;
+          try {
+            if (typeof tagsVal === "string" && tagsVal.trim().startsWith("["))
+              tagsVal = JSON.parse(tagsVal);
+          } catch (err) {}
+          if (Array.isArray(tagsVal)) tagsEl.value = tagsVal.join(", ");
+          else tagsEl.value = tagsVal || "";
+        }
+        if (dateEl) {
+          // try to set YYYY-MM-DD
+          if (e.created_at) dateEl.value = e.created_at.substring(0, 10);
+          else dateEl.value = "";
+        }
+        if (textarea) textarea.value = e.content || "";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function escapeHtml(s) {
+        if (!s) return "";
+        return s.replace(/[&<>\"]/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+        });
+      }
+
+      // Load entries on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        ensureUserId().then(() => {
+          if (window.fetchJournalEntries) window.fetchJournalEntries();
+        });
+      });
+      // If URL has ?entry_id=..., fetch that entry and open modal + editor
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const entryId = params.get("entry_id") || params.get("id");
+        if (!entryId) return;
+        (async function () {
+          try {
+            const res = await fetch(
+              `php/api.php?action=get_journal_entry&id=${encodeURIComponent(
+                entryId
+              )}`,
+              { credentials: "same-origin" }
+            );
+            const ct = res.headers.get("content-type") || "";
+            if (!ct.includes("application/json")) {
+              const txt = await res.text();
+              console.error(
+                "Non-JSON response from get_journal_entry",
+                res.status,
+                txt
+              );
+              return;
+            }
+            const data = await res.json();
+            if (res.ok && data.ok && data.entry) {
+              const entry = data.entry;
+              // open modal and populate editor
+              if (window.showJournalModal) window.showJournalModal(entry);
+              if (window.openJournalEntry) window.openJournalEntry(entry);
+            } else {
+              console.error("Failed to load entry", data);
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        })();
+      })();
+    </script>
+    <script>
+      // Mobile entries overlay toggle for small screens
+      (function () {
+        const openBtn = document.getElementById("open-entries-btn");
+        const closeBtn = document.getElementById("close-entries-btn");
+        const aside = document.getElementById("journal-entries-aside");
+        let backdrop = null;
+
+        function openEntries() {
+          if (!aside) return;
+          // show aside as fixed overlay on mobile
+          aside.classList.remove("hidden");
+          aside.classList.add(
+            "fixed",
+            "inset-y-0",
+            "left-0",
+            "z-50",
+            "w-80",
+            "overflow-auto"
+          );
+
+          // create backdrop
+          if (!document.getElementById("entries-backdrop")) {
+            backdrop = document.createElement("div");
+            backdrop.id = "entries-backdrop";
+            backdrop.className = "fixed inset-0 bg-black/40 z-40";
+            backdrop.addEventListener("click", closeEntries);
+            document.body.appendChild(backdrop);
+          }
+          // prevent body scroll
+          document.body.style.overflow = "hidden";
+          if (openBtn) openBtn.setAttribute("aria-expanded", "true");
+        }
+
+        function closeEntries() {
+          if (!aside) return;
+          aside.classList.add("hidden");
+          aside.classList.remove(
+            "fixed",
+            "inset-y-0",
+            "left-0",
+            "z-50",
+            "w-80",
+            "overflow-auto"
+          );
+          const bd = document.getElementById("entries-backdrop");
+          if (bd) bd.remove();
+          backdrop = null;
+          document.body.style.overflow = "";
+          if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+        }
+
+        if (openBtn) openBtn.addEventListener("click", openEntries);
+        if (closeBtn) closeBtn.addEventListener("click", closeEntries);
+
+        // If the viewport becomes desktop-sized, ensure overlay / backdrop removed and aside shows as normal
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 768) {
+            if (document.getElementById("entries-backdrop")) {
+              document.getElementById("entries-backdrop").remove();
+              document.body.style.overflow = "";
+            }
+            if (aside) {
+              aside.classList.remove(
+                "fixed",
+                "inset-y-0",
+                "left-0",
+                "z-50",
+                "w-80",
+                "overflow-auto"
+              );
+              aside.classList.remove("hidden");
+            }
+            if (openBtn) openBtn.setAttribute("aria-expanded", "false");
+          }
+        });
+      })();
+    </script>
+    <script>
+      // Mobile nav + header panels (notifications & user menu)
+      document.addEventListener("DOMContentLoaded", function () {
+        const notificationBtn = document.getElementById("notification-btn");
+        const notificationsPanel = document.getElementById(
+          "notifications-panel-main"
+        );
+        const userIconBtn = document.getElementById("user-icon-btn");
+        const userMenuPanel = document.getElementById("user-menu-panel");
+        const logoutBtn = document.getElementById("logout-btn");
+
+        const primaryNav = document.getElementById("primary-nav");
+        const mobileLogout = document.getElementById("mobile-logout");
+
+        function openMobileNav() {
+          if (!primaryNav) return;
+          primaryNav.classList.remove("hidden");
+          primaryNav.classList.add(
+            "mobile-open",
+            "flex",
+            "flex-col",
+            "gap-4",
+            "p-4",
+            "rounded-lg",
+            "shadow-lg",
+            "right-4",
+            "top-16",
+            "absolute",
+            "bg-white",
+            "dark:bg-card-dark",
+            "border",
+            "border-gray-200",
+            "dark:border-border-dark",
+            "z-30"
+          );
+          if (notificationBtn)
+            notificationBtn.setAttribute("aria-expanded", "true");
+          if (userIconBtn) userIconBtn.setAttribute("aria-expanded", "true");
+        }
+
+        function closeMobileNav() {
+          if (!primaryNav) return;
+          primaryNav.classList.add("hidden");
+          primaryNav.classList.remove(
+            "mobile-open",
+            "flex",
+            "flex-col",
+            "gap-4",
+            "p-4",
+            "rounded-lg",
+            "shadow-lg",
+            "right-4",
+            "top-16",
+            "absolute",
+            "bg-white",
+            "dark:bg-card-dark",
+            "border",
+            "border-gray-200",
+            "dark:border-border-dark",
+            "z-30"
+          );
+          if (notificationBtn)
+            notificationBtn.setAttribute("aria-expanded", "false");
+          if (userIconBtn) userIconBtn.setAttribute("aria-expanded", "false");
+        }
+
+        // Toggle notifications panel (desktop) or open mobile nav (small)
+        if (notificationBtn) {
+          notificationBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (window.innerWidth < 768) {
+              if (primaryNav && primaryNav.classList.contains("mobile-open"))
+                closeMobileNav();
+              else openMobileNav();
+              return;
+            }
+            if (!notificationsPanel) return;
+            const isOpen = !notificationsPanel.classList.contains("hidden");
+            if (isOpen) {
+              notificationsPanel.classList.add("hidden");
+              notificationBtn.setAttribute("aria-expanded", "false");
+            } else {
+              notificationsPanel.classList.remove("hidden");
+              notificationBtn.setAttribute("aria-expanded", "true");
+              // ensure user menu closed
+              if (userMenuPanel) userMenuPanel.classList.add("hidden");
+            }
+          });
+        }
+
+        // Toggle user menu (desktop) or open mobile nav (small)
+        if (userIconBtn) {
+          userIconBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (window.innerWidth < 768) {
+              if (primaryNav && primaryNav.classList.contains("mobile-open"))
+                closeMobileNav();
+              else openMobileNav();
+              return;
+            }
+            if (!userMenuPanel) return;
+            const isOpen = !userMenuPanel.classList.contains("hidden");
+            if (isOpen) {
+              userMenuPanel.classList.add("hidden");
+              userIconBtn.setAttribute("aria-expanded", "false");
+            } else {
+              userMenuPanel.classList.remove("hidden");
+              userIconBtn.setAttribute("aria-expanded", "true");
+              // ensure notifications closed
+              if (notificationsPanel)
+                notificationsPanel.classList.add("hidden");
+            }
+          });
+        }
+
+        // Logout handler
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", async function (e) {
+            e.preventDefault();
+            let confirmed = true;
+            if (typeof showConfirmModal === "function") {
+              try {
+                confirmed = await showConfirmModal(
+                  "Are you sure you want to log out?",
+                  "Log out"
+                );
+              } catch (e) {
+                confirmed = false;
+              }
+            } else {
+              confirmed = confirm("Are you sure you want to log out?");
+            }
+            if (!confirmed) return;
+            try {
+              // best-effort clear client state then navigate to login
+              localStorage.clear();
+            } catch (e) {}
+            window.location.href = "login.html";
+          });
+        }
+
+        // Mobile logout link inside the toggled menu
+        if (mobileLogout) {
+          mobileLogout.addEventListener("click", function (e) {
+            e.preventDefault();
+            localStorage.clear();
+            window.location.href = "login.html";
+          });
+        }
+
+        // Close panels when clicking outside
+        document.addEventListener("click", (e) => {
+          const target = e.target;
+          // close mobile nav if open and clicked outside toggle/primaryNav
+          if (primaryNav && primaryNav.classList.contains("mobile-open")) {
+            if (
+              !primaryNav.contains(target) &&
+              !notificationBtn.contains(target) &&
+              !userIconBtn.contains(target)
+            ) {
+              closeMobileNav();
+            }
+          }
+
+          if (
+            notificationsPanel &&
+            !notificationsPanel.classList.contains("hidden")
+          ) {
+            if (
+              !notificationsPanel.contains(target) &&
+              !notificationBtn.contains(target)
+            ) {
+              notificationsPanel.classList.add("hidden");
+              if (notificationBtn)
+                notificationBtn.setAttribute("aria-expanded", "false");
+            }
+          }
+
+          if (userMenuPanel && !userMenuPanel.classList.contains("hidden")) {
+            if (
+              !userMenuPanel.contains(target) &&
+              !userIconBtn.contains(target)
+            ) {
+              userMenuPanel.classList.add("hidden");
+              if (userIconBtn)
+                userIconBtn.setAttribute("aria-expanded", "false");
+            }
+          }
+        });
+
+        // Close panels on ESC
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            if (notificationsPanel) notificationsPanel.classList.add("hidden");
+            if (userMenuPanel) userMenuPanel.classList.add("hidden");
+            closeMobileNav();
+          }
+        });
+
+        // Close mobile nav on resize to desktop
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 768) {
+            closeMobileNav();
+          }
+        });
+      });
+    </script>
   </body>
 </html>

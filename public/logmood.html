@@ -1,0 +1,701 @@
+<!-- save as log-mood.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Log Mood — Sana</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#11d452",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+              "orange-accent": "#ff9f1c",
+              "peach-accent": "#ffdab9",
+              "text-light": "#102216",
+              "text-dark": "#f6f8f6",
+              "card-light": "#ffffff",
+              "card-dark": "#1a3824",
+              "border-light": "#e2e8f0",
+              "border-dark": "#2d573d",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="js/notifications.js"></script>
+    <style>
+      /* small helper to highlight selected mood */
+      .mood-btn.selected {
+        box-shadow: 0 6px 18px rgba(76, 154, 122, 0.18);
+        transform: translateY(-4px);
+      }
+    </style>
+  </head>
+
+  <body
+    class="font-display bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen"
+  >
+    <!-- header (keeps visual parity with your dashboard) -->
+    <header
+      class="sticky top-0 z-10 border-b border-border-light bg-card-light/80 backdrop-blur-sm dark:bg-card-dark/80 p-4"
+    >
+      <nav class="max-w-6xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <a href="stdntdashb.html" class="flex items-center gap-3">
+            <div class="w-9 h-9 text-primary">
+              <svg
+                fill="none"
+                viewBox="0 0 48 48"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z"
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                ></path>
+              </svg>
+            </div>
+            <h1 class="text-lg font-bold">Sana</h1>
+          </a>
+        </div>
+
+        <div id="primary-nav" class="hidden items-center gap-6 md:flex">
+          <a href="stdntdashb.html" class="text-sm text-primary font-medium"
+            >Dashboard</a
+          ><a
+            href="journal.html"
+            class="text-sm hover:text-primary transition-all"
+            >Journal</a
+          ><a href="chat.html" class="text-sm text-primary font-medium">Chat</a
+          ><a
+            href="settings.html"
+            class="text-sm hover:text-primary transition-all"
+            >Settings</a
+          >
+        </div>
+        <button
+          id="notification-btn"
+          class="text-sm hover:text-primary transition-all relative"
+          aria-label="Notifications"
+        >
+          <span class="material-symbols-outlined">notifications</span>
+          <span
+            id="notification-badge"
+            class="absolute -top-1 -right-1 bg-orange-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden"
+            >0</span
+          >
+        </button>
+
+        <!-- Notifications Dropdown -->
+        <div
+          id="notifications-panel"
+          class="absolute right-0 mt-2 w-80 bg-card-light dark:bg-card-dark rounded-lg shadow-lg border border-border-light dark:border-border-dark hidden z-40 max-h-96 overflow-y-auto top-full"
+        >
+          <div class="p-4 border-b border-border-light dark:border-border-dark">
+            <h3 class="text-lg font-bold">Notifications</h3>
+          </div>
+          <div id="notifications-list" class="p-4 space-y-3">
+            <p class="text-sm text-center py-8">No notifications</p>
+          </div>
+        </div>
+
+        <!-- Mobile menu button -->
+        <button
+          id="mobile-menu-btn"
+          class="md:hidden text-sm hover:text-primary transition-all"
+          aria-label="Toggle navigation"
+        >
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6">
+      <section class="mb-6">
+        <h2 class="text-3xl font-extrabold">Log today's mood</h2>
+        <p class="text-sm text-text-secondary-light">
+          Quickly capture how you're feeling — it'll help track trends over
+          time.
+        </p>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left: Form -->
+        <div
+          class="lg:col-span-2 rounded-xl border border-border-light bg-card-light p-6 shadow-sm dark:bg-card-dark"
+        >
+          <form id="moodForm" class="space-y-6">
+            <!-- Date / Time -->
+            <div>
+              <label class="text-sm font-semibold">Date & time</label>
+              <input
+                id="moodDate"
+                type="datetime-local"
+                class="mt-2 w-full rounded-lg border p-3 bg-background-light dark:bg-card-dark"
+              />
+            </div>
+
+            <!-- Mood selection -->
+            <div>
+              <label class="text-sm font-semibold">Mood</label>
+              <div class="mt-3 flex gap-3 flex-wrap">
+                <!-- mood buttons -->
+                <button
+                  type="button"
+                  class="mood-btn select-mood flex flex-col items-center gap-1 rounded-lg border border-border-light p-3 w-28"
+                  data-value="very_sad"
+                >
+                  <div class="text-2xl">😭</div>
+                  <div class="text-xs">Very sad</div>
+                </button>
+                <button
+                  type="button"
+                  class="mood-btn select-mood flex flex-col items-center gap-1 rounded-lg border border-border-light p-3 w-28"
+                  data-value="sad"
+                >
+                  <div class="text-2xl">😔</div>
+                  <div class="text-xs">Sad</div>
+                </button>
+                <button
+                  type="button"
+                  class="mood-btn select-mood flex flex-col items-center gap-1 rounded-lg border border-border-light p-3 w-28"
+                  data-value="neutral"
+                >
+                  <div class="text-2xl">😐</div>
+                  <div class="text-xs">Neutral</div>
+                </button>
+                <button
+                  type="button"
+                  class="mood-btn select-mood flex flex-col items-center gap-1 rounded-lg border border-border-light p-3 w-28"
+                  data-value="happy"
+                >
+                  <div class="text-2xl">🙂</div>
+                  <div class="text-xs">Happy</div>
+                </button>
+                <button
+                  type="button"
+                  class="mood-btn select-mood flex flex-col items-center gap-1 rounded-lg border border-border-light p-3 w-28"
+                  data-value="very_happy"
+                >
+                  <div class="text-2xl">😁</div>
+                  <div class="text-xs">Very happy</div>
+                </button>
+              </div>
+              <input id="moodValue" name="mood" type="hidden" />
+            </div>
+
+            <!-- Intensity slider -->
+            <div>
+              <label class="text-sm font-semibold"
+                >Intensity
+                <span
+                  id="intensityLabel"
+                  class="text-sm font-medium text-black ml-2"
+                  >5</span
+                ></label
+              >
+              <input
+                id="intensity"
+                type="range"
+                min="1"
+                max="10"
+                value="5"
+                class="mt-2 w-full"
+              />
+            </div>
+
+            <!-- Tags / reasons -->
+            <div>
+              <label class="text-sm font-semibold"
+                >What contributed to this mood? (tags)</label
+              >
+              <div class="mt-2 flex gap-2 flex-wrap">
+                <button
+                  type="button"
+                  class="tag-btn px-3 py-1 rounded-full border border-border-light text-sm"
+                  data-tag="work"
+                >
+                  Work
+                </button>
+                <button
+                  type="button"
+                  class="tag-btn px-3 py-1 rounded-full border border-border-light text-sm"
+                  data-tag="sleep"
+                >
+                  Sleep
+                </button>
+                <button
+                  type="button"
+                  class="tag-btn px-3 py-1 rounded-full border border-border-light text-sm"
+                  data-tag="exercise"
+                >
+                  Exercise
+                </button>
+                <button
+                  type="button"
+                  class="tag-btn px-3 py-1 rounded-full border border-border-light text-sm"
+                  data-tag="relationship"
+                >
+                  Relationship
+                </button>
+                <button
+                  type="button"
+                  id="addTagBtn"
+                  class="px-3 py-1 rounded-full border border-border-light text-sm"
+                >
+                  + Add
+                </button>
+              </div>
+              <input id="tagsInput" name="tags" type="hidden" />
+            </div>
+
+            <!-- Notes -->
+            <div>
+              <label class="text-sm font-semibold">Notes</label>
+              <textarea
+                id="notes"
+                rows="4"
+                class="mt-2 w-full rounded-lg border p-3 bg-background-light dark:bg-card-dark"
+                placeholder="Add anything you'd like to remember (optional)"
+              ></textarea>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-3">
+              <button
+                id="saveBtn"
+                type="submit"
+                class="rounded-lg bg-primary px-4 py-2 text-white font-bold"
+              >
+                Save Mood
+              </button>
+              <button
+                id="saveAndChat"
+                type="button"
+                class="rounded-lg bg-transparent border border-[#07110d] px-4 py-2 text-black font-bold"
+              >
+                Save & Chat
+              </button>
+              <div
+                id="feedback"
+                class="text-sm text-text-secondary-light ml-2"
+              ></div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right: Recent logs + simple mini-chart -->
+        <aside
+          class="rounded-xl border border-border-light bg-card-light p-6 shadow-sm dark:bg-card-dark"
+        >
+          <h3 class="text-lg font-bold">Recent entries</h3>
+          <ul
+            id="recentList"
+            class="mt-4 space-y-3 max-h-64 overflow-auto"
+          ></ul>
+
+          <div class="mt-6">
+            <h4 class="text-sm font-semibold">Mood trend (last 7)</h4>
+            <svg
+              id="trendSpark"
+              viewBox="0 0 140 40"
+              class="w-full mt-2 h-10"
+            ></svg>
+          </div>
+        </aside>
+      </section>
+
+      <footer class="max-w-6xl mx-auto mt-8 text-sm text-text-secondary-light">
+        <p>
+          Entries are stored locally in your browser. Connect this form to a
+          backend when you're ready for persistence.
+        </p>
+      </footer>
+    </main>
+
+    <script>
+      // ---- utilities & initial state ----
+      const moodButtons = document.querySelectorAll(".select-mood");
+      const moodValueInput = document.getElementById("moodValue");
+      const intensityInput = document.getElementById("intensity");
+      const intensityLabel = document.getElementById("intensityLabel");
+      const tagsInput = document.getElementById("tagsInput");
+      const tagButtons = document.querySelectorAll(".tag-btn");
+      const recentList = document.getElementById("recentList");
+      const trendSvg = document.getElementById("trendSpark");
+      const feedback = document.getElementById("feedback");
+      const notesInput = document.getElementById("notes");
+      const moodDateInput = document.getElementById("moodDate");
+
+      // Current user id (must be provided by login flow)
+      const currentUserId = localStorage.getItem("user_id");
+
+      // In DB-driven mode we keep an in-memory list populated from server
+      let logs = [];
+
+      // set default date/time to now
+      moodDateInput.value = new Date().toISOString().slice(0, 16);
+
+      // If not logged in, show a message; saving will require login
+      if (!currentUserId) {
+        feedback.textContent = "Please log in to save moods to your account.";
+      }
+
+      // ---- mood selection ----
+      moodButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          moodButtons.forEach((b) => b.classList.remove("selected"));
+          btn.classList.add("selected");
+          moodValueInput.value = btn.dataset.value;
+        });
+      });
+
+      // ---- intensity ----
+      intensityInput.addEventListener("input", () => {
+        intensityLabel.textContent = intensityInput.value;
+      });
+
+      // ---- tags ----
+      function updateTagsInput() {
+        const selected = Array.from(tagButtons)
+          .filter((b) => b.classList.contains("selected"))
+          .map((b) => b.dataset.tag);
+        tagsInput.value = selected.join(",");
+      }
+
+      tagButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          btn.classList.toggle("selected");
+          if (btn.classList.contains("selected"))
+            btn.classList.add("bg-primary/10");
+          else btn.classList.remove("bg-primary/10");
+          updateTagsInput();
+        });
+      });
+
+      document.getElementById("addTagBtn").addEventListener("click", () => {
+        const t = prompt("Add a tag (e.g. family, commute)");
+        if (!t) return;
+        const newBtn = document.createElement("button");
+        newBtn.type = "button";
+        newBtn.className =
+          "tag-btn px-3 py-1 rounded-full border border-border-light text-sm selected bg-primary/10";
+        newBtn.dataset.tag = t;
+        newBtn.textContent = t;
+        newBtn.addEventListener("click", () => {
+          newBtn.classList.toggle("selected");
+          updateTagsInput();
+        });
+        document.getElementById("addTagBtn").before(newBtn);
+        updateTagsInput();
+      });
+
+      // ---- save logic ----
+      // Save mood to database via API. Requires `localStorage.user_id` to be set.
+      async function saveMoodToDB() {
+        const mood = moodValueInput.value;
+        if (!mood) {
+          feedback.textContent = "Error: please select a mood";
+          return false;
+        }
+
+        const intensity = parseInt(intensityInput.value, 10);
+        const tags = tagsInput.value;
+        const notes = notesInput.value;
+        const timestamp = new Date(moodDateInput.value).toISOString();
+
+        try {
+          const res = await fetch("php/api.php?action=add_mood_log", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              mood,
+              intensity,
+              tags,
+              notes,
+              timestamp,
+            }),
+          });
+          const data = await res.json();
+          if (data.ok) {
+            feedback.textContent = "Mood saved ✓";
+            return true;
+          } else {
+            // If server says user_id is missing, prompt to log in
+            if (data.error && data.error.indexOf("user_id") !== -1) {
+              feedback.textContent =
+                "Please log in to save moods to your account.";
+            } else {
+              feedback.textContent = `Error: ${data.error || "Failed to save"}`;
+            }
+            console.error("Save error:", data);
+            return false;
+          }
+        } catch (err) {
+          feedback.textContent = "Error: " + err.message;
+          console.error(err);
+          return false;
+        }
+      }
+
+      // Load recent mood history from server for current user
+      async function loadRecentFromServer() {
+        try {
+          // Request will use server session if present; omit user_id so session fallback works
+          const res = await fetch(
+            `php/api.php?action=get_mood_history&days=7`,
+            { credentials: "same-origin" }
+          );
+          const data = await res.json();
+          if (data && data.history) {
+            // map server rows to local shape
+            logs = data.history.map((r) => ({
+              mood: r.mood,
+              intensity: r.intensity || 5,
+              tags: r.tags || "",
+              notes: r.notes || "",
+              ts: r.timestamp || r.created_at || new Date().toISOString(),
+            }));
+            renderRecent();
+          }
+        } catch (e) {
+          console.error("Failed to load mood history", e);
+        }
+      }
+
+      function renderRecent() {
+        recentList.innerHTML = "";
+        const recent = logs.slice().reverse().slice(0, 7);
+        recent.forEach((entry) => {
+          const li = document.createElement("li");
+          li.className = "flex items-start gap-3";
+          li.innerHTML = `
+                  <div class="w-10 h-10 rounded-full flex items-center justify-center bg-background-light border">${emojiFor(
+                    entry.mood
+                  )}</div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <div class="font-medium">${niceMoodLabel(entry.mood)} · ${
+            entry.intensity
+          }/10</div>
+                      <div class="text-xs text-text-secondary-light">${new Date(
+                        entry.ts
+                      ).toLocaleString()}</div>
+                    </div>
+                    <div class="text-sm text-text-secondary-light">${
+                      entry.tags || ""
+                    } ${entry.notes ? "— " + entry.notes : ""}</div>
+                  </div>
+                `;
+          recentList.appendChild(li);
+        });
+        renderSpark();
+      }
+
+      function emojiFor(mood) {
+        switch (mood) {
+          case "very_sad":
+            return "😭";
+          case "sad":
+            return "😔";
+          case "neutral":
+            return "😐";
+          case "happy":
+            return "🙂";
+          case "very_happy":
+            return "😁";
+          default:
+            return "✳️";
+        }
+      }
+      function niceMoodLabel(m) {
+        return m.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      }
+
+      function renderSpark() {
+        const last7 = logs.slice(-7);
+        if (!last7.length) {
+          trendSvg.innerHTML =
+            '<text x="10" y="20" class="text-xs" fill="#9CA3AF">No data</text>';
+          return;
+        }
+        // map moods to numeric (very_sad=1 ... very_happy=5) and scale to SVG height
+        const map = {
+          very_sad: 1,
+          sad: 2,
+          neutral: 3,
+          happy: 4,
+          very_happy: 5,
+        };
+        const vals = last7.map((l) => map[l.mood] || 3);
+        const max = 5,
+          min = 1;
+        const w = 140,
+          h = 40;
+        const step = w / (vals.length - 1 || 1);
+        const points = vals
+          .map((v, i) => {
+            const x = i * step;
+            const y = h - ((v - min) / (max - min)) * (h - 6) - 3;
+            return `${x},${y}`;
+          })
+          .join(" ");
+        trendSvg.innerHTML = `
+                <polyline points="${points}" fill="none" stroke="#4C9A7A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+              `;
+      }
+
+      // initial render and load from server
+      renderRecent();
+      loadRecentFromServer();
+
+      // submit
+      document
+        .getElementById("moodForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          // Save to database (will fail if not logged in)
+          const saved = await saveMoodToDB();
+
+          if (!saved) return; // don't update UI when save fails
+
+          // After successful save, clear form and refresh recent list from server
+          notesInput.value = "";
+          moodButtons.forEach((b) => b.classList.remove("selected"));
+          moodValueInput.value = "";
+          tagButtons.forEach((b) => {
+            b.classList.remove("selected");
+            b.classList.remove("bg-primary/10");
+          });
+          tagsInput.value = "";
+          intensityInput.value = "5";
+          intensityLabel.textContent = "5";
+
+          // Reload recent entries from server so UI reflects DB
+          await loadRecentFromServer();
+          setTimeout(() => (feedback.textContent = ""), 3000);
+        });
+
+      // Save & Chat -> save and open chat.html (example)
+      document.getElementById("saveAndChat").addEventListener("click", () => {
+        document
+          .getElementById("moodForm")
+          .dispatchEvent(new Event("submit", { cancelable: true }));
+        // navigate to chat (replace href with your actual chat route)
+        window.location.href = "chat.html";
+      });
+    </script>
+    <script>
+      // Mobile nav toggle with notification button
+      document.addEventListener("DOMContentLoaded", function () {
+        const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+        const primaryNav = document.getElementById("primary-nav");
+
+        function openMobileNav() {
+          if (!primaryNav) return;
+          primaryNav.classList.remove("hidden");
+          primaryNav.classList.add(
+            "mobile-open",
+            "flex",
+            "flex-col",
+            "gap-4",
+            "p-4",
+            "rounded-lg",
+            "shadow-lg",
+            "right-4",
+            "top-16",
+            "absolute",
+            "bg-card-light",
+            "dark:bg-card-dark",
+            "border",
+            "border-border-light",
+            "dark:border-border-dark",
+            "z-30"
+          );
+          mobileMenuBtn.setAttribute("aria-expanded", "true");
+        }
+
+        function closeMobileNav() {
+          if (!primaryNav) return;
+          primaryNav.classList.add("hidden");
+          primaryNav.classList.remove(
+            "mobile-open",
+            "flex",
+            "flex-col",
+            "gap-4",
+            "p-4",
+            "rounded-lg",
+            "shadow-lg",
+            "right-4",
+            "top-16",
+            "absolute",
+            "bg-card-light",
+            "dark:bg-card-dark",
+            "border",
+            "border-border-light",
+            "dark:border-border-dark",
+            "z-30"
+          );
+          mobileMenuBtn.setAttribute("aria-expanded", "false");
+        }
+
+        // Mobile menu button toggles nav on small screens
+        if (mobileMenuBtn) {
+          mobileMenuBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (window.innerWidth < 768) {
+              if (primaryNav && primaryNav.classList.contains("mobile-open")) {
+                closeMobileNav();
+              } else {
+                openMobileNav();
+              }
+            }
+          });
+        }
+
+        // Close mobile nav when clicking outside
+        document.addEventListener("click", (e) => {
+          if (!primaryNav) return;
+          if (!primaryNav.classList.contains("mobile-open")) return;
+          const target = e.target;
+          if (!primaryNav.contains(target) && !mobileMenuBtn.contains(target)) {
+            closeMobileNav();
+          }
+        });
+
+        // Close mobile nav on resize to desktop
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 768) {
+            closeMobileNav();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -21,172 +21,91 @@
         theme: {
           extend: {
             colors: {
-              primary: "#4C9A7A", // Muted Green
-              "primary-accent": "#FF7F50", // Coral Orange
-              "secondary-accent": "#FFDAB9", // Peach Puff
-              "background-light": "#FDFBF7",
-              "background-dark": "#1A2421",
-              "text-primary-light": "#36454F",
-              "text-primary-dark": "#E0E0E0",
-              "text-secondary-light": "#6E7A83",
-              "text-secondary-dark": "#A9A9A9",
-              "card-light": "#FFFFFF",
-              "card-dark": "#25312D",
-              "border-light": "#F3EAE2",
-              "border-dark": "#36453F",
-              "positive-light": "#4C9A7A",
-              "positive-dark": "#5DBE99",
+              primary: "#11d452",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+              "orange-accent": "#ff9f1c",
+              "peach-accent": "#ffdab9",
+              "text-light": "#102216",
+              "text-dark": "#f6f8f6",
+              "card-light": "#ffffff",
+              "card-dark": "#1a3824",
+              "border-light": "#e2e8f0",
+              "border-dark": "#2d573d",
             },
             fontFamily: {
-              display: ["Lexend", "sans-serif"],
+              display: ["Inter", "sans-serif"],
             },
             borderRadius: {
-              DEFAULT: "0.5rem",
-              lg: "0.75rem",
-              xl: "1rem",
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
               full: "9999px",
             },
           },
         },
       };
+
+      // Custom confirmation modal helper
+      function showConfirmModal(message, title = "Confirm") {
+        return new Promise((resolve) => {
+          const overlay = document.createElement("div");
+          overlay.className = "fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4";
+          overlay.id = "confirm-modal-overlay";
+          
+          const modal = document.createElement("div");
+          modal.className = "bg-white dark:bg-card-dark rounded-lg shadow-lg max-w-sm w-full animate-[scale-in_0.2s_ease-out]";
+          modal.style.animation = "scale-in 0.2s ease-out";
+          
+          modal.innerHTML = `
+            <div class="p-6">
+              <h3 class="text-lg font-bold text-text-light dark:text-text-dark mb-2">${title}</h3>
+              <p class="text-text-light dark:text-text-dark mb-6 text-sm leading-relaxed">${message}</p>
+              <div class="flex gap-3 justify-end">
+                <button 
+                  id="confirm-cancel" 
+                  class="px-4 py-2 rounded-lg bg-border-light dark:bg-border-dark text-text-light dark:text-text-dark hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium text-sm"
+                >
+                  Cancel
+                </button>
+                <button 
+                  id="confirm-ok" 
+                  class="px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors font-medium text-sm"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          `;
+          
+          overlay.appendChild(modal);
+          document.body.appendChild(overlay);
+          
+          const cleanup = () => {
+            overlay.remove();
+          };
+          
+          document.getElementById("confirm-ok").addEventListener("click", () => {
+            cleanup();
+            resolve(true);
+          });
+          
+          document.getElementById("confirm-cancel").addEventListener("click", () => {
+            cleanup();
+            resolve(false);
+          });
+          
+          overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) {
+              cleanup();
+              resolve(false);
+            }
+          });
+        });
+      }
     </script>
 
-    <script>
-      // Dashboard: poll recent messages and render audio replies inside Recent Activity
-      (function () {
-        const DASH_API = "php/api.php";
-        const userId = localStorage.getItem("user_id");
-        if (!userId) return;
 
-        const seen = new Set();
-
-        function base64ToBlob(base64, mime = "audio/webm") {
-          try {
-            const byteChars = atob(base64);
-            const byteNumbers = new Array(byteChars.length);
-            for (let i = 0; i < byteChars.length; i++) {
-              byteNumbers[i] = byteChars.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            return new Blob([byteArray], { type: mime });
-          } catch (e) {
-            return null;
-          }
-        }
-
-        function findRecentActivityBlock() {
-          const headings = Array.from(document.querySelectorAll("h3"));
-          for (const h of headings) {
-            if (
-              h.textContent &&
-              h.textContent.trim().toLowerCase().includes("recent activity")
-            ) {
-              return h.parentElement;
-            }
-          }
-          return null;
-        }
-
-        function renderAudioNoteInBlock(
-          url,
-          sender = "sana",
-          time = null,
-          id = null
-        ) {
-          const block = findRecentActivityBlock();
-          if (!block) return;
-          const el = document.createElement("div");
-          el.className =
-            "flex items-center gap-3 py-2 border-t border-border-light";
-          if (id) el.dataset.messageId = id;
-
-          const info = document.createElement("div");
-          info.className = "flex-1";
-          const title = document.createElement("div");
-          title.textContent =
-            sender === "user" ? "You — voice message" : "Sana — voice reply";
-          title.className = "font-medium";
-          const ts = document.createElement("div");
-          ts.className = "text-sm text-text-secondary-light";
-          ts.textContent = time ? new Date(time).toLocaleString() : "";
-          info.appendChild(title);
-          info.appendChild(ts);
-
-          const audio = document.createElement("audio");
-          audio.controls = true;
-          try {
-            let src = String(url || "");
-            if (src.startsWith("http")) {
-              const urlObj = new URL(src);
-              if (urlObj.origin !== window.location.origin)
-                src = `php/audio_proxy.php?u=${encodeURIComponent(src)}`;
-            }
-            audio.src = src;
-          } catch (e) {
-            audio.src = url;
-          }
-
-          el.appendChild(info);
-          el.appendChild(audio);
-          // append at end of block
-          block.appendChild(el);
-        }
-
-        async function poll() {
-          try {
-            const res = await fetch(
-              `${DASH_API}?action=get_dashboard_data&user_id=${encodeURIComponent(
-                userId
-              )}`
-            );
-            if (!res.ok) return;
-            const j = await res.json();
-            if (!j.ok || !j.data) return;
-            const msgs = j.data.recent_messages || [];
-            for (const m of msgs) {
-              if (!m.id) continue;
-              if (seen.has(m.id)) continue;
-              if (m.attachment && m.attachment.url) {
-                renderAudioNoteInBlock(
-                  m.attachment.url,
-                  m.sender || "sana",
-                  m.created_at || m.createdAt || null,
-                  m.id
-                );
-                seen.add(m.id);
-                continue;
-              }
-              if (m.metadata) {
-                try {
-                  const meta =
-                    typeof m.metadata === "string"
-                      ? JSON.parse(m.metadata)
-                      : m.metadata;
-                  if (meta && meta.audio_base64 && meta.audio_mime) {
-                    const blob = base64ToBlob(
-                      meta.audio_base64,
-                      meta.audio_mime
-                    );
-                    if (blob) {
-                      renderAudioNoteInBlock(
-                        URL.createObjectURL(blob),
-                        m.sender || "sana",
-                        m.created_at || null,
-                        m.id
-                      );
-                      seen.add(m.id);
-                    }
-                  }
-                } catch (e) {}
-              }
-            }
-          } catch (e) {}
-        }
-
-        poll();
-        setInterval(poll, 4000);
-      })();
-    </script>
     <style>
       /* Fade effect */
       .page-transition {
@@ -198,6 +117,50 @@
       .page-loaded {
         opacity: 1;
         transform: translateY(0);
+      }
+      @keyframes scale-in {
+        from { transform: scale(0.95); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      /* Modal styles */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 50;
+      }
+      .modal-overlay.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      /* Notification styles */
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #11d452;
+        color: white;
+        padding: 16px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 100;
+        animation: slideIn 0.3s ease;
+      }
+      @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+      }
+      .notification.exit {
+        animation: slideOut 0.3s ease forwards;
       }
       @keyframes pulseMood {
         0% {
@@ -262,18 +225,14 @@
             </h1>
           </div>
 
-          <div class="hidden items-center gap-8 md:flex">
-            <a class="text-sm font-medium text-primary" href="#">Dashboard</a>
+          <div id="primary-nav" class="hidden items-center gap-8 md:flex">
+            <a class="text-sm font-medium text-primary" href="stdntdashb.html">Dashboard</a>
             <a
               class="text-sm font-medium text-text-primary-light transition-colors hover:text-primary dark:text-text-primary-dark dark:hover:text-primary"
               href="journal.html"
               >Journal</a
             >
-            <a
-              class="text-sm font-medium text-text-primary-light transition-colors hover:text-primary dark:text-text-primary-dark dark:hover:text-primary"
-              href="resources.html"
-              >Resources</a
-            >
+
             <a
               class="text-sm font-medium text-text-primary-light transition-colors hover:text-primary dark:text-text-primary-dark dark:hover:text-primary"
               href="chat.html"
@@ -284,33 +243,154 @@
               href="settings.html"
               >Settings</a
             >
+            <!-- Mobile-only logout link (visible when nav is toggled on small screens) -->
+            <a id="mobile-logout" href="#" class="md:hidden text-sm font-medium text-text-primary-light transition-colors hover:text-primary dark:text-text-primary-dark dark:hover:text-primary">Logout</a>
           </div>
           <div class="flex items-center gap-4">
-            <button
-              class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-background-light text-text-primary-light transition-colors hover:bg-primary/10 dark:bg-card-dark dark:text-text-primary-dark dark:hover:bg-primary/20"
-            >
-              <span class="material-symbols-outlined text-2xl"
-                >notifications</span
+            <div class="relative">
+              <button
+                id="notification-btn"
+                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-background-light text-text-primary-light transition-colors hover:bg-primary/10 dark:bg-card-dark dark:text-text-primary-dark dark:hover:bg-primary/20 relative"
               >
-            </button>
+                <span class="material-symbols-outlined text-2xl"
+                  >notifications</span
+                >
+                <span
+                  id="notification-badge"
+                  class="absolute top-0 right-0 bg-orange-accent text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden"
+                >
+                  0
+                </span>
+              </button>
+              <!-- Notifications Dropdown -->
+              <div
+                id="notifications-panel"
+                class="absolute right-0 mt-2 w-80 bg-card-light dark:bg-card-dark rounded-lg shadow-lg border border-border-light dark:border-border-dark hidden z-40 max-h-96 overflow-y-auto"
+              >
+                <div class="p-4 border-b border-border-light dark:border-border-dark">
+                  <h3 class="text-lg font-bold text-text-primary-light dark:text-text-primary-dark">
+                    Notifications
+                  </h3>
+                </div>
+                <div id="notifications-list" class="p-4 space-y-3">
+                  <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark text-center py-8">
+                    No new notifications
+                  </p>
+                </div>
+              </div>
+            </div>
             <button
               id="logout-btn"
               title="Logout"
               class="aspect-square size-10 rounded-full bg-cover bg-center bg-no-repeat cursor-pointer border-2 border-primary hover:opacity-80 transition"
-              style="
-                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCWAVk6HUFJC1nlhRdJnKwNrrvm5dXL8kcCp8gT6lqdKowCZtMhps2Q_v0w8D7ksuoIThUSLFx30VwpEVpARGti5zdSh1ImbvlLgvdzLAfH8H93yVhQBfoxmg5lMZqZ6agcGCiyEvuyKJ0kr2HHoxgLasqPKCx5Kva0iOlYBrBVIjQNOu8FuWHf8Kz2zLS9ozzBIEzWkAiNkSZO8lV15lOyPwBmcIBYydCn9zzvNOaHx-ObgrEMfleAaOrkw2B_eNtG3eg5Kdpo7A');
-              "
+             
             ></button>
             <script>
-              // Logout button functionality
+              // Logout button / mobile nav toggle functionality
               document.addEventListener("DOMContentLoaded", function () {
                 const logoutBtn = document.getElementById("logout-btn");
+                const primaryNav = document.getElementById("primary-nav");
+                const mobileLogout = document.getElementById("mobile-logout");
+
+                function openMobileNav() {
+                  if (!primaryNav) return;
+                  primaryNav.classList.remove("hidden");
+                  primaryNav.classList.add(
+                    "mobile-open",
+                    "flex",
+                    "flex-col",
+                    "gap-4",
+                    "p-4",
+                    "rounded-lg",
+                    "shadow-lg",
+                    "right-4",
+                    "top-16",
+                    "absolute",
+                    "bg-card-light",
+                    "dark:bg-card-dark",
+                    "border",
+                    "border-border-light",
+                    "dark:border-border-dark",
+                    "z-30"
+                  );
+                  logoutBtn.setAttribute("aria-expanded", "true");
+                }
+
+                function closeMobileNav() {
+                  if (!primaryNav) return;
+                  primaryNav.classList.add("hidden");
+                  primaryNav.classList.remove(
+                    "mobile-open",
+                    "flex",
+                    "flex-col",
+                    "gap-4",
+                    "p-4",
+                    "rounded-lg",
+                    "shadow-lg",
+                    "right-4",
+                    "top-16",
+                    "absolute",
+                    "bg-card-light",
+                    "dark:bg-card-dark",
+                    "border",
+                    "border-border-light",
+                    "dark:border-border-dark",
+                    "z-30"
+                  );
+                  logoutBtn.setAttribute("aria-expanded", "false");
+                }
+
                 if (logoutBtn) {
-                  logoutBtn.addEventListener("click", function () {
-                    localStorage.clear();
-                    window.location.href = "login.html";
+                  logoutBtn.addEventListener("click", async function (e) {
+                    // On small screens, toggle nav instead of immediately logging out
+                    if (window.innerWidth < 768) {
+                      e.preventDefault();
+                      if (primaryNav && primaryNav.classList.contains("mobile-open")) {
+                        closeMobileNav();
+                      } else {
+                        openMobileNav();
+                      }
+                      return;
+                    }
+
+                    // Desktop behavior: ask for confirmation before logout
+                    e.preventDefault();
+                    const confirmed = await showConfirmModal("You will be logged out of your account.", "Logout?");
+                    if (confirmed) {
+                      localStorage.clear();
+                      window.location.href = "login.html";
+                    }
                   });
                 }
+
+                // Mobile logout link inside the toggled menu
+                if (mobileLogout) {
+                  mobileLogout.addEventListener("click", async function (e) {
+                    e.preventDefault();
+                    const confirmed = await showConfirmModal("You will be logged out of your account.", "Logout?");
+                    if (confirmed) {
+                      localStorage.clear();
+                      window.location.href = "login.html";
+                    }
+                  });
+                }
+
+                // Close mobile nav when clicking outside
+                document.addEventListener("click", (e) => {
+                  if (!primaryNav) return;
+                  if (!primaryNav.classList.contains("mobile-open")) return;
+                  const target = e.target;
+                  if (!primaryNav.contains(target) && !logoutBtn.contains(target)) {
+                    closeMobileNav();
+                  }
+                });
+
+                // Close mobile nav on resize to desktop
+                window.addEventListener("resize", () => {
+                  if (window.innerWidth >= 768) {
+                    closeMobileNav();
+                  }
+                });
               });
             </script>
           </div>
@@ -383,54 +463,54 @@
                     </div>
                   </a>
 
-                  <!-- Start Video Call -->
+                  <!-- Journal Entry -->
                   <a
-                    href="#"
+                    href="journal.html"
                     class="group flex flex-col items-center justify-center gap-3 rounded-lg border border-border-light bg-background-light p-6 text-center transition-all hover:border-primary hover:bg-primary/10 dark:border-border-dark dark:bg-background-dark dark:hover:border-primary dark:hover:bg-primary/10"
                   >
                     <div
                       class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary"
                     >
                       <span class="material-symbols-outlined text-3xl"
-                        >videocam</span
+                        >edit_note</span
                       >
                     </div>
                     <div>
                       <p
                         class="font-semibold text-text-primary-light dark:text-text-primary-dark"
                       >
-                        Start Video Call
+                        Write Journal
                       </p>
                       <p
                         class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
                       >
-                        Talk face-to-face
+                        Reflect on your thoughts
                       </p>
                     </div>
                   </a>
 
-                  <!-- Start Audio Call -->
+                  <!-- Log Mood -->
                   <a
-                    href="#"
+                    href="logmood.html"
                     class="group flex flex-col items-center justify-center gap-3 rounded-lg border border-border-light bg-background-light p-6 text-center transition-all hover:border-primary hover:bg-primary/10 dark:border-border-dark dark:bg-background-dark dark:hover:border-primary dark:hover:bg-primary/10"
                   >
                     <div
                       class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary"
                     >
                       <span class="material-symbols-outlined text-3xl"
-                        >call</span
+                        >sentiment_satisfied</span
                       >
                     </div>
                     <div>
                       <p
                         class="font-semibold text-text-primary-light dark:text-text-primary-dark"
                       >
-                        Start Audio Call
+                        Track Mood
                       </p>
                       <p
                         class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
                       >
-                        A voice conversation
+                        Log how you're feeling
                       </p>
                     </div>
                   </a>
@@ -447,12 +527,22 @@
                     >
                       Your Mood This Week
                     </h3>
-                    <p
-                      id="recent-mood"
-                      class="text-3xl font-bold text-primary dark:text-positive-dark"
-                    >
-                      Feeling Okay
-                    </p>
+                    <div class="flex items-center gap-3">
+                      <p
+                        id="recent-mood"
+                        class="text-3xl font-bold text-primary dark:text-positive-dark"
+                      >
+                        Feeling Okay
+                      </p>
+                      <a
+                        href="logmood.html"
+                        id="log-mood-btn"
+                        class="inline-flex items-center h-8 px-3 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                        aria-label="Log today's mood"
+                      >
+                        Log Mood
+                      </a>
+                    </div>
                     <div class="mt-1 flex items-center gap-2">
                       <p
                         class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
@@ -497,84 +587,16 @@
                 >
                   Upcoming Sessions
                 </h3>
-                <div class="mt-4 space-y-4">
-                  <div
-                    class="flex items-center justify-between rounded-lg bg-background-light p-4 dark:bg-background-dark"
+                <div class="mt-4 space-y-4" id="sessions-list">
+                  <!-- Sessions will be dynamically populated here -->
+                </div>
+                <div class="mt-4">
+                  <button
+                    id="schedule-session-btn"
+                    class="w-full rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary/50"
                   >
-                    <div class="flex items-center gap-3">
-                      <div
-                        class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-accent/50 text-primary-accent"
-                      >
-                        <span class="material-symbols-outlined">videocam</span>
-                      </div>
-                      <div>
-                        <p
-                          class="font-semibold text-text-primary-light dark:text-text-primary-dark"
-                        >
-                          Video Check-in
-                        </p>
-                        <p
-                          class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
-                        >
-                          Tomorrow, 11:00 AM
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      class="h-8 cursor-pointer rounded-full bg-primary-accent px-4 text-xs font-bold text-white transition-opacity hover:opacity-90"
-                    >
-                      Join
-                    </button>
-                  </div>
-                  <div
-                    class="flex items-center justify-between rounded-lg bg-background-light p-4 dark:bg-background-dark"
-                  >
-                    <div class="flex items-center gap-3">
-                      <div
-                        class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-accent/50 text-primary-accent"
-                      >
-                        <span class="material-symbols-outlined"
-                          >chat_bubble</span
-                        >
-                      </div>
-                      <div>
-                        <p
-                          class="font-semibold text-text-primary-light dark:text-text-primary-dark"
-                        >
-                          Weekly Chat
-                        </p>
-                        <p
-                          class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
-                        >
-                          Oct 30, 2:30 PM
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      class="h-8 cursor-pointer rounded-full bg-text-secondary-light/50 px-4 text-xs font-bold text-white"
-                      disabled=""
-                    >
-                      Join
-                    </button>
-                  </div>
-                  <div
-                    class="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border-light p-6 text-center dark:border-border-dark"
-                  >
-                    <span
-                      class="material-symbols-outlined text-4xl text-text-secondary-light dark:text-text-secondary-dark"
-                      >calendar_month</span
-                    >
-                    <p
-                      class="font-medium text-text-primary-light dark:text-text-primary-dark"
-                    >
-                      No more sessions this week
-                    </p>
-                    <p
-                      class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
-                    >
-                      You can schedule a new session anytime.
-                    </p>
-                  </div>
+                    + Schedule New Session
+                  </button>
                 </div>
               </div>
               <!-- RECENT ACTIVITY -->
@@ -592,22 +614,76 @@
                   Last chat on N/A
                 </p>
 
-                <p
-                  class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
-                >
-                  Recent messages: <span id="recent-messages">0</span>
-                </p>
+                <div id="recent-activity-container" class="space-y-3">
+                  <p
+                    class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
+                  >
+                    Recent messages: <span id="recent-messages">0</span>
+                  </p>
 
-                <p
-                  class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
-                >
-                  Total conversations: <span id="conversation-count">0</span>
-                </p>
+                  <p
+                    class="text-sm text-text-secondary-light dark:text-text-secondary-dark"
+                  >
+                    Total conversations: <span id="conversation-count">0</span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </main>
+
+    <!-- Schedule Session Modal -->
+    <div id="schedule-modal" class="modal-overlay">
+      <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark mb-4">Schedule a Session</h3>
+        <form id="schedule-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-1">Session Title</label>
+            <input
+              id="session-title"
+              type="text"
+              placeholder="e.g., Video Check-in"
+              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-2 text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary"
+              required
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-1">Date & Time</label>
+            <input
+              id="session-datetime"
+              type="datetime-local"
+              class="w-full rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-3 py-2 text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary"
+              required
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">Session Type</label>
+            <div class="flex gap-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="session-type" value="video" checked class="cursor-pointer" />
+                <span class="text-sm">Video</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="session-type" value="chat" class="cursor-pointer" />
+                <span class="text-sm">Chat</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="session-type" value="call" class="cursor-pointer" />
+                <span class="text-sm">Call</span>
+              </label>
+            </div>
+          </div>
+          <div class="flex gap-2 pt-4">
+            <button type="submit" class="flex-1 bg-primary text-white font-bold py-2 rounded-lg hover:opacity-90">
+              Schedule
+            </button>
+            <button type="button" id="close-modal-btn" class="flex-1 bg-border-light dark:bg-border-dark text-text-primary-light dark:text-text-primary-dark font-bold py-2 rounded-lg hover:opacity-80">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script>
@@ -621,7 +697,8 @@
         gradient.addColorStop(0, "rgba(34, 139, 87, 0.35)"); // top (soft green)
         gradient.addColorStop(1, "rgba(34, 139, 87, 0)"); // bottom fade
 
-        new Chart(ctx, {
+        // expose chart instance globally so it can be updated later
+        window.moodChart = new Chart(ctx, {
           type: "line",
           data: {
             labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -677,7 +754,58 @@
             },
           },
         });
+
+        // If update was requested before the chart was ready, apply it now
+        if (window._pendingMoodHistory && window.moodChart) {
+          try {
+            const p = window._pendingMoodHistory;
+            window.moodChart.data.labels = p.labels || window.moodChart.data.labels;
+            window.moodChart.data.datasets[0].data = p.data || window.moodChart.data.datasets[0].data;
+            window.moodChart.update();
+            window._pendingMoodHistory = null;
+          } catch (err) {
+            console.warn('Failed to apply pending mood history', err);
+          }
+        }
       });
+    </script>
+
+    <script>
+      // Provide a safe global update function so other scripts can call it
+      // even if the chart instance isn't created yet. Calls will be queued
+      // until the chart is ready.
+      window.moodChart = window.moodChart || null;
+      window._pendingMoodHistory = null;
+      window.updateMoodChart = function (history) {
+        try {
+          if (!history || !Array.isArray(history) || history.length === 0) return;
+
+          // Build labels and data robustly from different possible shapes
+          const labels = history.map((h) => {
+            if (typeof h === "number") return "";
+            const date = h.date || h.created_at || h.timestamp || h.day || h.label;
+            if (!date) return "";
+            const d = new Date(date);
+            if (!isNaN(d)) return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+            return String(date).slice(0, 10);
+          });
+          const data = history.map((h) => {
+            if (typeof h === "number") return h;
+            return h.value ?? h.intensity ?? h.mood ?? h.score ?? 0;
+          });
+
+          if (window.moodChart) {
+            window.moodChart.data.labels = labels;
+            window.moodChart.data.datasets[0].data = data;
+            window.moodChart.update();
+          } else {
+            // store pending for when chart is initialized
+            window._pendingMoodHistory = { labels, data };
+          }
+        } catch (err) {
+          console.error("updateMoodChart error", err);
+        }
+      };
     </script>
 
     <script>
@@ -729,7 +857,11 @@
           }`;
           greetingDate.textContent = `${dateStr}. Ready to start your day with a clear mind?`;
 
-          document.getElementById("recent-mood").textContent = d.mood || "N/A";
+          // Treat the DB-returned 'N/A' string as missing data and show a friendlier fallback
+          const moodEl = document.getElementById("recent-mood");
+          const moodVal =
+            d.mood && d.mood !== "N/A" ? d.mood : "No recent mood logged";
+          moodEl.textContent = moodVal;
           document.getElementById("conversation-count").textContent =
             d.conversations;
           document.getElementById("recent-messages").textContent =
@@ -737,12 +869,175 @@
           document.getElementById("last-chat-date").textContent =
             "Last chat on " + (d.last_chat_date || "N/A");
 
+          // Keep only stats, remove message rendering
+          const container = document.getElementById("recent-activity-container");
+          // Stats are already displayed in the HTML, no need to render messages here
+
           if (d.mood_history && d.mood_history.length > 0) {
             updateMoodChart(d.mood_history);
           }
 
           console.log(d);
         });
+
+      // ---- Upcoming Sessions Management ----
+      const SESSIONS_KEY = "sana_sessions";
+      let sessions = JSON.parse(localStorage.getItem(SESSIONS_KEY) || "[]");
+
+      function renderSessions() {
+        const sessionsList = document.getElementById("sessions-list");
+        sessionsList.innerHTML = "";
+
+        if (sessions.length === 0) {
+          sessionsList.innerHTML = `
+            <div class="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border-light p-6 text-center dark:border-border-dark">
+              <span class="material-symbols-outlined text-4xl text-text-secondary-light dark:text-text-secondary-dark">calendar_month</span>
+              <p class="font-medium text-text-primary-light dark:text-text-primary-dark">No scheduled sessions</p>
+              <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">Schedule one to get started</p>
+            </div>
+          `;
+          return;
+        }
+
+        // Filter to future sessions only
+        const now = new Date();
+        const futureSessions = sessions
+          .filter((s) => new Date(s.datetime) > now)
+          .slice(0, 5);
+
+        if (futureSessions.length === 0) {
+          sessionsList.innerHTML = `
+            <div class="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border-light p-6 text-center dark:border-border-dark">
+              <span class="material-symbols-outlined text-4xl text-text-secondary-light dark:text-text-secondary-dark">calendar_month</span>
+              <p class="font-medium text-text-primary-light dark:text-text-primary-dark">No more sessions this week</p>
+              <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">You can schedule a new session anytime.</p>
+            </div>
+          `;
+          return;
+        }
+
+        futureSessions.forEach((session, idx) => {
+          const sessionDate = new Date(session.datetime);
+          const dateStr = sessionDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          const iconMap = {
+            video: "videocam",
+            chat: "chat_bubble",
+            call: "call",
+          };
+          const icon = iconMap[session.type] || "event";
+
+          const el = document.createElement("div");
+          el.className =
+            "flex items-center justify-between rounded-lg bg-background-light p-4 dark:bg-background-dark";
+          el.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-accent/50 text-primary-accent">
+                <span class="material-symbols-outlined">${icon}</span>
+              </div>
+              <div>
+                <p class="font-semibold text-text-primary-light dark:text-text-primary-dark">${session.title}</p>
+                <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark">${dateStr}</p>
+              </div>
+            </div>
+            <button
+              class="h-8 cursor-pointer rounded-full bg-primary px-4 text-xs font-bold text-white hover:opacity-90"
+              onclick="alert('Session: ${session.title}')"
+            >
+              Join
+            </button>
+          `;
+          sessionsList.appendChild(el);
+        });
+      }
+
+      document
+        .getElementById("schedule-session-btn")
+        .addEventListener("click", () => {
+          const scheduleModal = document.getElementById("schedule-modal");
+          scheduleModal.classList.add("active");
+        });
+
+      // ---- Modal Form Handler ----
+      const scheduleModal = document.getElementById("schedule-modal");
+      const scheduleForm = document.getElementById("schedule-form");
+      const closeModalBtn = document.getElementById("close-modal-btn");
+
+      closeModalBtn.addEventListener("click", () => {
+        scheduleModal.classList.remove("active");
+        scheduleForm.reset();
+      });
+
+      scheduleModal.addEventListener("click", (e) => {
+        if (e.target === scheduleModal) {
+          scheduleModal.classList.remove("active");
+          scheduleForm.reset();
+        }
+      });
+
+      scheduleForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const title = document.getElementById("session-title").value;
+        const datetimeStr = document.getElementById("session-datetime").value;
+        const type = document.querySelector('input[name="session-type"]:checked').value;
+
+        if (!title || !datetimeStr) return;
+
+        const session = {
+          id: Date.now(),
+          title,
+          datetime: new Date(datetimeStr).toISOString(),
+          type,
+          notified: false,
+        };
+
+        sessions.push(session);
+        localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+        renderSessions();
+        scheduleModal.classList.remove("active");
+        scheduleForm.reset();
+        if (window.sanaAddNotification) window.sanaAddNotification("✓ Session Scheduled", "Your new session has been added to your calendar");
+      });
+    </script>
+
+    <script src="js/notifications.js"></script>
+    <script>
+      // Session reminders use the shared notification API
+      function checkSessionNotifications() {
+        const now = new Date();
+        sessions.forEach((session) => {
+          const sessionTime = new Date(session.datetime);
+          const minutesUntil = (sessionTime - now) / (1000 * 60);
+
+          if (minutesUntil > 0 && minutesUntil <= 15 && !session.notified) {
+            session.notified = true;
+            localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+            const iconMap = { video: "📹", chat: "💬", call: "☎️" };
+            const icon = iconMap[session.type] || "📅";
+            if (window.sanaAddNotification) window.sanaAddNotification(`${icon} Upcoming: ${session.title}`, `Your ${session.type} session starts in ${Math.round(minutesUntil)} minutes`);
+          }
+        });
+      }
+
+      setInterval(checkSessionNotifications, 60000);
+      checkSessionNotifications();
+
+      renderSessions();
+    </script>
+    <script>
+      // Lightweight handler: keep anchor as primary fallback, but ensure keyboard/click behavior
+      document.addEventListener("DOMContentLoaded", function () {
+        const btn = document.getElementById("log-mood-btn");
+        if (!btn) return;
+        btn.addEventListener("click", function (e) {
+          // Default anchor behavior is fine (navigates to logmood.html).
+          // This handler ensures we can optionally add SPA behaviour later.
+        });
+      });
     </script>
   </body>
 </html>
